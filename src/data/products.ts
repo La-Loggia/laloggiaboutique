@@ -101,16 +101,19 @@ export const stores = [
     name: 'Altea',
     address: 'Calle Mayor, 15',
     city: 'Altea',
+    mapsUrl: 'https://maps.google.com/?q=Calle+Mayor+15+Altea+Spain',
   },
   {
     name: 'San Juan',
     address: 'Av. de la Costa, 42',
     city: 'San Juan de Alicante',
+    mapsUrl: 'https://maps.google.com/?q=Av+de+la+Costa+42+San+Juan+de+Alicante+Spain',
   },
   {
     name: 'Campello',
     address: 'Calle San Pedro, 8',
     city: 'El Campello',
+    mapsUrl: 'https://maps.google.com/?q=Calle+San+Pedro+8+El+Campello+Spain',
   },
 ];
 

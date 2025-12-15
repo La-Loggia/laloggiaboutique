@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
-import BrandNav from '@/components/BrandNav';
+import BrandMarquee from '@/components/BrandMarquee';
 import HomeLatestPreview from '@/components/HomeLatestPreview';
 import HomeBrandsBlock from '@/components/HomeBrandsBlock';
 import VisitSection from '@/components/VisitSection';
@@ -23,7 +23,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <BrandNav />
+      <BrandMarquee />
 
       <main>
         <HomeLatestPreview onProductClick={handleProductClick} />
