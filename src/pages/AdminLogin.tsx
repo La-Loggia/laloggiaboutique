@@ -9,22 +9,30 @@ const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signIn(email, password);
-    
-    if (error) {
-      toast.error('Error al iniciar sesión', {
-        description: error.message,
-      });
+    if (isSignUp) {
+      const { error } = await signUp(email, password);
+      if (error) {
+        toast.error('Error al registrarse', { description: error.message });
+      } else {
+        toast.success('Cuenta creada correctamente');
+        navigate('/admin');
+      }
     } else {
-      toast.success('Sesión iniciada');
-      navigate('/admin');
+      const { error } = await signIn(email, password);
+      if (error) {
+        toast.error('Error al iniciar sesión', { description: error.message });
+      } else {
+        toast.success('Sesión iniciada');
+        navigate('/admin');
+      }
     }
     
     setIsLoading(false);
@@ -58,6 +66,7 @@ const AdminLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={6}
               className="bg-secondary border-border"
             />
           </div>
@@ -66,9 +75,18 @@ const AdminLogin = () => {
             disabled={isLoading}
             className="w-full bg-foreground text-background hover:bg-foreground/90"
           >
-            {isLoading ? 'Iniciando...' : 'Iniciar Sesión'}
+            {isLoading ? 'Procesando...' : isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión'}
           </Button>
         </form>
+
+        <div className="text-center mt-4">
+          <button
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿Primera vez? Crear cuenta'}
+          </button>
+        </div>
 
         <div className="text-center mt-6">
           <button
