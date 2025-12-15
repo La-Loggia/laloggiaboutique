@@ -1,0 +1,169 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import type { Brand } from '@/data/products';
+
+export interface Product {
+  id: string;
+  brand: Brand;
+  imageUrl: string;
+  isActive: boolean;
+  campaignId: string | null;
+  createdAt: Date;
+}
+
+interface RawProduct {
+  id: string;
+  brand: 'MOOR' | 'SaintTropez' | 'DiLei' | 'Mela' | 'Pecatto';
+  image_url: string;
+  is_active: boolean;
+  campaign_id: string | null;
+  created_at: string;
+}
+
+const mapProduct = (raw: RawProduct): Product => ({
+  id: raw.id,
+  brand: raw.brand,
+  imageUrl: raw.image_url,
+  isActive: raw.is_active,
+  campaignId: raw.campaign_id,
+  createdAt: new Date(raw.created_at),
+});
+
+export const useLatestProducts = (limit?: number) => {
+  return useQuery({
+    queryKey: ['products', 'latest', limit],
+    queryFn: async () => {
+      let query = supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      
+      if (limit) {
+        query = query.limit(limit);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
+export const useProductsByBrand = (brand: Brand) => {
+  return useQuery({
+    queryKey: ['products', 'brand', brand],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('brand', brand)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
+export const useAllProducts = () => {
+  return useQuery({
+    queryKey: ['products', 'all'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ brand, imageUrl, campaignId }: { brand: Brand; imageUrl: string; campaignId?: string }) => {
+      const { data, error } = await supabase
+        .from('products')
+        .insert({
+          brand,
+          image_url: imageUrl,
+          campaign_id: campaignId || null,
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return mapProduct(data as RawProduct);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+};
+
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ id, isActive, brand, campaignId }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null }) => {
+      const updates: Record<string, unknown> = {};
+      if (isActive !== undefined) updates.is_active = isActive;
+      if (brand !== undefined) updates.brand = brand;
+      if (campaignId !== undefined) updates.campaign_id = campaignId;
+      
+      const { error } = await supabase
+        .from('products')
+        .update(updates)
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+};
+
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+};
+
+export const useUploadImage = () => {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file);
+      
+      if (uploadError) throw uploadError;
+      
+      const { data } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(fileName);
+      
+      return data.publicUrl;
+    },
+  });
+};
