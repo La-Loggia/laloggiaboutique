@@ -4,8 +4,7 @@ import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
 import ImageViewer from '@/components/ImageViewer';
-import { Brand, brands } from '@/data/products';
-import { useProductsByBrand, Product } from '@/hooks/useProducts';
+import { Brand, brands, getProductsByBrand, Product } from '@/data/products';
 
 const BrandPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
@@ -26,7 +25,7 @@ const BrandPage = () => {
     return <Navigate to="/" replace />;
   }
 
-  const { data: products = [], isLoading } = useProductsByBrand(brand);
+  const products = getProductsByBrand(brand);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -51,13 +50,7 @@ const BrandPage = () => {
           <div className="w-8 h-px bg-border mx-auto mt-3" />
         </div>
 
-        {isLoading ? (
-          <p className="text-center text-muted-foreground py-8">Cargando...</p>
-        ) : products.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">No hay prendas de esta marca</p>
-        ) : (
-          <ProductGrid products={products} onProductClick={handleProductClick} />
-        )}
+        <ProductGrid products={products} onProductClick={handleProductClick} />
 
         <div className="text-center mt-8 pb-8">
           <Link

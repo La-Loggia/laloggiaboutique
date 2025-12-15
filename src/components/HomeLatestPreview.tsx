@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useLatestProducts, Product } from '@/hooks/useProducts';
+import { getLatestProducts, Product } from '@/data/products';
 import ProductGrid from './ProductGrid';
 
 interface HomeLatestPreviewProps {
@@ -7,29 +7,7 @@ interface HomeLatestPreviewProps {
 }
 
 const HomeLatestPreview = ({ onProductClick }: HomeLatestPreviewProps) => {
-  const { data: previewProducts = [], isLoading } = useLatestProducts(6);
-
-  if (isLoading) {
-    return (
-      <section className="py-6">
-        <div className="text-center">
-          <p className="text-muted-foreground">Cargando...</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (previewProducts.length === 0) {
-    return (
-      <section className="py-6">
-        <div className="text-center mb-6">
-          <h2 className="section-title">Últimas Novedades</h2>
-          <div className="w-12 h-px bg-border mx-auto mt-3" />
-        </div>
-        <p className="text-center text-muted-foreground">No hay novedades disponibles</p>
-      </section>
-    );
-  }
+  const previewProducts = getLatestProducts(6);
 
   return (
     <section className="py-6">

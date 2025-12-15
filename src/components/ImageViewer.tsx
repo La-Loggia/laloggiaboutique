@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { X } from 'lucide-react';
-import { whatsappNumber, whatsappMessage } from '@/data/products';
-import { Product } from '@/hooks/useProducts';
+import { Product, whatsappNumber, whatsappMessage } from '@/data/products';
 import WhatsAppButton from './WhatsAppButton';
 
 interface ImageViewerProps {

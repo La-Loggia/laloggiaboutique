@@ -4,11 +4,11 @@ import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
 import ImageViewer from '@/components/ImageViewer';
-import { useLatestProducts, Product } from '@/hooks/useProducts';
+import { getLatestProducts, Product } from '@/data/products';
 
 const LatestProducts = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const { data: allProducts = [], isLoading } = useLatestProducts();
+  const allProducts = getLatestProducts();
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -31,13 +31,7 @@ const LatestProducts = () => {
           <div className="w-12 h-px bg-border mx-auto mt-3" />
         </div>
 
-        {isLoading ? (
-          <p className="text-center text-muted-foreground py-8">Cargando...</p>
-        ) : allProducts.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">No hay novedades disponibles</p>
-        ) : (
-          <ProductGrid products={allProducts} onProductClick={handleProductClick} />
-        )}
+        <ProductGrid products={allProducts} onProductClick={handleProductClick} />
 
         <div className="text-center mt-8 pb-8">
           <Link
