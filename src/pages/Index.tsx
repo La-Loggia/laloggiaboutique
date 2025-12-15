@@ -1,31 +1,14 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
-import LatestSection from '@/components/LatestSection';
-import BrandSection from '@/components/BrandSection';
+import HomeLatestPreview from '@/components/HomeLatestPreview';
+import HomeBrandsBlock from '@/components/HomeBrandsBlock';
 import VisitSection from '@/components/VisitSection';
 import ImageViewer from '@/components/ImageViewer';
-import { Brand, brands, Product } from '@/data/products';
+import { Product } from '@/data/products';
 
 const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [activeSection, setActiveSection] = useState<Brand | null>(null);
-  const sectionRefs = useRef<Record<Brand, HTMLElement | null>>({} as Record<Brand, HTMLElement | null>);
-
-  const handleBrandClick = (brand: Brand) => {
-    setActiveSection(brand);
-    const element = sectionRefs.current[brand];
-    if (element) {
-      const headerOffset = 120;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerOffset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -40,21 +23,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <BrandNav activeSection={activeSection} onBrandClick={handleBrandClick} />
+      <BrandNav />
 
       <main>
-        <LatestSection onProductClick={handleProductClick} />
+        <HomeLatestPreview onProductClick={handleProductClick} />
         
         <div className="border-t border-border/30" />
 
-        {brands.map((brand) => (
-          <BrandSection
-            key={brand}
-            ref={(el) => (sectionRefs.current[brand] = el)}
-            brand={brand}
-            onProductClick={handleProductClick}
-          />
-        ))}
+        <HomeBrandsBlock />
+
+        <div className="border-t border-border/30" />
 
         <VisitSection />
       </main>
