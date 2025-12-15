@@ -6,7 +6,7 @@ const Header = () => {
           LA LOGGIA
         </h1>
         <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
-          Boutique · Altea · San Juan · Campello
+          Altea · San Juan · Campello
         </p>
       </div>
     </header>
