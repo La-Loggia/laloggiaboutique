@@ -5,7 +5,7 @@ import HomeLatestPreview from '@/components/HomeLatestPreview';
 import HomeBrandsBlock from '@/components/HomeBrandsBlock';
 import VisitSection from '@/components/VisitSection';
 import ImageViewer from '@/components/ImageViewer';
-import { Product } from '@/data/products';
+import { Product } from '@/hooks/useProducts';
 
 const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
