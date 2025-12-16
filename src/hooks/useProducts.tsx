@@ -199,3 +199,46 @@ export const useUploadImage = () => {
     },
   });
 };
+
+export const useAddProductImage = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ productId, imageUrl, displayOrder }: { productId: string; imageUrl: string; displayOrder?: number }) => {
+      const { data, error } = await supabase
+        .from('product_images')
+        .insert({
+          product_id: productId,
+          image_url: imageUrl,
+          display_order: displayOrder ?? 0,
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return mapProductImage(data);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['product-images', variables.productId] });
+    },
+  });
+};
+
+export const useDeleteProductImage = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ imageId, productId }: { imageId: string; productId: string }) => {
+      const { error } = await supabase
+        .from('product_images')
+        .delete()
+        .eq('id', imageId);
+      
+      if (error) throw error;
+      return productId;
+    },
+    onSuccess: (productId) => {
+      queryClient.invalidateQueries({ queryKey: ['product-images', productId] });
+    },
+  });
+};
