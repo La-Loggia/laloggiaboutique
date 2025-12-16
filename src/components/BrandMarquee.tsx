@@ -1,46 +1,37 @@
-import { brands } from '@/data/products';
 import replayLogo from '@/assets/logo-replay.png';
-import dixieLogo from '@/assets/logo-dixie.jpg';
+import dixieLogo from '@/assets/logo-dixie.png';
 import saintTropezLogo from '@/assets/logo-sainttropez.png';
+import moorLogo from '@/assets/logo-moor.png';
+import dileiLogo from '@/assets/logo-dilei.png';
+import melaLogo from '@/assets/logo-mela.png';
+import pecattoLogo from '@/assets/logo-pecatto.png';
+
+// Logos with optical height adjustments for visual balance
+const brandLogos = [
+  { src: moorLogo, alt: 'MOOR', height: 'h-[18px]' },
+  { src: saintTropezLogo, alt: 'Saint Tropez', height: 'h-[22px]' },
+  { src: dileiLogo, alt: 'DiLei', height: 'h-[20px]' },
+  { src: melaLogo, alt: 'Mela', height: 'h-[26px]' },
+  { src: pecattoLogo, alt: 'Pecatto', height: 'h-[22px]' },
+  { src: replayLogo, alt: 'Replay', height: 'h-[14px]' },
+  { src: dixieLogo, alt: 'Dixie', height: 'h-[16px]' },
+];
 
 const BrandMarquee = () => {
-  // Create items array with brands and logos interspersed
-  const brandItems = [...brands, 'REPLAY', 'DIXIE', 'SAINTTROPEZ'] as const;
-  const duplicatedItems = [...brandItems, ...brandItems, ...brandItems];
+  // Triple the logos for seamless infinite scroll
+  const duplicatedLogos = [...brandLogos, ...brandLogos, ...brandLogos];
 
   return (
     <div className="bg-secondary/30 border-b border-border/30 overflow-hidden py-3">
-      <div className="animate-marquee flex items-center gap-6 whitespace-nowrap">
-        {duplicatedItems.map((item, index) => (
-          item === 'REPLAY' ? (
-            <img
-              key={`replay-${index}`}
-              src={replayLogo}
-              alt="Replay"
-              className="h-[24px] w-auto object-contain select-none opacity-70"
-            />
-          ) : item === 'DIXIE' ? (
-            <img
-              key={`dixie-${index}`}
-              src={dixieLogo}
-              alt="Dixie"
-              className="h-[24px] w-auto object-contain select-none opacity-70"
-            />
-          ) : item === 'SAINTTROPEZ' || item === 'SaintTropez' ? (
-            <img
-              key={`sainttropez-${index}`}
-              src={saintTropezLogo}
-              alt="Saint Tropez"
-              className="h-[24px] w-auto object-contain select-none opacity-70"
-            />
-          ) : (
-            <span
-              key={`${item}-${index}`}
-              className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70 select-none"
-            >
-              {item}
-            </span>
-          )
+      <div className="animate-marquee flex items-center gap-10 whitespace-nowrap">
+        {duplicatedLogos.map((logo, index) => (
+          <img
+            key={`${logo.alt}-${index}`}
+            src={logo.src}
+            alt={logo.alt}
+            className={`${logo.height} w-auto object-contain select-none opacity-70`}
+            draggable={false}
+          />
         ))}
       </div>
     </div>
