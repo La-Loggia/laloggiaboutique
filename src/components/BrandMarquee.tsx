@@ -16,7 +16,7 @@ const BrandMarquee = () => {
               key={`replay-${index}`}
               src={replayLogo}
               alt="Replay"
-              className="h-[20px] w-auto object-contain select-none opacity-70"
+              className="h-[27px] w-auto object-contain select-none opacity-70"
             />
           ) : item === 'DIXIE' ? (
             <img
