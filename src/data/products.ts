@@ -1,4 +1,4 @@
-export type Brand = 'MOOR' | 'SaintTropez' | 'DiLei' | 'Mela' | 'Pecatto' | 'Dixie';
+export type Brand = 'MOOR' | 'SaintTropez' | 'DiLei' | 'Mela' | 'Pecatto' | 'Dixie' | 'Replay';
 
 export interface Product {
   id: string;
@@ -83,7 +83,7 @@ export const products: Product[] = [
   },
 ];
 
-export const brands: Brand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie'];
+export const brands: Brand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie', 'Replay'];
 
 export const getProductsByBrand = (brand: Brand): Product[] => {
   return products
