@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images } from 'lucide-react';
+import ProductImageManager from '@/components/ProductImageManager';
 
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -19,6 +20,7 @@ const Admin = () => {
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
   const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [managingProduct, setManagingProduct] = useState<Product | null>(null);
   
   const { data: products, isLoading: productsLoading } = useAllProducts();
   const { data: campaigns } = useCampaigns();
@@ -250,6 +252,14 @@ const Admin = () => {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setManagingProduct(product)}
+                      title="Gestionar imágenes"
+                    >
+                      <Images className="w-4 h-4" />
+                    </Button>
                     <Switch
                       checked={product.isActive}
                       onCheckedChange={() => handleToggleActive(product)}
@@ -269,6 +279,14 @@ const Admin = () => {
           )}
         </section>
       </main>
+
+      {/* Product Image Manager Modal */}
+      {managingProduct && (
+        <ProductImageManager
+          product={managingProduct}
+          onClose={() => setManagingProduct(null)}
+        />
+      )}
     </div>
   );
 };
