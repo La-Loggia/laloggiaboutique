@@ -22,7 +22,7 @@ const BrandMarquee = () => {
   const duplicatedLogos = [...brandLogos, ...brandLogos, ...brandLogos];
 
   return (
-    <div className="bg-secondary/30 border-b border-border/30 overflow-hidden py-3">
+    <div className="bg-secondary/30 border-b border-border/30 overflow-hidden">
       <div className="animate-marquee flex items-center gap-10 whitespace-nowrap">
         {duplicatedLogos.map((logo, index) => (
           <img
