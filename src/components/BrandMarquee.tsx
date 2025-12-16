@@ -1,10 +1,11 @@
 import { brands } from '@/data/products';
 import replayLogo from '@/assets/logo-replay.png';
 import dixieLogo from '@/assets/logo-dixie.jpg';
+import saintTropezLogo from '@/assets/logo-sainttropez.png';
 
 const BrandMarquee = () => {
   // Create items array with brands and logos interspersed
-  const brandItems = [...brands, 'REPLAY', 'DIXIE'] as const;
+  const brandItems = [...brands, 'REPLAY', 'DIXIE', 'SAINTTROPEZ'] as const;
   const duplicatedItems = [...brandItems, ...brandItems, ...brandItems];
 
   return (
@@ -24,6 +25,13 @@ const BrandMarquee = () => {
               src={dixieLogo}
               alt="Dixie"
               className="h-[20px] w-auto object-contain select-none opacity-70"
+            />
+          ) : item === 'SAINTTROPEZ' || item === 'SaintTropez' ? (
+            <img
+              key={`sainttropez-${index}`}
+              src={saintTropezLogo}
+              alt="Saint Tropez"
+              className="h-[30px] w-auto object-contain select-none opacity-70"
             />
           ) : (
             <span
