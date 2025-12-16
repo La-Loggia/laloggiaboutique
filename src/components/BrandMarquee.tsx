@@ -15,7 +15,7 @@ const BrandMarquee = () => {
               key={`replay-${index}`}
               src={replayLogo}
               alt="Replay"
-              className="h-5 w-auto object-contain select-none opacity-70"
+              className="h-[50px] w-auto object-contain select-none opacity-70"
             />
           ) : (
             <span
