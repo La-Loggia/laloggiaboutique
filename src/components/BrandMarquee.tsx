@@ -23,7 +23,7 @@ const BrandMarquee = () => {
               key={`dixie-${index}`}
               src={dixieLogo}
               alt="Dixie"
-              className="h-[40px] w-auto object-contain select-none opacity-70"
+              className="h-[20px] w-auto object-contain select-none opacity-70"
             />
           ) : (
             <span
