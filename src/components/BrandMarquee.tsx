@@ -18,31 +18,21 @@ const brandLogos = [
 ];
 
 const BrandMarquee = () => {
+  // Triple the logos for seamless infinite scroll
+  const duplicatedLogos = [...brandLogos, ...brandLogos, ...brandLogos];
+
   return (
     <div className="bg-secondary/30 border-b border-border/30 overflow-hidden">
-      <div className="flex">
-        <div className="animate-marquee flex items-center gap-10 shrink-0">
-          {brandLogos.map((logo, index) => (
-            <img
-              key={`first-${logo.alt}-${index}`}
-              src={logo.src}
-              alt={logo.alt}
-              className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale`}
-              draggable={false}
-            />
-          ))}
-        </div>
-        <div className="animate-marquee flex items-center gap-10 shrink-0">
-          {brandLogos.map((logo, index) => (
-            <img
-              key={`second-${logo.alt}-${index}`}
-              src={logo.src}
-              alt={logo.alt}
-              className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale`}
-              draggable={false}
-            />
-          ))}
-        </div>
+      <div className="animate-marquee flex items-center gap-10 whitespace-nowrap">
+        {duplicatedLogos.map((logo, index) => (
+          <img
+            key={`${logo.alt}-${index}`}
+            src={logo.src}
+            alt={logo.alt}
+            className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale`}
+            draggable={false}
+          />
+        ))}
       </div>
     </div>
   );
