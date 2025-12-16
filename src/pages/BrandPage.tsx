@@ -18,6 +18,7 @@ const BrandPage = () => {
     'dilei': 'DiLei',
     'mela': 'Mela',
     'pecatto': 'Pecatto',
+    'dixie': 'Dixie',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
