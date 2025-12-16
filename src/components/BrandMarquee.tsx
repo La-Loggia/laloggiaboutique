@@ -6,15 +6,15 @@ import dileiLogo from '@/assets/logo-dilei.png';
 import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 
-// Logos with optical height adjustments for visual balance
+// Logos with optical height adjustments for visual balance (~40px base)
 const brandLogos = [
-  { src: moorLogo, alt: 'MOOR', height: 'h-[18px]' },
-  { src: saintTropezLogo, alt: 'Saint Tropez', height: 'h-[22px]' },
-  { src: dileiLogo, alt: 'DiLei', height: 'h-[20px]' },
-  { src: melaLogo, alt: 'Mela', height: 'h-[26px]' },
-  { src: pecattoLogo, alt: 'Pecatto', height: 'h-[22px]' },
-  { src: replayLogo, alt: 'Replay', height: 'h-[14px]' },
-  { src: dixieLogo, alt: 'Dixie', height: 'h-[16px]' },
+  { src: moorLogo, alt: 'MOOR', height: 'h-[36px]' },
+  { src: saintTropezLogo, alt: 'Saint Tropez', height: 'h-[44px]' },
+  { src: dileiLogo, alt: 'DiLei', height: 'h-[38px]' },
+  { src: melaLogo, alt: 'Mela', height: 'h-[52px]' },
+  { src: pecattoLogo, alt: 'Pecatto', height: 'h-[42px]' },
+  { src: replayLogo, alt: 'Replay', height: 'h-[28px]' },
+  { src: dixieLogo, alt: 'Dixie', height: 'h-[32px]' },
 ];
 
 const BrandMarquee = () => {
