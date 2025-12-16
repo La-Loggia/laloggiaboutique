@@ -8,13 +8,13 @@ import pecattoLogo from '@/assets/logo-pecatto.png';
 
 // Logos with optical height adjustments for visual balance (~60px base)
 const brandLogos = [
-  { src: moorLogo, alt: 'MOOR', height: 'h-[38px]' },
-  { src: saintTropezLogo, alt: 'Saint Tropez', height: 'h-[44px]' },
-  { src: dileiLogo, alt: 'DiLei', height: 'h-[40px]' },
-  { src: melaLogo, alt: 'Mela', height: 'h-[52px]' },
-  { src: pecattoLogo, alt: 'Pecatto', height: 'h-[48px]' },
-  { src: replayLogo, alt: 'Replay', height: 'h-[39px]' },
-  { src: dixieLogo, alt: 'Dixie', height: 'h-[32px]' },
+  { src: moorLogo, alt: 'MOOR', height: 'h-[48px]' },
+  { src: saintTropezLogo, alt: 'Saint Tropez', height: 'h-[54px]' },
+  { src: dileiLogo, alt: 'DiLei', height: 'h-[50px]' },
+  { src: melaLogo, alt: 'Mela', height: 'h-[62px]' },
+  { src: pecattoLogo, alt: 'Pecatto', height: 'h-[58px]' },
+  { src: replayLogo, alt: 'Replay', height: 'h-[49px]' },
+  { src: dixieLogo, alt: 'Dixie', height: 'h-[42px]' },
 ];
 
 const BrandMarquee = () => {
