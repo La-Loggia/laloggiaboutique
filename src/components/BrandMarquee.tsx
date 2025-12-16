@@ -31,7 +31,7 @@ const BrandMarquee = () => {
               key={`sainttropez-${index}`}
               src={saintTropezLogo}
               alt="Saint Tropez"
-              className="h-[30px] w-auto object-contain select-none opacity-70"
+              className="h-[50px] w-auto object-contain select-none opacity-70"
             />
           ) : (
             <span
