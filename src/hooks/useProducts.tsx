@@ -2,6 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Brand } from '@/data/products';
 
+export interface ProductImage {
+  id: string;
+  productId: string;
+  imageUrl: string;
+  displayOrder: number;
+}
+
 export interface Product {
   id: string;
   brand: Brand;
@@ -9,6 +16,7 @@ export interface Product {
   isActive: boolean;
   campaignId: string | null;
   createdAt: Date;
+  additionalImages?: ProductImage[];
 }
 
 interface RawProduct {
@@ -28,6 +36,30 @@ const mapProduct = (raw: RawProduct): Product => ({
   campaignId: raw.campaign_id,
   createdAt: new Date(raw.created_at),
 });
+
+const mapProductImage = (raw: { id: string; product_id: string; image_url: string; display_order: number }): ProductImage => ({
+  id: raw.id,
+  productId: raw.product_id,
+  imageUrl: raw.image_url,
+  displayOrder: raw.display_order,
+});
+
+export const useProductImages = (productId: string) => {
+  return useQuery({
+    queryKey: ['product-images', productId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('product_images')
+        .select('*')
+        .eq('product_id', productId)
+        .order('display_order', { ascending: true });
+      
+      if (error) throw error;
+      return data.map(mapProductImage);
+    },
+    enabled: !!productId,
+  });
+};
 
 export const useLatestProducts = (limit?: number) => {
   return useQuery({
