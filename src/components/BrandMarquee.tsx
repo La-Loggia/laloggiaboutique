@@ -13,7 +13,7 @@ const brandLogos = [
   { src: dileiLogo, alt: 'DiLei', height: 'h-[40px]' },
   { src: melaLogo, alt: 'Mela', height: 'h-[52px]' },
   { src: pecattoLogo, alt: 'Pecatto', height: 'h-[48px]' },
-  { src: replayLogo, alt: 'Replay', height: 'h-[24px]' },
+  { src: replayLogo, alt: 'Replay', height: 'h-[39px]' },
   { src: dixieLogo, alt: 'Dixie', height: 'h-[32px]' },
 ];
 
@@ -29,7 +29,7 @@ const BrandMarquee = () => {
             key={`${logo.alt}-${index}`}
             src={logo.src}
             alt={logo.alt}
-            className={`${logo.height} w-auto object-contain select-none opacity-80 mix-blend-multiply`}
+            className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale`}
             draggable={false}
           />
         ))}
