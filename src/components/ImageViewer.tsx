@@ -102,7 +102,7 @@ const ImageViewer = ({ product, onClose }: ImageViewerProps) => {
 
           {/* Thumbnails row (bottom on mobile) */}
           {allImages.length > 1 && (
-            <div className="flex md:hidden gap-2 overflow-x-auto justify-center shrink-0 pb-16">
+            <div className="flex md:hidden gap-2 overflow-x-auto justify-center shrink-0 pb-24">
               {allImages.map((img, index) => (
                 <button
                   key={index}
