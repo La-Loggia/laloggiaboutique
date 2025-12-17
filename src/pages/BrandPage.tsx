@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
@@ -7,11 +7,28 @@ import ImageViewer from '@/components/ImageViewer';
 import { Brand, brands } from '@/data/products';
 import { useProductsByBrand, Product } from '@/hooks/useProducts';
 
+import replayLogo from '@/assets/logo-replay.png';
+import dixieLogo from '@/assets/logo-dixie.png';
+import saintTropezLogo from '@/assets/logo-sainttropez.png';
+import moorLogo from '@/assets/logo-moor.png';
+import dileiLogo from '@/assets/logo-dilei.png';
+import melaLogo from '@/assets/logo-mela.png';
+import pecattoLogo from '@/assets/logo-pecatto.png';
+
+const brandLogos: Record<Brand, { src: string; height: string }> = {
+  'MOOR': { src: moorLogo, height: 'h-[36px]' },
+  'SaintTropez': { src: saintTropezLogo, height: 'h-[40px]' },
+  'DiLei': { src: dileiLogo, height: 'h-[38px]' },
+  'Mela': { src: melaLogo, height: 'h-[46px]' },
+  'Pecatto': { src: pecattoLogo, height: 'h-[44px]' },
+  'Dixie': { src: dixieLogo, height: 'h-[32px]' },
+  'Replay': { src: replayLogo, height: 'h-[37px]' },
+};
+
 const BrandPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // Map slug to brand name
   const brandMap: Record<string, Brand> = {
     'moor': 'MOOR',
     'sainttropez': 'SaintTropez',
@@ -40,17 +57,21 @@ const BrandPage = () => {
     document.body.style.overflow = '';
   };
 
+  const brandLogo = brandLogos[brand];
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <BrandNav activeBrand={brand} />
 
-      <main className="py-8">
-        <div className="text-center mb-6">
-          <h1 className="font-sans text-xs tracking-[0.3em] uppercase text-muted-foreground">
-            {brand}
-          </h1>
-          <div className="w-8 h-px bg-border mx-auto mt-3" />
+      <main className="py-6">
+        {/* Brand logo instead of text */}
+        <div className="flex justify-center mb-6">
+          <img 
+            src={brandLogo.src} 
+            alt={brand} 
+            className={`${brandLogo.height} w-auto object-contain grayscale opacity-80`}
+          />
         </div>
 
         {isLoading ? (
@@ -60,15 +81,6 @@ const BrandPage = () => {
         ) : (
           <ProductGrid products={products} onProductClick={handleProductClick} />
         )}
-
-        <div className="text-center mt-8 pb-8">
-          <Link
-            to="/"
-            className="font-sans text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors"
-          >
-            ← Volver
-          </Link>
-        </div>
       </main>
 
       {selectedProduct && (

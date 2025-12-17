@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
@@ -38,15 +37,6 @@ const LatestProducts = () => {
         ) : (
           <ProductGrid products={allProducts} onProductClick={handleProductClick} />
         )}
-
-        <div className="text-center mt-8 pb-8">
-          <Link
-            to="/"
-            className="font-sans text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors"
-          >
-            ← Volver
-          </Link>
-        </div>
       </main>
 
       {selectedProduct && (
