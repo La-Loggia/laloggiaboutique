@@ -26,7 +26,7 @@ const BrandMarquee = () => {
       
       <div className="flex">
         {/* First set - animates */}
-        <div className="animate-marquee flex items-center shrink-0 pr-12">
+        <div className="animate-marquee flex items-center shrink-0">
           {brandLogos.map((logo, index) => (
             <img
               key={`first-${logo.alt}-${index}`}
@@ -38,7 +38,7 @@ const BrandMarquee = () => {
           ))}
         </div>
         {/* Second set - follows first for seamless loop */}
-        <div className="animate-marquee flex items-center shrink-0 pr-12">
+        <div className="animate-marquee flex items-center shrink-0">
           {brandLogos.map((logo, index) => (
             <img
               key={`second-${logo.alt}-${index}`}
