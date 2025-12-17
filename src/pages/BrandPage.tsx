@@ -16,13 +16,13 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 
 const brandLogos: Record<Brand, { src: string; height: string }> = {
-  'MOOR': { src: moorLogo, height: 'h-[36px]' },
-  'SaintTropez': { src: saintTropezLogo, height: 'h-[40px]' },
-  'DiLei': { src: dileiLogo, height: 'h-[38px]' },
-  'Mela': { src: melaLogo, height: 'h-[46px]' },
-  'Pecatto': { src: pecattoLogo, height: 'h-[44px]' },
-  'Dixie': { src: dixieLogo, height: 'h-[32px]' },
-  'Replay': { src: replayLogo, height: 'h-[37px]' },
+  'MOOR': { src: moorLogo, height: 'h-[72px]' },
+  'SaintTropez': { src: saintTropezLogo, height: 'h-[81px]' },
+  'DiLei': { src: dileiLogo, height: 'h-[75px]' },
+  'Mela': { src: melaLogo, height: 'h-[93px]' },
+  'Pecatto': { src: pecattoLogo, height: 'h-[87px]' },
+  'Dixie': { src: dixieLogo, height: 'h-[63px]' },
+  'Replay': { src: replayLogo, height: 'h-[74px]' },
 };
 
 const BrandPage = () => {
