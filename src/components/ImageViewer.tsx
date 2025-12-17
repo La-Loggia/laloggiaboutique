@@ -127,7 +127,7 @@ const ImageViewer = ({ product, onClose }: ImageViewerProps) => {
       </div>
 
       {/* WhatsApp button */}
-      <WhatsAppButton href={whatsappUrl} fixed />
+      <WhatsAppButton href={whatsappUrl} fixed label="Preguntar a la tienda información sobre la prenda" />
     </div>
   );
 };
