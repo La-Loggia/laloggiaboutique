@@ -72,6 +72,7 @@ export type Database = {
           brand: Database["public"]["Enums"]["brand_type"]
           campaign_id: string | null
           created_at: string
+          display_order: number
           id: string
           image_url: string
           is_active: boolean
@@ -80,6 +81,7 @@ export type Database = {
           brand: Database["public"]["Enums"]["brand_type"]
           campaign_id?: string | null
           created_at?: string
+          display_order?: number
           id?: string
           image_url: string
           is_active?: boolean
@@ -88,6 +90,7 @@ export type Database = {
           brand?: Database["public"]["Enums"]["brand_type"]
           campaign_id?: string | null
           created_at?: string
+          display_order?: number
           id?: string
           image_url?: string
           is_active?: boolean

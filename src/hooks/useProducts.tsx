@@ -16,6 +16,7 @@ export interface Product {
   isActive: boolean;
   campaignId: string | null;
   createdAt: Date;
+  displayOrder: number;
   additionalImages?: ProductImage[];
 }
 
@@ -26,6 +27,7 @@ interface RawProduct {
   is_active: boolean;
   campaign_id: string | null;
   created_at: string;
+  display_order: number;
 }
 
 const mapProduct = (raw: RawProduct): Product => ({
@@ -35,6 +37,7 @@ const mapProduct = (raw: RawProduct): Product => ({
   isActive: raw.is_active,
   campaignId: raw.campaign_id,
   createdAt: new Date(raw.created_at),
+  displayOrder: raw.display_order,
 });
 
 const mapProductImage = (raw: { id: string; product_id: string; image_url: string; display_order: number }): ProductImage => ({
@@ -69,7 +72,7 @@ export const useLatestProducts = (limit?: number) => {
         .from('products')
         .select('*')
         .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .order('display_order', { ascending: true });
       
       if (limit) {
         query = query.limit(limit);
@@ -91,7 +94,7 @@ export const useProductsByBrand = (brand: Brand) => {
         .select('*')
         .eq('brand', brand)
         .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .order('display_order', { ascending: true });
       
       if (error) throw error;
       return (data as RawProduct[]).map(mapProduct);
@@ -106,7 +109,7 @@ export const useAllProducts = () => {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('display_order', { ascending: true });
       
       if (error) throw error;
       return (data as RawProduct[]).map(mapProduct);
@@ -261,6 +264,26 @@ export const useUpdateProductImageOrder = () => {
     },
     onSuccess: (productId) => {
       queryClient.invalidateQueries({ queryKey: ['product-images', productId] });
+    },
+  });
+};
+
+export const useUpdateProductOrder = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (products: { id: string; displayOrder: number }[]) => {
+      const updates = products.map(p => 
+        supabase
+          .from('products')
+          .update({ display_order: p.displayOrder })
+          .eq('id', p.id)
+      );
+      
+      await Promise.all(updates);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
 };
