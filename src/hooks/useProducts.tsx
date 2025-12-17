@@ -142,11 +142,12 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, isActive, brand, campaignId }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null }) => {
+    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null; imageUrl?: string }) => {
       const updates: Record<string, unknown> = {};
       if (isActive !== undefined) updates.is_active = isActive;
       if (brand !== undefined) updates.brand = brand;
       if (campaignId !== undefined) updates.campaign_id = campaignId;
+      if (imageUrl !== undefined) updates.image_url = imageUrl;
       
       const { error } = await supabase
         .from('products')
@@ -235,6 +236,27 @@ export const useDeleteProductImage = () => {
         .eq('id', imageId);
       
       if (error) throw error;
+      return productId;
+    },
+    onSuccess: (productId) => {
+      queryClient.invalidateQueries({ queryKey: ['product-images', productId] });
+    },
+  });
+};
+
+export const useUpdateProductImageOrder = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ images, productId }: { images: { id: string; displayOrder: number }[]; productId: string }) => {
+      const updates = images.map(img => 
+        supabase
+          .from('product_images')
+          .update({ display_order: img.displayOrder })
+          .eq('id', img.id)
+      );
+      
+      await Promise.all(updates);
       return productId;
     },
     onSuccess: (productId) => {

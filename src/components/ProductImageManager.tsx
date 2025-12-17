@@ -1,13 +1,86 @@
 import { useRef, useState } from 'react';
-import { useProductImages, useUploadImage, useAddProductImage, useDeleteProductImage, Product } from '@/hooks/useProducts';
+import { useProductImages, useUploadImage, useAddProductImage, useDeleteProductImage, useUpdateProductImageOrder, Product, ProductImage } from '@/hooks/useProducts';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { X, Plus, ImagePlus, ChevronLeft } from 'lucide-react';
+import { X, ImagePlus, ChevronLeft, GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ProductImageManagerProps {
   product: Product;
   onClose: () => void;
 }
+
+interface SortableImageProps {
+  image: ProductImage;
+  onDelete: (id: string) => void;
+}
+
+const SortableImage = ({ image, onDelete }: SortableImageProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative aspect-[9/16] rounded-lg overflow-hidden bg-secondary group"
+    >
+      <img
+        src={image.imageUrl}
+        alt={`Adicional ${image.displayOrder}`}
+        className="w-full h-full object-cover"
+      />
+      {/* Drag handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 left-2 p-1.5 bg-black/60 rounded-full cursor-grab active:cursor-grabbing touch-none"
+        aria-label="Arrastrar para reordenar"
+      >
+        <GripVertical className="w-4 h-4 text-white" />
+      </button>
+      {/* Delete button */}
+      <button
+        onClick={() => onDelete(image.id)}
+        className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+        aria-label="Eliminar imagen"
+      >
+        <X className="w-4 h-4 text-white" />
+      </button>
+      <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-white px-2 py-0.5 rounded">
+        #{image.displayOrder}
+      </span>
+    </div>
+  );
+};
 
 const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -17,6 +90,18 @@ const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => 
   const uploadImage = useUploadImage();
   const addProductImage = useAddProductImage();
   const deleteProductImage = useDeleteProductImage();
+  const updateImageOrder = useUpdateProductImageOrder();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,6 +143,30 @@ const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => 
     }
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      const oldIndex = additionalImages.findIndex((img) => img.id === active.id);
+      const newIndex = additionalImages.findIndex((img) => img.id === over.id);
+      
+      const newOrder = arrayMove(additionalImages, oldIndex, newIndex);
+      
+      // Update display orders
+      const updates = newOrder.map((img, index) => ({
+        id: img.id,
+        displayOrder: index + 1,
+      }));
+      
+      try {
+        await updateImageOrder.mutateAsync({ images: updates, productId: product.id });
+        toast.success('Orden actualizado');
+      } catch (error) {
+        toast.error('Error al reordenar');
+      }
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-background animate-fade-in overflow-auto">
       {/* Header */}
@@ -91,7 +200,7 @@ const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => 
         {/* Additional Images */}
         <section>
           <h2 className="font-sans text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">
-            Imágenes Adicionales ({additionalImages.length})
+            Imágenes Adicionales ({additionalImages.length}) - Arrastra para reordenar
           </h2>
           
           <input
@@ -102,50 +211,49 @@ const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => 
             className="hidden"
           />
           
-          <div className="grid grid-cols-3 gap-3">
-            {/* Upload button */}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="aspect-[9/16] rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors disabled:opacity-50"
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={additionalImages.map(img => img.id)}
+              strategy={rectSortingStrategy}
             >
-              {isUploading ? (
-                <span className="text-xs">Subiendo...</span>
-              ) : (
-                <>
-                  <ImagePlus className="w-6 h-6" />
-                  <span className="text-xs">Añadir</span>
-                </>
-              )}
-            </button>
-            
-            {/* Existing additional images */}
-            {isLoading ? (
-              <div className="col-span-2 flex items-center justify-center py-8">
-                <span className="text-muted-foreground text-sm">Cargando...</span>
+              <div className="grid grid-cols-3 gap-3">
+                {/* Upload button */}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="aspect-[9/16] rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                >
+                  {isUploading ? (
+                    <span className="text-xs">Subiendo...</span>
+                  ) : (
+                    <>
+                      <ImagePlus className="w-6 h-6" />
+                      <span className="text-xs">Añadir</span>
+                    </>
+                  )}
+                </button>
+                
+                {/* Existing additional images */}
+                {isLoading ? (
+                  <div className="col-span-2 flex items-center justify-center py-8">
+                    <span className="text-muted-foreground text-sm">Cargando...</span>
+                  </div>
+                ) : (
+                  additionalImages.map((img) => (
+                    <SortableImage
+                      key={img.id}
+                      image={img}
+                      onDelete={handleDeleteImage}
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              additionalImages.map((img) => (
-                <div key={img.id} className="relative aspect-[9/16] rounded-lg overflow-hidden bg-secondary group">
-                  <img
-                    src={img.imageUrl}
-                    alt={`Adicional ${img.displayOrder}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    onClick={() => handleDeleteImage(img.id)}
-                    className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    aria-label="Eliminar imagen"
-                  >
-                    <X className="w-4 h-4 text-white" />
-                  </button>
-                  <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-white px-2 py-0.5 rounded">
-                    #{img.displayOrder}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
+            </SortableContext>
+          </DndContext>
         </section>
       </main>
     </div>
