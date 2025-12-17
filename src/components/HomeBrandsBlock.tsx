@@ -9,14 +9,15 @@ import logoPecatto from '@/assets/logo-pecatto.png';
 import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
 
-const brandLogos: Record<Brand, string> = {
-  MOOR: logoMoor,
-  SaintTropez: logoSaintTropez,
-  DiLei: logoDiLei,
-  Mela: logoMela,
-  Pecatto: logoPecatto,
-  Dixie: logoDixie,
-  Replay: logoReplay,
+// Logos with optical height adjustments for visual balance (~60px base)
+const brandLogos: Record<Brand, { src: string; height: string }> = {
+  MOOR: { src: logoMoor, height: 'h-[48px]' },
+  SaintTropez: { src: logoSaintTropez, height: 'h-[54px]' },
+  DiLei: { src: logoDiLei, height: 'h-[50px]' },
+  Mela: { src: logoMela, height: 'h-[62px]' },
+  Pecatto: { src: logoPecatto, height: 'h-[58px]' },
+  Dixie: { src: logoDixie, height: 'h-[42px]' },
+  Replay: { src: logoReplay, height: 'h-[49px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
@@ -39,12 +40,12 @@ const HomeBrandsBlock = () => {
           <Link
             key={brand}
             to={`/marca/${getBrandSlug(brand)}`}
-            className="group bg-secondary/30 border-2 border-border/40 py-6 flex items-center justify-center transition-all duration-300 hover:bg-foreground hover:border-foreground active:scale-95"
+            className="group bg-secondary/30 border-2 border-border/40 py-3 flex items-center justify-center transition-all duration-300 hover:bg-foreground hover:border-foreground active:scale-95"
           >
             <img
-              src={brandLogos[brand]}
+              src={brandLogos[brand].src}
               alt={brand}
-              className="h-[44px] object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300"
+              className={`${brandLogos[brand].height} object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300`}
             />
           </Link>
         ))}
