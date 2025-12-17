@@ -98,24 +98,24 @@ export const getLatestProducts = (limit?: number): Product[] => {
 
 export const stores = [
   {
-    name: 'Altea',
-    address: 'Calle Mayor, 15',
-    city: 'Altea',
-    mapsUrl: 'https://maps.google.com/?q=Calle+Mayor+15+Altea+Spain',
-  },
-  {
     name: 'San Juan',
-    address: 'Av. de la Costa, 42',
-    city: 'San Juan de Alicante',
-    mapsUrl: 'https://maps.google.com/?q=Av+de+la+Costa+42+San+Juan+de+Alicante+Spain',
+    address: 'Av. Historiador Vicente Ramos, Planta 0',
+    city: 'Centro Comercial Torregolf',
+    mapsUrl: 'https://maps.app.goo.gl/ynnjzq9io82KDvSv6',
   },
   {
     name: 'Campello',
-    address: 'Calle San Pedro, 8',
+    address: 'C. Sant Bartomeu, 41',
     city: 'El Campello',
-    mapsUrl: 'https://maps.google.com/?q=Calle+San+Pedro+8+El+Campello+Spain',
+    mapsUrl: 'https://maps.app.goo.gl/zXvM5tmkZuZ9iMYS6',
+  },
+  {
+    name: 'Altea',
+    address: 'C. Comte d\'Altea, 58',
+    city: 'Altea',
+    mapsUrl: 'https://maps.app.goo.gl/V15YQb4jRQ98F1tN6',
   },
 ];
 
-export const whatsappNumber = '34600000000';
+export const whatsappNumber = '34647763304';
 export const whatsappMessage = 'Hola, me gustaría más información sobre esta prenda.';
