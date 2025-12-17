@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, Filter } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
 import {
   DndContext,
@@ -35,9 +35,10 @@ interface SortableProductProps {
   onDelete: (id: string) => void;
   onManageImages: (product: Product) => void;
   onReplaceImage: (product: Product) => void;
+  onChangeBrand: (product: Product, newBrand: Brand) => void;
 }
 
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage }: SortableProductProps) => {
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand }: SortableProductProps) => {
   const {
     attributes,
     listeners,
@@ -85,8 +86,20 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
       </div>
       
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm">{product.brand}</p>
-        <p className="text-xs text-muted-foreground">
+        <Select 
+          value={product.brand} 
+          onValueChange={(v) => onChangeBrand(product, v as Brand)}
+        >
+          <SelectTrigger className="h-7 text-xs w-28">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {brands.map((brand) => (
+              <SelectItem key={brand} value={brand} className="text-xs">{brand}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground mt-1">
           {product.createdAt.toLocaleDateString('es-ES')}
         </p>
       </div>
@@ -123,6 +136,7 @@ const Admin = () => {
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
+  const [filterBrand, setFilterBrand] = useState<Brand | 'ALL'>('ALL');
   const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
@@ -149,7 +163,10 @@ const Admin = () => {
     })
   );
 
-  // Products are already ordered by display_order from the query
+  // Filter products by brand
+  const filteredProducts = products?.filter(p => 
+    filterBrand === 'ALL' ? true : p.brand === filterBrand
+  ) || [];
 
   if (loading) {
     return (
@@ -245,6 +262,20 @@ const Admin = () => {
     }
   };
 
+  const handleChangeBrand = async (product: Product, newBrand: Brand) => {
+    if (product.brand === newBrand) return;
+    
+    try {
+      await updateProduct.mutateAsync({
+        id: product.id,
+        brand: newBrand,
+      });
+      toast.success(`Marca cambiada a ${newBrand}`);
+    } catch (error) {
+      toast.error('Error al cambiar la marca');
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('¿Estás seguro de que quieres eliminar esta prenda?')) return;
     
@@ -285,11 +316,11 @@ const Admin = () => {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     
-    if (over && active.id !== over.id && products) {
-      const oldIndex = products.findIndex((p) => p.id === active.id);
-      const newIndex = products.findIndex((p) => p.id === over.id);
+    if (over && active.id !== over.id && filteredProducts.length > 0) {
+      const oldIndex = filteredProducts.findIndex((p) => p.id === active.id);
+      const newIndex = filteredProducts.findIndex((p) => p.id === over.id);
       
-      const newOrder = arrayMove(products, oldIndex, newIndex);
+      const newOrder = arrayMove(filteredProducts, oldIndex, newIndex);
       
       // Update display orders in database
       const updates = newOrder.map((p, index) => ({
@@ -409,15 +440,38 @@ const Admin = () => {
 
         {/* Products List */}
         <section>
-          <h2 className="font-sans text-sm font-medium uppercase tracking-wider mb-2">
-            Prendas ({products?.length || 0})
-          </h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-sans text-sm font-medium uppercase tracking-wider">
+              Prendas ({filteredProducts.length}{filterBrand !== 'ALL' ? ` de ${filterBrand}` : ''})
+            </h2>
+          </div>
+          
+          {/* Brand Filter */}
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <Select value={filterBrand} onValueChange={(v) => setFilterBrand(v as Brand | 'ALL')}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Filtrar por marca" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Todas las marcas</SelectItem>
+                {brands.map((brand) => (
+                  <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
           <p className="text-xs text-muted-foreground mb-4">
-            Arrastra las 3 rayitas para reordenar • Toca el lápiz para reemplazar imagen
+            Arrastra para reordenar • Lápiz para reemplazar imagen • Selector para cambiar marca
           </p>
           
           {productsLoading ? (
             <p className="text-muted-foreground text-center py-8">Cargando...</p>
+          ) : filteredProducts.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              {filterBrand !== 'ALL' ? `No hay prendas de ${filterBrand}` : 'No hay prendas'}
+            </p>
           ) : (
             <DndContext
               sensors={sensors}
@@ -425,11 +479,11 @@ const Admin = () => {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={products?.map(p => p.id) || []}
+                items={filteredProducts.map(p => p.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="space-y-3">
-                  {products?.map((product) => (
+                  {filteredProducts.map((product) => (
                     <SortableProduct
                       key={product.id}
                       product={product}
@@ -437,6 +491,7 @@ const Admin = () => {
                       onDelete={handleDelete}
                       onManageImages={setManagingProduct}
                       onReplaceImage={handleReplaceImage}
+                      onChangeBrand={handleChangeBrand}
                     />
                   ))}
                 </div>
