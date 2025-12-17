@@ -43,7 +43,9 @@ const ImageViewer = ({ product, onClose }: ImageViewerProps) => {
     touchStartY.current = null;
   };
 
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+  const currentImageUrl = allImages[currentIndex];
+  const messageWithImage = `${whatsappMessage}\n\nPrenda: ${currentImageUrl}`;
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
   return (
     <div className="fixed inset-0 z-[100] bg-neutral-100 animate-fade-in">
