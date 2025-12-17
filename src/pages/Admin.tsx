@@ -9,18 +9,125 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+interface SortableProductProps {
+  product: Product;
+  onToggleActive: (product: Product) => void;
+  onDelete: (id: string) => void;
+  onManageImages: (product: Product) => void;
+  onReplaceImage: (product: Product) => void;
+}
+
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage }: SortableProductProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: product.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg"
+    >
+      {/* Drag handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="p-1 cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground"
+        aria-label="Arrastrar para reordenar"
+      >
+        <GripVertical className="w-5 h-5" />
+      </button>
+      
+      <div className="relative">
+        <img
+          src={product.imageUrl}
+          alt={product.brand}
+          className="w-16 h-20 object-cover rounded"
+        />
+        <button
+          onClick={() => onReplaceImage(product)}
+          className="absolute -top-1 -right-1 p-1 bg-foreground text-background rounded-full hover:bg-foreground/80"
+          title="Reemplazar imagen"
+        >
+          <Pencil className="w-3 h-3" />
+        </button>
+      </div>
+      
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-sm">{product.brand}</p>
+        <p className="text-xs text-muted-foreground">
+          {product.createdAt.toLocaleDateString('es-ES')}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onManageImages(product)}
+          title="Gestionar imágenes"
+        >
+          <Images className="w-4 h-4" />
+        </Button>
+        <Switch
+          checked={product.isActive}
+          onCheckedChange={() => onToggleActive(product)}
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onDelete(product.id)}
+          className="text-destructive hover:text-destructive"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const replaceImageInputRef = useRef<HTMLInputElement>(null);
   
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
   const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
+  const [replacingProduct, setReplacingProduct] = useState<Product | null>(null);
+  const [productOrder, setProductOrder] = useState<string[]>([]);
   
   const { data: products, isLoading: productsLoading } = useAllProducts();
   const { data: campaigns } = useCampaigns();
@@ -30,6 +137,24 @@ const Admin = () => {
   const uploadImage = useUploadImage();
   const createCampaign = useCreateCampaign();
   const setActiveCampaign = useSetActiveCampaign();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Initialize product order from products
+  const orderedProducts = products ? 
+    (productOrder.length > 0 
+      ? productOrder.map(id => products.find(p => p.id === id)).filter(Boolean) as Product[]
+      : products)
+    : [];
 
   if (loading) {
     return (
@@ -84,6 +209,35 @@ const Admin = () => {
     }
   };
 
+  const handleReplaceImage = (product: Product) => {
+    setReplacingProduct(product);
+    replaceImageInputRef.current?.click();
+  };
+
+  const handleReplaceImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !replacingProduct) return;
+
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadImage.mutateAsync(file);
+      await updateProduct.mutateAsync({
+        id: replacingProduct.id,
+        imageUrl,
+      });
+      toast.success('Imagen reemplazada correctamente');
+    } catch (error) {
+      toast.error('Error al reemplazar la imagen');
+      console.error(error);
+    } finally {
+      setIsUploading(false);
+      setReplacingProduct(null);
+      if (replaceImageInputRef.current) {
+        replaceImageInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleToggleActive = async (product: Product) => {
     try {
       await updateProduct.mutateAsync({
@@ -131,6 +285,20 @@ const Admin = () => {
   const handleLogout = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      const currentProducts = orderedProducts;
+      const oldIndex = currentProducts.findIndex((p) => p.id === active.id);
+      const newIndex = currentProducts.findIndex((p) => p.id === over.id);
+      
+      const newOrder = arrayMove(currentProducts, oldIndex, newIndex);
+      setProductOrder(newOrder.map(p => p.id));
+      toast.success('Orden actualizado (solo visual en esta sesión)');
+    }
   };
 
   return (
@@ -186,6 +354,15 @@ const Admin = () => {
           </Button>
         </section>
 
+        {/* Hidden input for replacing images */}
+        <input
+          ref={replaceImageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleReplaceImageSelect}
+          className="hidden"
+        />
+
         {/* Campaigns Section */}
         <section className="bg-secondary/30 rounded-lg p-4">
           <h2 className="font-sans text-sm font-medium uppercase tracking-wider mb-4">
@@ -227,55 +404,39 @@ const Admin = () => {
 
         {/* Products List */}
         <section>
-          <h2 className="font-sans text-sm font-medium uppercase tracking-wider mb-4">
+          <h2 className="font-sans text-sm font-medium uppercase tracking-wider mb-2">
             Prendas ({products?.length || 0})
           </h2>
+          <p className="text-xs text-muted-foreground mb-4">
+            Arrastra las 3 rayitas para reordenar • Toca el lápiz para reemplazar imagen
+          </p>
           
           {productsLoading ? (
             <p className="text-muted-foreground text-center py-8">Cargando...</p>
           ) : (
-            <div className="space-y-3">
-              {products?.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg"
-                >
-                  <img
-                    src={product.imageUrl}
-                    alt={product.brand}
-                    className="w-16 h-20 object-cover rounded"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm">{product.brand}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {product.createdAt.toLocaleDateString('es-ES')}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setManagingProduct(product)}
-                      title="Gestionar imágenes"
-                    >
-                      <Images className="w-4 h-4" />
-                    </Button>
-                    <Switch
-                      checked={product.isActive}
-                      onCheckedChange={() => handleToggleActive(product)}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={orderedProducts.map(p => p.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-3">
+                  {orderedProducts.map((product) => (
+                    <SortableProduct
+                      key={product.id}
+                      product={product}
+                      onToggleActive={handleToggleActive}
+                      onDelete={handleDelete}
+                      onManageImages={setManagingProduct}
+                      onReplaceImage={handleReplaceImage}
                     />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(product.id)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
         </section>
       </main>
