@@ -9,15 +9,15 @@ import logoPecatto from '@/assets/logo-pecatto.png';
 import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
 
-// Logos with optical height adjustments for visual balance (~60px base)
+// Logos with optical height adjustments for visual balance (~90px base)
 const brandLogos: Record<Brand, { src: string; height: string }> = {
-  MOOR: { src: logoMoor, height: 'h-[48px]' },
-  SaintTropez: { src: logoSaintTropez, height: 'h-[54px]' },
-  DiLei: { src: logoDiLei, height: 'h-[50px]' },
-  Mela: { src: logoMela, height: 'h-[62px]' },
-  Pecatto: { src: logoPecatto, height: 'h-[58px]' },
-  Dixie: { src: logoDixie, height: 'h-[42px]' },
-  Replay: { src: logoReplay, height: 'h-[49px]' },
+  MOOR: { src: logoMoor, height: 'h-[72px]' },
+  SaintTropez: { src: logoSaintTropez, height: 'h-[81px]' },
+  DiLei: { src: logoDiLei, height: 'h-[75px]' },
+  Mela: { src: logoMela, height: 'h-[93px]' },
+  Pecatto: { src: logoPecatto, height: 'h-[87px]' },
+  Dixie: { src: logoDixie, height: 'h-[63px]' },
+  Replay: { src: logoReplay, height: 'h-[74px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
