@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, Product } from '@/hooks/useProducts';
+import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product } from '@/hooks/useProducts';
 import { useCampaigns, useCreateCampaign, useSetActiveCampaign } from '@/hooks/useCampaigns';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
@@ -127,7 +127,6 @@ const Admin = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
   const [replacingProduct, setReplacingProduct] = useState<Product | null>(null);
-  const [productOrder, setProductOrder] = useState<string[]>([]);
   
   const { data: products, isLoading: productsLoading } = useAllProducts();
   const { data: campaigns } = useCampaigns();
@@ -137,6 +136,7 @@ const Admin = () => {
   const uploadImage = useUploadImage();
   const createCampaign = useCreateCampaign();
   const setActiveCampaign = useSetActiveCampaign();
+  const updateProductOrder = useUpdateProductOrder();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -149,12 +149,7 @@ const Admin = () => {
     })
   );
 
-  // Initialize product order from products
-  const orderedProducts = products ? 
-    (productOrder.length > 0 
-      ? productOrder.map(id => products.find(p => p.id === id)).filter(Boolean) as Product[]
-      : products)
-    : [];
+  // Products are already ordered by display_order from the query
 
   if (loading) {
     return (
@@ -287,17 +282,27 @@ const Admin = () => {
     navigate('/');
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     
-    if (over && active.id !== over.id) {
-      const currentProducts = orderedProducts;
-      const oldIndex = currentProducts.findIndex((p) => p.id === active.id);
-      const newIndex = currentProducts.findIndex((p) => p.id === over.id);
+    if (over && active.id !== over.id && products) {
+      const oldIndex = products.findIndex((p) => p.id === active.id);
+      const newIndex = products.findIndex((p) => p.id === over.id);
       
-      const newOrder = arrayMove(currentProducts, oldIndex, newIndex);
-      setProductOrder(newOrder.map(p => p.id));
-      toast.success('Orden actualizado (solo visual en esta sesión)');
+      const newOrder = arrayMove(products, oldIndex, newIndex);
+      
+      // Update display orders in database
+      const updates = newOrder.map((p, index) => ({
+        id: p.id,
+        displayOrder: index + 1,
+      }));
+      
+      try {
+        await updateProductOrder.mutateAsync(updates);
+        toast.success('Orden guardado');
+      } catch (error) {
+        toast.error('Error al guardar el orden');
+      }
     }
   };
 
@@ -420,11 +425,11 @@ const Admin = () => {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={orderedProducts.map(p => p.id)}
+                items={products?.map(p => p.id) || []}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="space-y-3">
-                  {orderedProducts.map((product) => (
+                  {products?.map((product) => (
                     <SortableProduct
                       key={product.id}
                       product={product}
