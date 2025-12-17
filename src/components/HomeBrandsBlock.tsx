@@ -44,7 +44,7 @@ const HomeBrandsBlock = () => {
             <img
               src={brandLogos[brand]}
               alt={brand}
-              className="h-6 object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300"
+              className="h-[44px] object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300"
             />
           </Link>
         ))}
