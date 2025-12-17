@@ -21,30 +21,30 @@ const BrandMarquee = () => {
   return (
     <div className="bg-secondary/30 border-b border-border/30 overflow-hidden relative">
       {/* Fade edges */}
-      <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-secondary/30 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-secondary/30 to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background via-background/60 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background via-background/60 to-transparent z-10 pointer-events-none" />
       
       <div className="flex">
         {/* First set - animates */}
-        <div className="animate-marquee flex items-center shrink-0">
+        <div className="animate-marquee flex items-center shrink-0 pr-12">
           {brandLogos.map((logo, index) => (
             <img
               key={`first-${logo.alt}-${index}`}
               src={logo.src}
               alt={logo.alt}
-              className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale mx-8`}
+              className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale mx-4`}
               draggable={false}
             />
           ))}
         </div>
         {/* Second set - follows first for seamless loop */}
-        <div className="animate-marquee flex items-center shrink-0">
+        <div className="animate-marquee flex items-center shrink-0 pr-12">
           {brandLogos.map((logo, index) => (
             <img
               key={`second-${logo.alt}-${index}`}
               src={logo.src}
               alt={logo.alt}
-              className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale mx-8`}
+              className={`${logo.height} w-auto object-contain select-none opacity-70 grayscale mx-4`}
               draggable={false}
             />
           ))}
