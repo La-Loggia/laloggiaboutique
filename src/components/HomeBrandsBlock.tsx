@@ -12,14 +12,14 @@ import logoRueMadam from '@/assets/logo-ruemadam.png';
 
 // Logos with optical height adjustments for visual balance (~90px base)
 const brandLogos: Record<Brand, { src: string; height: string }> = {
-  MOOR: { src: logoMoor, height: 'h-[72px]' },
-  SaintTropez: { src: logoSaintTropez, height: 'h-[81px]' },
-  DiLei: { src: logoDiLei, height: 'h-[75px]' },
-  Mela: { src: logoMela, height: 'h-[93px]' },
-  Pecatto: { src: logoPecatto, height: 'h-[87px]' },
-  Dixie: { src: logoDixie, height: 'h-[63px]' },
-  Replay: { src: logoReplay, height: 'h-[74px]' },
-  RueMadam: { src: logoRueMadam, height: 'h-[75px]' },
+  MOOR: { src: logoMoor, height: 'h-[90px]' },
+  SaintTropez: { src: logoSaintTropez, height: 'h-[100px]' },
+  DiLei: { src: logoDiLei, height: 'h-[95px]' },
+  Mela: { src: logoMela, height: 'h-[115px]' },
+  Pecatto: { src: logoPecatto, height: 'h-[108px]' },
+  Dixie: { src: logoDixie, height: 'h-[80px]' },
+  Replay: { src: logoReplay, height: 'h-[92px]' },
+  RueMadam: { src: logoRueMadam, height: 'h-[95px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
