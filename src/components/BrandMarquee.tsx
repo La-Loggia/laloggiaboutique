@@ -5,6 +5,7 @@ import moorLogo from '@/assets/logo-moor.png';
 import dileiLogo from '@/assets/logo-dilei.png';
 import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
+import rueMadamLogo from '@/assets/logo-ruemadam.png';
 
 // Logos with optical height adjustments for visual balance (~60px base)
 const brandLogos = [
@@ -13,6 +14,7 @@ const brandLogos = [
   { src: dileiLogo, alt: 'DiLei', height: 'h-[50px]' },
   { src: melaLogo, alt: 'Mela', height: 'h-[62px]' },
   { src: pecattoLogo, alt: 'Pecatto', height: 'h-[58px]' },
+  { src: rueMadamLogo, alt: 'Rue Madam Paris', height: 'h-[50px]' },
   { src: replayLogo, alt: 'Replay', height: 'h-[49px]' },
   { src: dixieLogo, alt: 'Dixie', height: 'h-[42px]' },
 ];
