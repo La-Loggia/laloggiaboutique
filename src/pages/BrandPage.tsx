@@ -14,6 +14,7 @@ import moorLogo from '@/assets/logo-moor.png';
 import dileiLogo from '@/assets/logo-dilei.png';
 import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
+import rueMadamLogo from '@/assets/logo-ruemadam.png';
 
 const brandLogos: Record<Brand, { src: string; height: string }> = {
   'MOOR': { src: moorLogo, height: 'h-[72px]' },
@@ -23,6 +24,7 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'Pecatto': { src: pecattoLogo, height: 'h-[87px]' },
   'Dixie': { src: dixieLogo, height: 'h-[63px]' },
   'Replay': { src: replayLogo, height: 'h-[74px]' },
+  'RueMadam': { src: rueMadamLogo, height: 'h-[75px]' },
 };
 
 const BrandPage = () => {
@@ -37,6 +39,7 @@ const BrandPage = () => {
     'pecatto': 'Pecatto',
     'dixie': 'Dixie',
     'replay': 'Replay',
+    'ruemadam': 'RueMadam',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
