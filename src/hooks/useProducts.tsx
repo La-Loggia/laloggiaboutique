@@ -122,12 +122,17 @@ export const useCreateProduct = () => {
   
   return useMutation({
     mutationFn: async ({ brand, imageUrl, campaignId }: { brand: Brand; imageUrl: string; campaignId?: string }) => {
+      // First, increment display_order of all existing products to make room for the new one at position 0
+      await supabase.rpc('increment_all_product_orders');
+      
+      // Then insert the new product with display_order = 0 (first position)
       const { data, error } = await supabase
         .from('products')
         .insert({
           brand,
           image_url: imageUrl,
           campaign_id: campaignId || null,
+          display_order: 0,
         })
         .select()
         .single();
