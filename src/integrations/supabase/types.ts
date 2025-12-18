@@ -135,6 +135,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_all_product_orders: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin"
