@@ -8,6 +8,7 @@ import logoMela from '@/assets/logo-mela.png';
 import logoPecatto from '@/assets/logo-pecatto.png';
 import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
+import logoRueMadam from '@/assets/logo-ruemadam.png';
 
 // Logos with optical height adjustments for visual balance (~90px base)
 const brandLogos: Record<Brand, { src: string; height: string }> = {
@@ -18,6 +19,7 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   Pecatto: { src: logoPecatto, height: 'h-[87px]' },
   Dixie: { src: logoDixie, height: 'h-[63px]' },
   Replay: { src: logoReplay, height: 'h-[74px]' },
+  RueMadam: { src: logoRueMadam, height: 'h-[75px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
