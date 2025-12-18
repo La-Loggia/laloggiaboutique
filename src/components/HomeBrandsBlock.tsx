@@ -36,7 +36,7 @@ const HomeBrandsBlock = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3 px-4 max-w-md mx-auto">
-        {brands.map((brand) => (
+        {brands.filter((brand) => brand !== 'Replay').map((brand) => (
           <Link
             key={brand}
             to={`/marca/${getBrandSlug(brand)}`}
