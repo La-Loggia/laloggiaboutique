@@ -42,7 +42,7 @@ const HomeBrandsBlock = () => {
           <Link
             key={brand}
             to={`/marca/${getBrandSlug(brand)}`}
-            className="group bg-secondary/30 border-2 border-border/40 py-1 flex items-center justify-center transition-all duration-300 hover:bg-foreground hover:border-foreground active:scale-95"
+            className="group bg-secondary/30 border-2 border-border/40 py-0 flex items-center justify-center transition-all duration-300 hover:bg-foreground hover:border-foreground active:scale-95"
           >
             <img
               src={brandLogos[brand].src}
