@@ -37,7 +37,7 @@ const HomeBrandsBlock = () => {
         <div className="w-12 h-px bg-border mx-auto mt-4" />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 px-4 max-w-md mx-auto">
+      <div className="grid grid-cols-3 gap-3 px-4 max-w-lg mx-auto">
         {brands.filter((brand) => brand !== 'Replay').map((brand) => (
           <Link
             key={brand}
