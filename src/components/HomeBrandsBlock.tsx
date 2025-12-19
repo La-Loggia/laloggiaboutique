@@ -10,16 +10,16 @@ import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
 
-// Logos with optical height adjustments for visual balance (~90px base)
+// Logos maximized to fill button area
 const brandLogos: Record<Brand, { src: string; height: string }> = {
-  MOOR: { src: logoMoor, height: 'h-[90px]' },
-  SaintTropez: { src: logoSaintTropez, height: 'h-[100px]' },
-  DiLei: { src: logoDiLei, height: 'h-[95px]' },
-  Mela: { src: logoMela, height: 'h-[115px]' },
-  Pecatto: { src: logoPecatto, height: 'h-[108px]' },
-  Dixie: { src: logoDixie, height: 'h-[80px]' },
-  Replay: { src: logoReplay, height: 'h-[92px]' },
-  RueMadam: { src: logoRueMadam, height: 'h-[95px]' },
+  MOOR: { src: logoMoor, height: 'h-[120px]' },
+  SaintTropez: { src: logoSaintTropez, height: 'h-[130px]' },
+  DiLei: { src: logoDiLei, height: 'h-[125px]' },
+  Mela: { src: logoMela, height: 'h-[150px]' },
+  Pecatto: { src: logoPecatto, height: 'h-[140px]' },
+  Dixie: { src: logoDixie, height: 'h-[105px]' },
+  Replay: { src: logoReplay, height: 'h-[120px]' },
+  RueMadam: { src: logoRueMadam, height: 'h-[125px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
