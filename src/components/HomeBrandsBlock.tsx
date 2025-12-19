@@ -9,7 +9,6 @@ import logoPecatto from '@/assets/logo-pecatto.png';
 import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
-import logoJott from '@/assets/logo-jott.png';
 
 // Logos maximized to fill button area
 const brandLogos: Record<Brand, { src: string; height: string }> = {
@@ -21,7 +20,6 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   Dixie: { src: logoDixie, height: 'h-[105px]' },
   Replay: { src: logoReplay, height: 'h-[120px]' },
   RueMadam: { src: logoRueMadam, height: 'h-[125px]' },
-  JOTT: { src: logoJott, height: 'h-[100px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
@@ -40,7 +38,7 @@ const HomeBrandsBlock = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-3 px-4 max-w-lg mx-auto">
-        {brands.filter((brand) => brand !== 'Replay' && brand !== 'Dixie').map((brand) => (
+        {brands.filter((brand) => brand !== 'Replay').map((brand) => (
           <Link
             key={brand}
             to={`/marca/${getBrandSlug(brand)}`}
