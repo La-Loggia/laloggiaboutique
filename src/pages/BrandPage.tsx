@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
 import ImageViewer from '@/components/ImageViewer';
+import SEOHead from '@/components/SEOHead';
 import { Brand, brands } from '@/data/products';
 import { useProductsByBrand, Product } from '@/hooks/useProducts';
 
@@ -27,6 +28,18 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'Replay': { src: replayLogo, height: 'h-[74px]' },
   'RueMadam': { src: rueMadamLogo, height: 'h-[75px]' },
   'JOTT': { src: jottLogo, height: 'h-[72px]' },
+};
+
+const brandDescriptions: Record<Brand, string> = {
+  'MOOR': 'Descubre la colección MOOR en La Loggia. Moda italiana de mujer con estilo elegante y sofisticado disponible en Altea, San Juan y Campello.',
+  'SaintTropez': 'Colección SaintTropez en La Loggia. Moda escandinava femenina con diseños actuales en nuestras boutiques de Alicante.',
+  'DiLei': 'Moda DiLei en La Loggia. Prendas italianas exclusivas para mujer en Altea, San Juan y Campello.',
+  'Mela': 'Colección Mela en La Loggia. Estilo italiano contemporáneo para mujer en nuestras tiendas de Alicante.',
+  'Pecatto': 'Descubre Pecatto en La Loggia. Moda femenina con personalidad en Altea, San Juan y Campello.',
+  'Dixie': 'Colección Dixie en La Loggia. Moda italiana urbana para mujer en nuestras boutiques de Alicante.',
+  'Replay': 'Moda Replay en La Loggia. Denim y casual wear de calidad en Altea, San Juan y Campello.',
+  'RueMadam': 'Colección RueMadam en La Loggia. Elegancia parisina para mujer en nuestras tiendas de Alicante.',
+  'JOTT': 'JOTT en La Loggia. Plumas y chaquetas ligeras de alta calidad en Altea, San Juan y Campello.',
 };
 
 const BrandPage = () => {
@@ -67,18 +80,25 @@ const BrandPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${brand} | Moda Mujer en La Loggia Altea, San Juan y Campello`}
+        description={brandDescriptions[brand]}
+        canonicalPath={`/marca/${brandSlug?.toLowerCase()}`}
+      />
+      
       <Header />
       <BrandNav activeBrand={brand} />
 
       <main className="py-6">
-        {/* Brand logo instead of text */}
-        <div className="flex justify-center mb-6">
+        {/* Brand logo with H1 for SEO */}
+        <header className="flex flex-col items-center mb-6">
+          <h1 className="sr-only">{brand} - Moda mujer en La Loggia</h1>
           <img 
             src={brandLogo.src} 
-            alt={brand} 
+            alt={`Logo ${brand} - Moda italiana mujer en La Loggia Alicante`} 
             className={`${brandLogo.height} w-auto object-contain grayscale opacity-80`}
           />
-        </div>
+        </header>
 
         {isLoading ? (
           <p className="text-center text-muted-foreground py-8">Cargando...</p>

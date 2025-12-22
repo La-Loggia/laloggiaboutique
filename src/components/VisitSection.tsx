@@ -6,31 +6,49 @@ const VisitSection = () => {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una consulta.')}`;
 
   return (
-    <section className="py-12 px-4 bg-secondary/50">
-      <h2 className="section-title text-center mb-8">Ven a Visitarnos</h2>
+    <section className="py-12 px-4 bg-secondary/50" aria-label="Ubicaciones de La Loggia">
+      <h2 className="section-title text-center mb-4">Ven a Visitarnos</h2>
+      <p className="font-sans text-sm text-muted-foreground text-center mb-8 max-w-lg mx-auto">
+        La Loggia cuenta con tiendas en Altea, San Juan y Campello, ofreciendo moda italiana de mujer en la provincia de Alicante.
+      </p>
       
-      <div className="space-y-8 max-w-md mx-auto">
+      <div className="space-y-8 max-w-md mx-auto" itemScope itemType="https://schema.org/Organization">
+        <meta itemProp="name" content="La Loggia" />
+        <meta itemProp="telephone" content="+34647763304" />
+        
         {stores.map((store) => (
-          <div key={store.name} className="text-center">
-            <h3 className="font-serif text-base font-medium text-foreground">
-              {store.name}
+          <article 
+            key={store.name} 
+            className="text-center"
+            itemScope 
+            itemType="https://schema.org/LocalBusiness"
+            itemProp="department"
+          >
+            <h3 
+              className="font-serif text-base font-medium text-foreground"
+              itemProp="name"
+            >
+              La Loggia {store.name}
             </h3>
-            <p className="font-sans text-sm text-muted-foreground mt-1">
-              {store.address}
-            </p>
-            <p className="font-sans text-xs text-muted-foreground/70 mb-3">
-              {store.city}
-            </p>
+            <address className="not-italic" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+              <p className="font-sans text-sm text-muted-foreground mt-1" itemProp="streetAddress">
+                {store.address}
+              </p>
+              <p className="font-sans text-xs text-muted-foreground/70 mb-3">
+                <span itemProp="addressLocality">{store.city}</span>, <span itemProp="addressRegion">Alicante</span>
+              </p>
+            </address>
             <a
               href={store.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-background font-sans text-[10px] tracking-[0.15em] uppercase transition-all duration-300 hover:bg-foreground/80 active:scale-95"
+              aria-label={`Cómo llegar a La Loggia ${store.name}`}
             >
-              <MapPin className="w-3 h-3" />
+              <MapPin className="w-3 h-3" aria-hidden="true" />
               Cómo Llegar
             </a>
-          </div>
+          </article>
         ))}
       </div>
 
