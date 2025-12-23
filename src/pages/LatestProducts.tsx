@@ -46,15 +46,6 @@ const LatestProducts = () => {
           </p>
           <div className="w-12 h-px bg-border mx-auto mt-3" />
           
-          {/* Hidden SEO content */}
-          <div className="sr-only">
-            <p>
-              Descubre las últimas novedades en moda femenina italiana y europea en La Loggia. 
-              Nuevas colecciones de MOOR Milano, Saint Tropez Copenhagen, DiLei, Mela London, 
-              Pecatto, Dixie, Replay, Rue Madam y JOTT. Moda de mujer exclusiva disponible 
-              en nuestras boutiques de Altea, San Juan de Alicante y El Campello.
-            </p>
-          </div>
         </header>
 
         {isLoading ? (

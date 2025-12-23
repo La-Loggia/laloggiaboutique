@@ -51,8 +51,8 @@ const SEOHead = ({
     if (twitterDescription) twitterDescription.setAttribute('content', description);
     if (twitterUrl && canonicalPath) twitterUrl.setAttribute('content', `https://laloggia.shop${canonicalPath}`);
 
-    // Handle breadcrumb structured data
-    if (breadcrumbs && breadcrumbs.length > 0) {
+    // Handle breadcrumb structured data - only add when there's real hierarchy (more than just home)
+    if (breadcrumbs && breadcrumbs.length > 1) {
       // Remove existing breadcrumb script if any
       const existingBreadcrumb = document.getElementById('breadcrumb-schema');
       if (existingBreadcrumb) {
@@ -76,6 +76,12 @@ const SEOHead = ({
       script.type = 'application/ld+json';
       script.textContent = JSON.stringify(breadcrumbSchema);
       document.head.appendChild(script);
+    } else {
+      // Remove breadcrumb schema if no real hierarchy
+      const existingBreadcrumb = document.getElementById('breadcrumb-schema');
+      if (existingBreadcrumb) {
+        existingBreadcrumb.remove();
+      }
     }
 
     // Cleanup breadcrumb schema on unmount
