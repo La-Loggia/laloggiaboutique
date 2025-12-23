@@ -26,7 +26,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="La Loggia · Boutique de moda mujer en Altea, San Juan y Campello"
-        description="La Loggia es una boutique de moda femenina con tiendas en Altea, San Juan y Campello. Descubre las últimas novedades de marcas italianas exclusivas."
+        description="La Loggia es una boutique de moda femenina con tiendas en Altea, San Juan y Campello. Marcas italianas exclusivas como MOOR, Saint Tropez y DiLei."
         canonicalPath="/"
       />
       

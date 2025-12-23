@@ -168,16 +168,8 @@ const BrandPage = () => {
             className={`${brandLogo.height} w-auto object-contain grayscale opacity-80`}
           />
           
-          {/* Hidden SEO content about the brand */}
-          <div className="sr-only">
-            <p>Origen: {seo.origin}</p>
-            <p>{seo.style}</p>
-            <p>
-              Descubre la colección {brand} en las boutiques La Loggia de Altea, 
-              San Juan de Alicante y El Campello. Moda femenina italiana y europea 
-              de calidad en la Costa Blanca.
-            </p>
-          </div>
+          {/* Brief hidden SEO content */}
+          <p className="sr-only">{seo.style}</p>
         </header>
 
         {isLoading ? (
