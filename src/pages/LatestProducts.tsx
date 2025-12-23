@@ -20,25 +20,42 @@ const LatestProducts = () => {
     document.body.style.overflow = '';
   };
 
+  // Breadcrumbs for structured navigation
+  const breadcrumbs = [
+    { name: 'Inicio', url: '/' },
+    { name: 'Novedades', url: '/novedades' }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Últimas Novedades en Moda Mujer | La Loggia Altea, San Juan y Campello"
-        description="Descubre las últimas novedades en moda femenina de La Loggia. Nuevas colecciones de MOOR, SaintTropez, DiLei y más marcas italianas en nuestras tiendas de Alicante."
+        title="Novedades Moda Mujer | La Loggia Altea, San Juan, Campello"
+        description="Últimas novedades en moda femenina italiana de La Loggia. Nuevas colecciones MOOR, Saint Tropez, DiLei, Dixie y más marcas europeas. Boutiques en Altea, San Juan y Campello."
         canonicalPath="/novedades"
+        breadcrumbs={breadcrumbs}
       />
       
       <Header />
       <BrandNav />
 
       <main className="py-6">
-        <div className="text-center mb-6">
+        <header className="text-center mb-6">
           <h1 className="section-title">Últimas Novedades</h1>
           <p className="font-sans text-xs text-muted-foreground mt-2">
             Nuevas llegadas a La Loggia
           </p>
           <div className="w-12 h-px bg-border mx-auto mt-3" />
-        </div>
+          
+          {/* Hidden SEO content */}
+          <div className="sr-only">
+            <p>
+              Descubre las últimas novedades en moda femenina italiana y europea en La Loggia. 
+              Nuevas colecciones de MOOR Milano, Saint Tropez Copenhagen, DiLei, Mela London, 
+              Pecatto, Dixie, Replay, Rue Madam y JOTT. Moda de mujer exclusiva disponible 
+              en nuestras boutiques de Altea, San Juan de Alicante y El Campello.
+            </p>
+          </div>
+        </header>
 
         {isLoading ? (
           <p className="text-center text-muted-foreground py-8">Cargando...</p>

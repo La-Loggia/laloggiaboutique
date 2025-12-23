@@ -29,54 +29,81 @@
     <meta name="twitter:title" content="La Loggia · Boutique de moda mujer en Altea, San Juan y Campello" />
     <meta name="twitter:description" content="Boutique de moda femenina con tiendas en Altea, San Juan y Campello. Marcas italianas exclusivas." />
 
-    <!-- Structured Data: Organization + LocalBusiness -->
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Structured Data: Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://laloggia.shop/#organization",
       "name": "La Loggia",
+      "alternateName": ["La Loggia Boutique", "La Loggia Moda"],
       "url": "https://laloggia.shop",
-      "description": "Boutique de moda femenina con tiendas en Altea, San Juan y Campello, Alicante. Marcas italianas exclusivas.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://laloggia.shop/og-image.jpg",
+        "width": 1200,
+        "height": 630
+      },
+      "description": "Boutique multimarca de moda femenina italiana y europea con tiendas en Altea, San Juan y Campello, provincia de Alicante. Marcas exclusivas como MOOR, Saint Tropez, DiLei, Mela, Pecatto, Dixie, Replay, Rue Madam y JOTT.",
       "telephone": "+34647763304",
+      "email": "info@laloggia.shop",
+      "foundingDate": "2010",
+      "numberOfEmployees": {
+        "@type": "QuantitativeValue",
+        "minValue": 5,
+        "maxValue": 15
+      },
+      "areaServed": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": 38.45,
+          "longitude": -0.25
+        },
+        "geoRadius": "50000"
+      },
+      "brand": [
+        {"@type": "Brand", "name": "MOOR"},
+        {"@type": "Brand", "name": "Saint Tropez"},
+        {"@type": "Brand", "name": "DiLei"},
+        {"@type": "Brand", "name": "Mela"},
+        {"@type": "Brand", "name": "Pecatto"},
+        {"@type": "Brand", "name": "Dixie"},
+        {"@type": "Brand", "name": "Replay"},
+        {"@type": "Brand", "name": "Rue Madam"},
+        {"@type": "Brand", "name": "JOTT"}
+      ],
       "sameAs": [],
-      "address": [
-        {
-          "@type": "PostalAddress",
-          "streetAddress": "Av. Historiador Vicente Ramos, Planta 0, Centro Comercial Torregolf",
-          "addressLocality": "San Juan de Alicante",
-          "addressRegion": "Alicante",
-          "postalCode": "03550",
-          "addressCountry": "ES"
-        },
-        {
-          "@type": "PostalAddress",
-          "streetAddress": "C. Sant Bartomeu, 41",
-          "addressLocality": "El Campello",
-          "addressRegion": "Alicante",
-          "postalCode": "03560",
-          "addressCountry": "ES"
-        },
-        {
-          "@type": "PostalAddress",
-          "streetAddress": "C. Comte d'Altea, 58",
-          "addressLocality": "Altea",
-          "addressRegion": "Alicante",
-          "postalCode": "03590",
-          "addressCountry": "ES"
-        }
-      ]
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+34647763304",
+        "contactType": "customer service",
+        "availableLanguage": ["Spanish", "English"]
+      }
     }
     </script>
 
+    <!-- Structured Data: ClothingStore San Juan -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "ClothingStore",
+      "@id": "https://laloggia.shop/#store-sanjuan",
       "name": "La Loggia San Juan",
+      "alternateName": "La Loggia San Juan de Alicante",
+      "description": "Boutique de moda femenina italiana en San Juan de Alicante. Marcas exclusivas MOOR, Saint Tropez, DiLei y más.",
       "image": "https://laloggia.shop/og-image.jpg",
       "url": "https://laloggia.shop",
       "telephone": "+34647763304",
-      "priceRange": "€€",
+      "priceRange": "€€-€€€",
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Cash, Credit Card, Debit Card",
+      "isAccessibleForFree": true,
+      "parentOrganization": {"@id": "https://laloggia.shop/#organization"},
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Av. Historiador Vicente Ramos, Planta 0, Centro Comercial Torregolf",
@@ -90,6 +117,7 @@
         "latitude": 38.4015,
         "longitude": -0.4365
       },
+      "hasMap": "https://maps.google.com/?q=38.4015,-0.4365",
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
@@ -110,19 +138,34 @@
           "closes": "14:00"
         }
       ],
-      "sameAs": "https://laloggia.shop"
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Moda femenina italiana",
+          "category": "Ropa de mujer"
+        }
+      }
     }
     </script>
 
+    <!-- Structured Data: ClothingStore Campello -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "ClothingStore",
+      "@id": "https://laloggia.shop/#store-campello",
       "name": "La Loggia Campello",
+      "alternateName": "La Loggia El Campello",
+      "description": "Boutique de moda femenina italiana en El Campello, Alicante. Colecciones exclusivas de marcas europeas.",
       "image": "https://laloggia.shop/og-image.jpg",
       "url": "https://laloggia.shop",
       "telephone": "+34647763304",
-      "priceRange": "€€",
+      "priceRange": "€€-€€€",
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Cash, Credit Card, Debit Card",
+      "isAccessibleForFree": true,
+      "parentOrganization": {"@id": "https://laloggia.shop/#organization"},
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "C. Sant Bartomeu, 41",
@@ -136,6 +179,7 @@
         "latitude": 38.4283,
         "longitude": -0.3975
       },
+      "hasMap": "https://maps.google.com/?q=38.4283,-0.3975",
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
@@ -156,19 +200,34 @@
           "closes": "14:00"
         }
       ],
-      "sameAs": "https://laloggia.shop"
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Moda femenina italiana",
+          "category": "Ropa de mujer"
+        }
+      }
     }
     </script>
 
+    <!-- Structured Data: ClothingStore Altea -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "ClothingStore",
+      "@id": "https://laloggia.shop/#store-altea",
       "name": "La Loggia Altea",
+      "alternateName": "La Loggia Altea la Vella",
+      "description": "Boutique de moda femenina italiana en Altea, Alicante. Marcas exclusivas y estilo mediterráneo.",
       "image": "https://laloggia.shop/og-image.jpg",
       "url": "https://laloggia.shop",
       "telephone": "+34647763304",
-      "priceRange": "€€",
+      "priceRange": "€€-€€€",
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Cash, Credit Card, Debit Card",
+      "isAccessibleForFree": true,
+      "parentOrganization": {"@id": "https://laloggia.shop/#organization"},
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "C. Comte d'Altea, 58",
@@ -182,6 +241,7 @@
         "latitude": 38.5989,
         "longitude": -0.0513
       },
+      "hasMap": "https://maps.google.com/?q=38.5989,-0.0513",
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
@@ -202,22 +262,58 @@
           "closes": "14:00"
         }
       ],
-      "sameAs": "https://laloggia.shop"
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Moda femenina italiana",
+          "category": "Ropa de mujer"
+        }
+      }
     }
     </script>
 
-    <!-- Website Schema -->
+    <!-- Website Schema with SearchAction -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://laloggia.shop/#website",
       "name": "La Loggia",
+      "alternateName": "La Loggia Boutique",
       "url": "https://laloggia.shop",
+      "publisher": {"@id": "https://laloggia.shop/#organization"},
+      "inLanguage": "es-ES",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://laloggia.shop/novedades?q={search_term_string}",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://laloggia.shop/novedades?q={search_term_string}"
+        },
         "query-input": "required name=search_term_string"
       }
+    }
+    </script>
+
+    <!-- ItemList Schema for Brands -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Marcas de moda en La Loggia",
+      "description": "Colección de marcas de moda italiana y europea disponibles en La Loggia",
+      "numberOfItems": 9,
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "item": {"@type": "Brand", "name": "MOOR", "url": "https://laloggia.shop/marca/moor"}},
+        {"@type": "ListItem", "position": 2, "item": {"@type": "Brand", "name": "Saint Tropez", "url": "https://laloggia.shop/marca/sainttropez"}},
+        {"@type": "ListItem", "position": 3, "item": {"@type": "Brand", "name": "DiLei", "url": "https://laloggia.shop/marca/dilei"}},
+        {"@type": "ListItem", "position": 4, "item": {"@type": "Brand", "name": "Mela", "url": "https://laloggia.shop/marca/mela"}},
+        {"@type": "ListItem", "position": 5, "item": {"@type": "Brand", "name": "Pecatto", "url": "https://laloggia.shop/marca/pecatto"}},
+        {"@type": "ListItem", "position": 6, "item": {"@type": "Brand", "name": "Dixie", "url": "https://laloggia.shop/marca/dixie"}},
+        {"@type": "ListItem", "position": 7, "item": {"@type": "Brand", "name": "Replay", "url": "https://laloggia.shop/marca/replay"}},
+        {"@type": "ListItem", "position": 8, "item": {"@type": "Brand", "name": "Rue Madam", "url": "https://laloggia.shop/marca/ruemadam"}},
+        {"@type": "ListItem", "position": 9, "item": {"@type": "Brand", "name": "JOTT", "url": "https://laloggia.shop/marca/jott"}}
+      ]
     }
     </script>
   </head>

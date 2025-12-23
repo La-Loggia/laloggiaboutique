@@ -30,16 +30,77 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'JOTT': { src: jottLogo, height: 'h-[72px]' },
 };
 
-const brandDescriptions: Record<Brand, string> = {
-  'MOOR': 'Descubre la colección MOOR en La Loggia. Moda italiana de mujer con estilo elegante y sofisticado disponible en Altea, San Juan y Campello.',
-  'SaintTropez': 'Colección SaintTropez en La Loggia. Moda escandinava femenina con diseños actuales en nuestras boutiques de Alicante.',
-  'DiLei': 'Moda DiLei en La Loggia. Prendas italianas exclusivas para mujer en Altea, San Juan y Campello.',
-  'Mela': 'Colección Mela en La Loggia. Estilo italiano contemporáneo para mujer en nuestras tiendas de Alicante.',
-  'Pecatto': 'Descubre Pecatto en La Loggia. Moda femenina con personalidad en Altea, San Juan y Campello.',
-  'Dixie': 'Colección Dixie en La Loggia. Moda italiana urbana para mujer en nuestras boutiques de Alicante.',
-  'Replay': 'Moda Replay en La Loggia. Denim y casual wear de calidad en Altea, San Juan y Campello.',
-  'RueMadam': 'Colección RueMadam en La Loggia. Elegancia parisina para mujer en nuestras tiendas de Alicante.',
-  'JOTT': 'JOTT en La Loggia. Plumas y chaquetas ligeras de alta calidad en Altea, San Juan y Campello.',
+// SEO-optimized brand metadata
+const brandSEO: Record<Brand, { 
+  title: string; 
+  description: string; 
+  h1: string;
+  origin: string;
+  style: string;
+}> = {
+  'MOOR': {
+    title: 'MOOR Milano | Moda Italiana Mujer en La Loggia Alicante',
+    description: 'Colección MOOR Milano en La Loggia. Moda italiana femenina elegante y sofisticada. Vestidos, blusas y prendas exclusivas en Altea, San Juan y Campello.',
+    h1: 'MOOR Milano – Moda italiana femenina en La Loggia',
+    origin: 'Milán, Italia',
+    style: 'Elegancia sofisticada con líneas puras y tejidos de alta calidad. Prendas atemporales para la mujer moderna.'
+  },
+  'SaintTropez': {
+    title: 'Saint Tropez Copenhagen | Moda Escandinava en La Loggia',
+    description: 'Saint Tropez Copenhagen en La Loggia. Diseños escandinavos frescos y actuales para mujer. Colecciones exclusivas en nuestras boutiques de Alicante.',
+    h1: 'Saint Tropez Copenhagen – Estilo escandinavo en La Loggia',
+    origin: 'Copenhague, Dinamarca',
+    style: 'Diseño escandinavo minimalista con toques bohemios. Prendas versátiles y femeninas para el día a día.'
+  },
+  'DiLei': {
+    title: 'DiLei | Moda Italiana Exclusiva en La Loggia Alicante',
+    description: 'DiLei en La Loggia. Prendas italianas exclusivas con estilo mediterráneo. Moda femenina de calidad en Altea, San Juan y Campello.',
+    h1: 'DiLei – Prendas italianas exclusivas en La Loggia',
+    origin: 'Italia',
+    style: 'Estilo italiano auténtico con tejidos premium. Colecciones que combinan tradición artesanal y tendencias actuales.'
+  },
+  'Mela': {
+    title: 'Mela London | Moda Contemporánea Mujer en La Loggia',
+    description: 'Mela London en La Loggia. Estilo contemporáneo británico para mujer. Vestidos y prendas con personalidad en nuestras tiendas de Alicante.',
+    h1: 'Mela London – Estilo británico contemporáneo en La Loggia',
+    origin: 'Londres, Reino Unido',
+    style: 'Moda británica con estampados vibrantes y siluetas favorecedoras. Prendas con carácter para ocasiones especiales.'
+  },
+  'Pecatto': {
+    title: 'Pecatto | Moda Femenina con Personalidad en La Loggia',
+    description: 'Pecatto en La Loggia. Moda femenina con carácter y estilo propio. Colecciones exclusivas en Altea, San Juan y Campello, Alicante.',
+    h1: 'Pecatto – Moda con personalidad en La Loggia',
+    origin: 'Europa',
+    style: 'Prendas con personalidad que destacan. Diseños atrevidos para mujeres que quieren expresar su estilo único.'
+  },
+  'Dixie': {
+    title: 'Dixie | Moda Urbana Italiana Mujer en La Loggia Alicante',
+    description: 'Dixie en La Loggia. Moda urbana italiana para mujer. Estilo casual-chic en nuestras boutiques de Altea, San Juan y Campello.',
+    h1: 'Dixie – Moda urbana italiana en La Loggia',
+    origin: 'Italia',
+    style: 'Estilo urbano italiano con influencias contemporáneas. Prendas cómodas y elegantes para el día a día.'
+  },
+  'Replay': {
+    title: 'Replay | Denim y Casual Wear Premium en La Loggia',
+    description: 'Replay en La Loggia. Denim italiano de calidad premium y casual wear. Jeans y prendas icónicas en Altea, San Juan y Campello.',
+    h1: 'Replay – Denim premium italiano en La Loggia',
+    origin: 'Italia',
+    style: 'Denim de alta calidad con lavados exclusivos. La referencia italiana en jeans y moda casual premium.'
+  },
+  'RueMadam': {
+    title: 'Rue Madam | Elegancia Parisina en La Loggia Alicante',
+    description: 'Rue Madam en La Loggia. Elegancia francesa para mujer. Estilo parisino sofisticado en nuestras tiendas de Altea, San Juan y Campello.',
+    h1: 'Rue Madam – Elegancia parisina en La Loggia',
+    origin: 'París, Francia',
+    style: 'Sofisticación francesa con toques románticos. Prendas elegantes que capturan la esencia del estilo parisino.'
+  },
+  'JOTT': {
+    title: 'JOTT | Plumas y Chaquetas Técnicas en La Loggia Alicante',
+    description: 'JOTT (Just Over The Top) en La Loggia. Plumas ultraligeras y chaquetas técnicas de alta calidad. Disponible en Altea, San Juan y Campello.',
+    h1: 'JOTT – Plumas ultraligeras de alta gama en La Loggia',
+    origin: 'Francia',
+    style: 'Plumas ultraligeras con tecnología premium. Chaquetas técnicas que combinan funcionalidad y estilo.'
+  },
 };
 
 const BrandPage = () => {
@@ -77,27 +138,46 @@ const BrandPage = () => {
   };
 
   const brandLogo = brandLogos[brand];
+  const seo = brandSEO[brand];
+
+  // Breadcrumbs for structured navigation
+  const breadcrumbs = [
+    { name: 'Inicio', url: '/' },
+    { name: brand, url: `/marca/${brandSlug?.toLowerCase()}` }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title={`${brand} | Moda Mujer en La Loggia Altea, San Juan y Campello`}
-        description={brandDescriptions[brand]}
+        title={seo.title}
+        description={seo.description}
         canonicalPath={`/marca/${brandSlug?.toLowerCase()}`}
+        breadcrumbs={breadcrumbs}
       />
       
       <Header />
       <BrandNav activeBrand={brand} />
 
       <main className="py-6">
-        {/* Brand logo with H1 for SEO */}
+        {/* Brand header with semantic SEO content */}
         <header className="flex flex-col items-center mb-6">
-          <h1 className="sr-only">{brand} - Moda mujer en La Loggia</h1>
+          <h1 className="sr-only">{seo.h1}</h1>
           <img 
             src={brandLogo.src} 
             alt={`Logo ${brand} - Moda italiana mujer en La Loggia Alicante`} 
             className={`${brandLogo.height} w-auto object-contain grayscale opacity-80`}
           />
+          
+          {/* Hidden SEO content about the brand */}
+          <div className="sr-only">
+            <p>Origen: {seo.origin}</p>
+            <p>{seo.style}</p>
+            <p>
+              Descubre la colección {brand} en las boutiques La Loggia de Altea, 
+              San Juan de Alicante y El Campello. Moda femenina italiana y europea 
+              de calidad en la Costa Blanca.
+            </p>
+          </div>
         </header>
 
         {isLoading ? (

@@ -6,9 +6,24 @@ interface ProductCardProps {
   index: number;
 }
 
+// Map brand names to descriptive categories for better alt text
+const brandCategories: Record<string, string> = {
+  'MOOR': 'elegante italiano',
+  'SaintTropez': 'escandinavo contemporáneo',
+  'DiLei': 'italiano exclusivo',
+  'Mela': 'británico con estilo',
+  'Pecatto': 'moderno con personalidad',
+  'Dixie': 'urbano italiano',
+  'Replay': 'denim premium',
+  'RueMadam': 'elegancia parisina',
+  'JOTT': 'técnico de alta gama',
+};
+
 const ProductCard = ({ product, onClick, index }: ProductCardProps) => {
-  // Generate SEO-friendly alt text
-  const altText = `Moda ${product.brand} mujer en La Loggia - Boutique Alicante`;
+  const category = brandCategories[product.brand] || 'exclusivo';
+  
+  // Generate descriptive, SEO-friendly alt text
+  const altText = `Prenda ${category} de ${product.brand} para mujer - La Loggia boutique Alicante`;
   
   return (
     <article 
@@ -29,7 +44,9 @@ const ProductCard = ({ product, onClick, index }: ProductCardProps) => {
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
       </div>
       <p className="brand-name text-center" itemProp="brand">{product.brand}</p>
-      <meta itemProp="name" content={`Prenda ${product.brand} en La Loggia`} />
+      <meta itemProp="name" content={`Moda ${product.brand} mujer en La Loggia`} />
+      <meta itemProp="description" content={`${product.brand} - Colección de moda femenina ${category} disponible en La Loggia Altea, San Juan y Campello`} />
+      <link itemProp="url" href={`https://laloggia.shop/marca/${product.brand.toLowerCase()}`} />
     </article>
   );
 };
