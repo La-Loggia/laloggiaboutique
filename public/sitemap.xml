@@ -1,68 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://laloggia.shop/</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/novedades</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+  <!-- Marcas de moda italiana y europea -->
   <url>
     <loc>https://laloggia.shop/marca/moor</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/sainttropez</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/dilei</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/mela</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/pecatto</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/dixie</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/replay</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/ruemadam</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://laloggia.shop/marca/jott</loc>
-    <lastmod>2024-12-22</lastmod>
+    <lastmod>2024-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

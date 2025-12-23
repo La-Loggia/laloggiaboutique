@@ -5,9 +5,16 @@ interface SEOHeadProps {
   description: string;
   canonicalPath?: string;
   type?: 'website' | 'article';
+  breadcrumbs?: Array<{ name: string; url: string }>;
 }
 
-const SEOHead = ({ title, description, canonicalPath = '', type = 'website' }: SEOHeadProps) => {
+const SEOHead = ({ 
+  title, 
+  description, 
+  canonicalPath = '', 
+  type = 'website',
+  breadcrumbs 
+}: SEOHeadProps) => {
   useEffect(() => {
     // Update document title
     document.title = title;
@@ -43,7 +50,42 @@ const SEOHead = ({ title, description, canonicalPath = '', type = 'website' }: S
     if (twitterTitle) twitterTitle.setAttribute('content', title);
     if (twitterDescription) twitterDescription.setAttribute('content', description);
     if (twitterUrl && canonicalPath) twitterUrl.setAttribute('content', `https://laloggia.shop${canonicalPath}`);
-  }, [title, description, canonicalPath, type]);
+
+    // Handle breadcrumb structured data
+    if (breadcrumbs && breadcrumbs.length > 0) {
+      // Remove existing breadcrumb script if any
+      const existingBreadcrumb = document.getElementById('breadcrumb-schema');
+      if (existingBreadcrumb) {
+        existingBreadcrumb.remove();
+      }
+
+      // Create new breadcrumb schema
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": breadcrumbs.map((crumb, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": crumb.name,
+          "item": `https://laloggia.shop${crumb.url}`
+        }))
+      };
+
+      const script = document.createElement('script');
+      script.id = 'breadcrumb-schema';
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(breadcrumbSchema);
+      document.head.appendChild(script);
+    }
+
+    // Cleanup breadcrumb schema on unmount
+    return () => {
+      const breadcrumbScript = document.getElementById('breadcrumb-schema');
+      if (breadcrumbScript) {
+        breadcrumbScript.remove();
+      }
+    };
+  }, [title, description, canonicalPath, type, breadcrumbs]);
 
   return null;
 };
