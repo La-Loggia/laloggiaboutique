@@ -95,11 +95,11 @@ const brandSEO: Record<Brand, {
     style: 'Sofisticación francesa con toques románticos. Prendas elegantes que capturan la esencia del estilo parisino.'
   },
   'JOTT': {
-    title: 'JOTT | Plumas y Chaquetas Técnicas en La Loggia Alicante',
-    description: 'JOTT (Just Over The Top) en La Loggia. Plumas ultraligeras y chaquetas técnicas de alta calidad. Disponible en Altea, San Juan y Campello.',
-    h1: 'JOTT – Plumas ultraligeras de alta gama en La Loggia',
+    title: 'JOTT | Plumíferos y Chaquetas Ligeras para Mujer en La Loggia Alicante',
+    description: 'JOTT en La Loggia. Plumíferos ligeros, chaquetas de plumas y chalecos acolchados para mujer. Moda francesa en Altea, San Juan y Campello.',
+    h1: 'JOTT – Plumíferos y chaquetas ligeras para mujer en La Loggia',
     origin: 'Francia',
-    style: 'Plumas ultraligeras con tecnología premium. Chaquetas técnicas que combinan funcionalidad y estilo.'
+    style: 'JOTT (Just Over The Top) es una marca francesa reconocida internacionalmente por sus plumíferos ligeros, chaquetas de plumas y chalecos acolchados para mujer. Sus prendas destacan por ser ultraligeras, funcionales y fáciles de transportar, convirtiéndose en una referencia dentro de la moda urbana contemporánea. En La Loggia seleccionamos prendas JOTT para mujer como plumíferos, chalecos acolchados y chaquetas ligeras, ideales para el día a día y para climas suaves como el de Alicante. Las colecciones JOTT combinan diseño francés, comodidad y practicidad, ofreciendo prendas versátiles que se adaptan tanto a looks casuales como urbanos. Los abrigos ligeros, chaquetas de plumas y chalecos JOTT destacan por su estilo limpio, su ligereza y su facilidad para plegarse y transportarse, convirtiéndose en una opción perfecta para mujeres que buscan funcionalidad sin renunciar al diseño.'
   },
 };
 
