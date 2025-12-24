@@ -74,11 +74,11 @@ const brandSEO: Record<Brand, {
     style: 'Prendas con personalidad que destacan. Diseños atrevidos para mujeres que quieren expresar su estilo único.'
   },
   'Dixie': {
-    title: 'Dixie | Moda Urbana Italiana Mujer en La Loggia Alicante',
-    description: 'Dixie en La Loggia. Moda urbana italiana para mujer. Estilo casual-chic en nuestras boutiques de Altea, San Juan y Campello.',
-    h1: 'Dixie – Moda urbana italiana en La Loggia',
+    title: 'DIXIE | Moda Femenina Italiana para Mujer en La Loggia Alicante',
+    description: 'Dixie en La Loggia. Moda italiana femenina: vestidos, blazers, pantalones y jeans. Boutique Dixie en Altea, San Juan y Campello, Alicante.',
+    h1: 'DIXIE – Moda femenina italiana para mujer en La Loggia',
     origin: 'Italia',
-    style: 'Estilo urbano italiano con influencias contemporáneas. Prendas cómodas y elegantes para el día a día.'
+    style: 'Dixie es una marca italiana de moda femenina reconocida por su estilo elegante, femenino y con inspiración retro. Originaria de Italia, Dixie destaca por sus colecciones de vestidos, blazers, pantalones, jeans y prendas de punto diseñadas para mujeres que buscan moda con personalidad y carácter. En La Loggia seleccionamos prendas Dixie para mujer que reflejan el espíritu de la marca: diseños cuidados, siluetas femeninas y una estética que combina tradición italiana y tendencias actuales. Las colecciones Dixie incluyen vestidos femeninos, chaquetas y americanas, pantalones, jeans y prendas versátiles pensadas tanto para el día a día como para ocasiones especiales. La moda Dixie se caracteriza por su atención al detalle, la calidad de los tejidos y un estilo atemporal que convierte cada prenda en una pieza clave del armario femenino. En La Loggia apostamos por Dixie como una de nuestras marcas de referencia dentro de la moda italiana para mujer.'
   },
   'Replay': {
     title: 'Replay | Moda Italiana para Mujer en La Loggia Alicante',
