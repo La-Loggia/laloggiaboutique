@@ -81,11 +81,11 @@ const brandSEO: Record<Brand, {
     style: 'Estilo urbano italiano con influencias contemporáneas. Prendas cómodas y elegantes para el día a día.'
   },
   'Replay': {
-    title: 'Replay | Denim y Casual Wear Premium en La Loggia',
-    description: 'Replay en La Loggia. Denim italiano de calidad premium y casual wear. Jeans y prendas icónicas en Altea, San Juan y Campello.',
-    h1: 'Replay – Denim premium italiano en La Loggia',
+    title: 'Replay | Moda Italiana para Mujer en La Loggia Alicante',
+    description: 'Replay en La Loggia. Marca italiana de denim premium y moda casual urbana para mujer. Vaqueros y prendas versátiles en Altea, San Juan y Campello.',
+    h1: 'Replay – Moda italiana para mujer en La Loggia',
     origin: 'Italia',
-    style: 'Denim de alta calidad con lavados exclusivos. La referencia italiana en jeans y moda casual premium.'
+    style: 'Replay es una marca italiana de moda reconocida internacionalmente por su especialización en denim de alta calidad y prendas casual de estilo urbano. Fundada en Italia, Replay destaca por su diseño contemporáneo, la durabilidad de sus tejidos y una estética atemporal que combina innovación y tradición. En La Loggia seleccionamos prendas Replay para mujer que encajan con un estilo de vida moderno, ofreciendo vaqueros, prendas casual y propuestas versátiles pensadas para el día a día. Replay es sinónimo de moda italiana con carácter, calidad y personalidad, ideal para mujeres que buscan prendas duraderas sin renunciar al diseño. Las colecciones Replay disponibles en La Loggia reflejan el equilibrio entre moda urbana y elegancia informal, con especial atención al detalle y a los acabados.'
   },
   'RueMadam': {
     title: 'Rue Madam | Elegancia Parisina en La Loggia Alicante',
