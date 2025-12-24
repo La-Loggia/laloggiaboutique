@@ -88,11 +88,11 @@ const brandSEO: Record<Brand, {
     style: 'Replay es una marca italiana de moda reconocida internacionalmente por su especialización en denim de alta calidad y prendas casual de estilo urbano. Fundada en Italia, Replay destaca por su diseño contemporáneo, la durabilidad de sus tejidos y una estética atemporal que combina innovación y tradición. En La Loggia seleccionamos prendas Replay para mujer que encajan con un estilo de vida moderno, ofreciendo vaqueros, prendas casual y propuestas versátiles pensadas para el día a día. Replay es sinónimo de moda italiana con carácter, calidad y personalidad, ideal para mujeres que buscan prendas duraderas sin renunciar al diseño. Las colecciones Replay disponibles en La Loggia reflejan el equilibrio entre moda urbana y elegancia informal, con especial atención al detalle y a los acabados.'
   },
   'RueMadam': {
-    title: 'Rue Madam | Elegancia Parisina en La Loggia Alicante',
-    description: 'Rue Madam en La Loggia. Elegancia francesa para mujer. Estilo parisino sofisticado en nuestras tiendas de Altea, San Juan y Campello.',
-    h1: 'Rue Madam – Elegancia parisina en La Loggia',
-    origin: 'París, Francia',
-    style: 'Sofisticación francesa con toques románticos. Prendas elegantes que capturan la esencia del estilo parisino.'
+    title: 'Rue Madam | Bolsos para Mujer en La Loggia Alicante',
+    description: 'Bolsos Rue Madam para mujer en La Loggia. Diseños elegantes y funcionales. Bolsos de mano y modelos versátiles en Altea, San Juan y Campello.',
+    h1: 'Rue Madam – Bolsos para mujer en La Loggia',
+    origin: 'Europa',
+    style: 'Rue Madam es una marca reconocida por sus bolsos para mujer con un diseño cuidado y un estilo femenino y elegante. Sus colecciones destacan por la atención al detalle, la funcionalidad y una estética pensada para complementar tanto looks diarios como ocasiones especiales. En La Loggia seleccionamos exclusivamente bolsos Rue Madam para mujer, apostando por modelos versátiles que combinan diseño, calidad y practicidad. Nuestra selección incluye bolsos ideales para el día a día, bolsos de mano y diseños pensados para aportar un toque distintivo a cualquier conjunto. Los bolsos Rue Madam se caracterizan por su estilo atemporal y su facilidad para integrarse en diferentes estilos, convirtiéndose en un complemento esencial para mujeres que buscan elegancia y funcionalidad en un solo accesorio.'
   },
   'JOTT': {
     title: 'JOTT | Plumíferos y Chaquetas Ligeras para Mujer en La Loggia Alicante',
