@@ -1,44 +1,7 @@
-# Robots.txt para laloggia.shop
-# Boutique de moda femenina en Altea, San Juan y Campello
-
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: Pinterest
-Allow: /
-
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
-
-# Sitemap
-Sitemap: https://laloggia.shop/sitemap.xml
-
-# Bloquear rutas de administración y rutas internas
 Disallow: /admin
 Disallow: /admin-login
-Disallow: /api/
-Disallow: /*.json$
-Disallow: /src/
 
-# Permitir archivos de assets para indexación de imágenes
-Allow: /assets/
-Allow: /*.jpg$
-Allow: /*.png$
-Allow: /*.webp$
+Sitemap: https://laloggia.shop/sitemap.xml
