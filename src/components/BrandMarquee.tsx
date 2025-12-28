@@ -7,6 +7,7 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
+import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 
 // Logos with optical height adjustments for visual balance (~60px base)
 const brandLogos = [
@@ -19,6 +20,7 @@ const brandLogos = [
   { src: replayLogo, alt: 'Replay', height: 'h-[49px]' },
   { src: dixieLogo, alt: 'Dixie', height: 'h-[42px]' },
   { src: jottLogo, alt: 'JOTT', height: 'h-[50px]' },
+  { src: lolaCasademuntLogo, alt: 'Lola Casademunt', height: 'h-[50px]' },
 ];
 
 const BrandMarquee = () => {

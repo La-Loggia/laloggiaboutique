@@ -17,6 +17,7 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
+import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 
 const brandLogos: Record<Brand, { src: string; height: string }> = {
   'MOOR': { src: moorLogo, height: 'h-[72px]' },
@@ -28,6 +29,7 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'Replay': { src: replayLogo, height: 'h-[74px]' },
   'RueMadam': { src: rueMadamLogo, height: 'h-[75px]' },
   'JOTT': { src: jottLogo, height: 'h-[72px]' },
+  'LolaCasademunt': { src: lolaCasademuntLogo, height: 'h-[72px]' },
 };
 
 // SEO-optimized brand metadata
@@ -101,6 +103,13 @@ const brandSEO: Record<Brand, {
     origin: 'Francia',
     style: 'JOTT (Just Over The Top) es una marca francesa reconocida internacionalmente por sus plumíferos ligeros, chaquetas de plumas y chalecos acolchados para mujer. Sus prendas destacan por ser ultraligeras, funcionales y fáciles de transportar, convirtiéndose en una referencia dentro de la moda urbana contemporánea. En La Loggia seleccionamos prendas JOTT para mujer como plumíferos, chalecos acolchados y chaquetas ligeras, ideales para el día a día y para climas suaves como el de Alicante. Las colecciones JOTT combinan diseño francés, comodidad y practicidad, ofreciendo prendas versátiles que se adaptan tanto a looks casuales como urbanos. Los abrigos ligeros, chaquetas de plumas y chalecos JOTT destacan por su estilo limpio, su ligereza y su facilidad para plegarse y transportarse, convirtiéndose en una opción perfecta para mujeres que buscan funcionalidad sin renunciar al diseño.'
   },
+  'LolaCasademunt': {
+    title: 'Lola Casademunt | Moda Femenina en La Loggia Alicante',
+    description: 'Lola Casademunt en La Loggia. Moda femenina española con estilo propio. Vestidos, tops y prendas exclusivas en Altea, San Juan y Campello.',
+    h1: 'Lola Casademunt – Moda femenina en La Loggia',
+    origin: 'España',
+    style: 'Lola Casademunt es una marca española de moda femenina reconocida por su estilo alegre, femenino y lleno de personalidad. Sus colecciones destacan por estampados vibrantes, detalles cuidados y diseños pensados para mujeres que buscan prendas con carácter. En La Loggia seleccionamos prendas Lola Casademunt que reflejan el espíritu mediterráneo de la marca, ofreciendo vestidos, tops y complementos versátiles para el día a día y ocasiones especiales.'
+  },
 };
 
 const BrandPage = () => {
@@ -117,6 +126,7 @@ const BrandPage = () => {
     'replay': 'Replay',
     'ruemadam': 'RueMadam',
     'jott': 'JOTT',
+    'lolacasademunt': 'LolaCasademunt',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
