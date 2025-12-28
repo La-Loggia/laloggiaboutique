@@ -10,6 +10,7 @@ import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
 import logoJott from '@/assets/logo-jott.png';
+import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 
 // Logos maximized to fill button area
 const brandLogos: Record<Brand, { src: string; height: string }> = {
@@ -22,6 +23,7 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   Replay: { src: logoReplay, height: 'h-[120px]' },
   RueMadam: { src: logoRueMadam, height: 'h-[125px]' },
   JOTT: { src: logoJott, height: 'h-[120px]' },
+  LolaCasademunt: { src: logoLolaCasademunt, height: 'h-[120px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {

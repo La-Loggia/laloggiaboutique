@@ -18,6 +18,7 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
+import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 
 interface BrandNavProps {
   activeBrand?: Brand | null;
@@ -33,6 +34,7 @@ const brandLogos: Record<Brand, string> = {
   'Replay': replayLogo,
   'RueMadam': rueMadamLogo,
   'JOTT': jottLogo,
+  'LolaCasademunt': lolaCasademuntLogo,
 };
 
 const getBrandSlug = (brand: Brand): string => {
