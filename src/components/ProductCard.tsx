@@ -34,7 +34,7 @@ const ProductCard = ({ product, onClick, index, featured = false }: ProductCardP
       itemScope
       itemType="https://schema.org/Product"
     >
-      <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[4/3]' : ''}`}>
+      <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[9/16]' : ''}`}>
         <img
           src={product.imageUrl}
           alt={altText}
