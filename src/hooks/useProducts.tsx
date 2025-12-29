@@ -124,23 +124,6 @@ export const useAllProducts = () => {
   });
 };
 
-export const useProduct = (productId: string) => {
-  return useQuery({
-    queryKey: ['product', productId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', productId)
-        .single();
-      
-      if (error) throw error;
-      return mapProduct(data as RawProduct);
-    },
-    enabled: !!productId,
-  });
-};
-
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   

@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
+import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
 import { Brand, brands } from '@/data/products';
-import { useProductsByBrand } from '@/hooks/useProducts';
+import { useProductsByBrand, Product } from '@/hooks/useProducts';
 
 import replayLogo from '@/assets/logo-replay.png';
 import dixieLogo from '@/assets/logo-dixie.png';
@@ -112,6 +114,7 @@ const brandSEO: Record<Brand, {
 
 const BrandPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const brandMap: Record<string, Brand> = {
     'moor': 'MOOR',
@@ -133,6 +136,16 @@ const BrandPage = () => {
   }
 
   const { data: products = [], isLoading } = useProductsByBrand(brand);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleCloseViewer = () => {
+    setSelectedProduct(null);
+    document.body.style.overflow = '';
+  };
 
   const brandLogo = brandLogos[brand];
   const seo = brandSEO[brand];
@@ -174,9 +187,13 @@ const BrandPage = () => {
         ) : products.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay prendas de esta marca</p>
         ) : (
-          <ProductGrid products={products} showBadge />
+          <ProductGrid products={products} onProductClick={handleProductClick} />
         )}
       </main>
+
+      {selectedProduct && (
+        <ImageViewer product={selectedProduct} onClose={handleCloseViewer} />
+      )}
     </div>
   );
 };

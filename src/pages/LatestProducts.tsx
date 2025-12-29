@@ -1,11 +1,24 @@
+import { useState } from 'react';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import ProductGrid from '@/components/ProductGrid';
+import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
-import { useLatestProducts } from '@/hooks/useProducts';
+import { useLatestProducts, Product } from '@/hooks/useProducts';
 
 const LatestProducts = () => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { data: allProducts = [], isLoading } = useLatestProducts();
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleCloseViewer = () => {
+    setSelectedProduct(null);
+    document.body.style.overflow = '';
+  };
 
   // Breadcrumbs for structured navigation
   const breadcrumbs = [
@@ -32,6 +45,7 @@ const LatestProducts = () => {
             Nuevas llegadas a La Loggia
           </p>
           <div className="w-12 h-px bg-border mx-auto mt-3" />
+          
         </header>
 
         {isLoading ? (
@@ -39,9 +53,13 @@ const LatestProducts = () => {
         ) : allProducts.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay novedades disponibles</p>
         ) : (
-          <ProductGrid products={allProducts} showBadge />
+          <ProductGrid products={allProducts} onProductClick={handleProductClick} />
         )}
       </main>
+
+      {selectedProduct && (
+        <ImageViewer product={selectedProduct} onClose={handleCloseViewer} />
+      )}
     </div>
   );
 };
