@@ -222,7 +222,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <p className="text-[11px] md:text-xs text-center text-neutral-600 mt-1.5 tracking-wide">
+                  <p className="brand-name text-center">
                     {relatedProduct.brand}
                   </p>
                 </button>
