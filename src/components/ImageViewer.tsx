@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
@@ -12,7 +12,18 @@ interface ImageViewerProps {
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Reset index and trigger transition when product changes
+  useEffect(() => {
+    setCurrentIndex(0);
+    setIsTransitioning(true);
+    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    const timer = setTimeout(() => setIsTransitioning(false), 300);
+    return () => clearTimeout(timer);
+  }, [product.id]);
 
   const { data: additionalImages = [] } = useProductImages(product.id);
   const { data: brandProducts = [] } = useProductsByBrand(product.brand);
@@ -56,8 +67,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   const handleRelatedProductClick = (relatedProduct: Product) => {
     if (onProductClick) {
-      setCurrentIndex(0);
-      onProductClick(relatedProduct);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        onProductClick(relatedProduct);
+      }, 150);
     }
   };
 
@@ -66,7 +79,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
+    <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
       {/* Back button */}
       <button
         onClick={onClose}
@@ -78,7 +91,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
       </button>
 
       {/* Main content */}
-      <div className="pt-16 pb-24">
+      <div className={`pt-16 pb-24 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
         {/* Product images section */}
         <div className="px-4 md:px-8 max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row gap-3 md:gap-4">
