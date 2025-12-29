@@ -58,7 +58,11 @@ const Index = () => {
       </main>
 
       {selectedProduct && (
-        <ImageViewer product={selectedProduct} onClose={handleCloseViewer} />
+        <ImageViewer 
+          product={selectedProduct} 
+          onClose={handleCloseViewer} 
+          onProductClick={handleProductClick}
+        />
       )}
     </div>
   );
