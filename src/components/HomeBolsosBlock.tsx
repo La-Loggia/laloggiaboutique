@@ -41,13 +41,13 @@ const bolsosBrands: BolsosBrandInfo[] = [
 const HomeBolsosBlock = () => {
   return (
     <section className="py-10">
-      <div className="text-center mb-8">
-        <h2 className="section-title">Bolsos</h2>
+      <Link to="/bolsos" className="block text-center mb-8 group">
+        <h2 className="section-title group-hover:text-foreground/80 transition-colors">Bolsos</h2>
         <p className="font-sans text-xs text-muted-foreground mt-2">
           Complementos con estilo propio
         </p>
         <div className="w-12 h-px bg-border mx-auto mt-4" />
-      </div>
+      </Link>
 
       <div className="flex flex-col gap-6 px-4 max-w-lg mx-auto">
         {bolsosBrands.map((item) => (

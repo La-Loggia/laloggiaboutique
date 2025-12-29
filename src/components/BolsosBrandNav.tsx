@@ -47,7 +47,7 @@ const BolsosBrandNav = ({ activeBrand }: BolsosBrandNavProps) => {
       <div className="flex items-center justify-between px-4 py-2.5">
         {/* Back button */}
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/bolsos')}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
