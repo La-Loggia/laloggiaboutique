@@ -139,7 +139,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                 <button
                   key={relatedProduct.id}
                   onClick={() => handleRelatedProductClick(relatedProduct)}
-                  className="aspect-[3/4] overflow-hidden rounded bg-secondary"
+                  className="aspect-[9/16] overflow-hidden rounded bg-secondary"
                 >
                   <img
                     src={relatedProduct.imageUrl}
