@@ -10,6 +10,7 @@ export interface ProductImage {
 }
 
 export type ProductVisibility = 'all' | 'brand_only' | 'latest_only';
+export type ProductCategory = 'ropa' | 'bolsos';
 
 export interface Product {
   id: string;
@@ -20,6 +21,7 @@ export interface Product {
   createdAt: Date;
   displayOrder: number;
   visibility: ProductVisibility;
+  category: ProductCategory;
   additionalImages?: ProductImage[];
 }
 
@@ -32,6 +34,7 @@ interface RawProduct {
   created_at: string;
   display_order: number;
   visibility: ProductVisibility;
+  category: ProductCategory;
 }
 
 const mapProduct = (raw: RawProduct): Product => ({
@@ -43,6 +46,7 @@ const mapProduct = (raw: RawProduct): Product => ({
   createdAt: new Date(raw.created_at),
   displayOrder: raw.display_order,
   visibility: raw.visibility,
+  category: raw.category,
 });
 
 const mapProductImage = (raw: { id: string; product_id: string; image_url: string; display_order: number }): ProductImage => ({
