@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
@@ -12,9 +12,14 @@ interface ImageViewerProps {
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [brandCanScrollLeft, setBrandCanScrollLeft] = useState(false);
+  const [brandCanScrollRight, setBrandCanScrollRight] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const brandScrollRef = useRef<HTMLDivElement>(null);
+  const alsoLikeScrollRef = useRef<HTMLDivElement>(null);
 
   // Reset index when product changes
   useEffect(() => {
@@ -40,6 +45,48 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const alsoLikeProducts = latestProducts
     .filter(p => p.id !== product.id)
     .slice(0, 6);
+
+  // Check scroll availability for brand section
+  const checkBrandScroll = useCallback(() => {
+    if (brandScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = brandScrollRef.current;
+      setBrandCanScrollLeft(scrollLeft > 0);
+      setBrandCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  }, []);
+
+  // Check scroll availability for also like section
+  const checkAlsoLikeScroll = useCallback(() => {
+    if (alsoLikeScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = alsoLikeScrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkBrandScroll();
+    checkAlsoLikeScroll();
+    
+    const brandEl = brandScrollRef.current;
+    const alsoLikeEl = alsoLikeScrollRef.current;
+    
+    if (brandEl) {
+      brandEl.addEventListener('scroll', checkBrandScroll);
+    }
+    if (alsoLikeEl) {
+      alsoLikeEl.addEventListener('scroll', checkAlsoLikeScroll);
+    }
+    
+    return () => {
+      if (brandEl) {
+        brandEl.removeEventListener('scroll', checkBrandScroll);
+      }
+      if (alsoLikeEl) {
+        alsoLikeEl.removeEventListener('scroll', checkAlsoLikeScroll);
+      }
+    };
+  }, [checkBrandScroll, checkAlsoLikeScroll, moreBrandProducts.length, alsoLikeProducts.length]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -70,13 +117,25 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   const scrollBrandLeft = () => {
     if (brandScrollRef.current) {
-      brandScrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+      brandScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
     }
   };
 
   const scrollBrandRight = () => {
     if (brandScrollRef.current) {
-      brandScrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+      brandScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollAlsoLikeLeft = () => {
+    if (alsoLikeScrollRef.current) {
+      alsoLikeScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollAlsoLikeRight = () => {
+    if (alsoLikeScrollRef.current) {
+      alsoLikeScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
     }
   };
 
@@ -111,30 +170,57 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
       <div className="pt-20 md:pt-20 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
-          {/* Main image */}
-          <div 
-            className="w-full"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <img
-              src={allImages[currentIndex]}
-              alt={`Prenda de ${product.brand}`}
-              className="w-full max-w-lg mx-auto object-contain rounded"
-            />
+          {/* Desktop: Thumbnails on left + Main image on right */}
+          <div className="flex gap-3 md:gap-4">
+            {/* Thumbnails column - left side on desktop, hidden on mobile */}
+            {allImages.length > 1 && (
+              <div className="hidden md:flex flex-col gap-2 shrink-0">
+                {allImages.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`relative w-14 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
+                      index === currentIndex 
+                        ? 'opacity-100' 
+                        : 'opacity-50 hover:opacity-80'
+                    }`}
+                    aria-label={`Ver imagen ${index + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`Miniatura ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Main image */}
+            <div 
+              className="w-full flex-1"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <img
+                src={allImages[currentIndex]}
+                alt={`Prenda de ${product.brand}`}
+                className="w-full max-w-lg mx-auto md:mx-0 object-contain rounded"
+              />
+            </div>
           </div>
 
-          {/* Thumbnails below main image */}
+          {/* Mobile thumbnails - below main image */}
           {allImages.length > 1 && (
-            <div className="flex justify-center gap-2 mt-3 md:mt-4 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex md:hidden justify-center gap-2 mt-3 overflow-x-auto pb-2 scrollbar-hide">
               {allImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`relative w-12 md:w-16 aspect-[3/4] overflow-hidden rounded shrink-0 ${
+                  className={`relative w-10 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
                     index === currentIndex 
-                      ? 'ring-2 ring-black ring-offset-1' 
-                      : 'opacity-60 hover:opacity-100'
+                      ? 'opacity-100' 
+                      : 'opacity-50 hover:opacity-80'
                   }`}
                   aria-label={`Ver imagen ${index + 1}`}
                 >
@@ -158,19 +244,21 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
               Más de {product.brand}
             </p>
-            <div className="relative">
-              {/* Left arrow - desktop only */}
-              <button
-                onClick={scrollBrandLeft}
-                className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 items-center justify-center bg-white rounded-full shadow-md hover:bg-neutral-50"
-                aria-label="Anterior"
-              >
-                <ChevronLeft className="w-5 h-5 text-black" />
-              </button>
+            <div className="relative flex items-center">
+              {/* Left arrow - appears when can scroll left */}
+              {brandCanScrollLeft && (
+                <button
+                  onClick={scrollBrandLeft}
+                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-neutral-100 via-neutral-100/90 to-transparent"
+                  aria-label="Anterior"
+                >
+                  <ChevronLeft className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                </button>
+              )}
               
               <div 
                 ref={brandScrollRef}
-                className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide"
+                className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide w-full"
               >
                 {moreBrandProducts.map((relatedProduct) => (
                   <button
@@ -187,14 +275,16 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                 ))}
               </div>
 
-              {/* Right arrow - desktop only */}
-              <button
-                onClick={scrollBrandRight}
-                className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 items-center justify-center bg-white rounded-full shadow-md hover:bg-neutral-50"
-                aria-label="Siguiente"
-              >
-                <ChevronRight className="w-5 h-5 text-black" />
-              </button>
+              {/* Right arrow - appears when can scroll right */}
+              {brandCanScrollRight && (
+                <button
+                  onClick={scrollBrandRight}
+                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-neutral-100 via-neutral-100/90 to-transparent"
+                  aria-label="Siguiente"
+                >
+                  <ChevronRight className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -208,25 +298,52 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-3 md:mb-4">
               También te puede interesar
             </p>
-            <div className="grid grid-cols-2 gap-2 md:gap-3">
-              {alsoLikeProducts.map((relatedProduct) => (
+            <div className="relative flex items-center">
+              {/* Left arrow - appears when can scroll left */}
+              {canScrollLeft && (
                 <button
-                  key={relatedProduct.id}
-                  onClick={() => handleRelatedProductClick(relatedProduct)}
-                  className="text-left"
+                  onClick={scrollAlsoLikeLeft}
+                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-neutral-100 via-neutral-100/90 to-transparent"
+                  aria-label="Anterior"
                 >
-                  <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
-                    <img
-                      src={relatedProduct.imageUrl}
-                      alt={`Prenda de ${relatedProduct.brand}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <p className="brand-name text-center">
-                    {relatedProduct.brand}
-                  </p>
+                  <ChevronLeft className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
                 </button>
-              ))}
+              )}
+
+              <div 
+                ref={alsoLikeScrollRef}
+                className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide w-full"
+              >
+                {alsoLikeProducts.map((relatedProduct) => (
+                  <button
+                    key={relatedProduct.id}
+                    onClick={() => handleRelatedProductClick(relatedProduct)}
+                    className="shrink-0 w-[calc(50%-6px)] md:w-40 text-left"
+                  >
+                    <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
+                      <img
+                        src={relatedProduct.imageUrl}
+                        alt={`Prenda de ${relatedProduct.brand}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="brand-name text-center">
+                      {relatedProduct.brand}
+                    </p>
+                  </button>
+                ))}
+              </div>
+
+              {/* Right arrow - appears when can scroll right */}
+              {canScrollRight && (
+                <button
+                  onClick={scrollAlsoLikeRight}
+                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-neutral-100 via-neutral-100/90 to-transparent"
+                  aria-label="Siguiente"
+                >
+                  <ChevronRight className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                </button>
+              )}
             </div>
           </div>
         )}
