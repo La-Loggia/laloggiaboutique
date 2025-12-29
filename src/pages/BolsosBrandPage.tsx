@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
-import ProductGrid from '@/components/ProductGrid';
+import BolsosProductGrid from '@/components/BolsosProductGrid';
 import BolsosImageViewer from '@/components/BolsosImageViewer';
 import SEOHead from '@/components/SEOHead';
 import { Product } from '@/hooks/useProducts';
@@ -107,7 +107,7 @@ const BolsosBrandPage = () => {
         ) : products.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay bolsos disponibles de esta marca</p>
         ) : (
-          <ProductGrid products={products} onProductClick={handleProductClick} />
+          <BolsosProductGrid products={products} onProductClick={handleProductClick} />
         )}
       </main>
 
