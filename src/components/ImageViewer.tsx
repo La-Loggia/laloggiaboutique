@@ -135,6 +135,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   };
 
   const handleImageTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
     if (e.touches.length === 2) {
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
@@ -151,6 +152,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   };
 
   const handleImageTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
     if (e.touches.length === 2 && lastTouchDistance.current) {
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
@@ -170,7 +172,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     }
   };
 
-  const handleImageTouchEnd = () => {
+  const handleImageTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
     lastTouchDistance.current = null;
     setIsDragging(false);
   };
@@ -365,6 +368,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
           {/* Zoomable fullscreen image */}
           <div 
             className="overflow-hidden flex items-center justify-center w-full h-full"
+            style={{ touchAction: 'none' }}
             onWheel={handleImageWheel}
             onTouchStart={handleImageTouchStart}
             onTouchMove={handleImageTouchMove}
@@ -377,7 +381,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               className="max-w-[95vw] max-h-[80vh] object-contain transition-transform duration-150 select-none"
               style={{
                 transform: `scale(${zoomScale}) translate(${zoomPosition.x / zoomScale}px, ${zoomPosition.y / zoomScale}px)`,
-                cursor: zoomScale > 1 ? 'grab' : 'zoom-in'
+                cursor: zoomScale > 1 ? 'grab' : 'zoom-in',
+                touchAction: 'none'
               }}
               onClick={(e) => e.stopPropagation()}
               draggable={false}
