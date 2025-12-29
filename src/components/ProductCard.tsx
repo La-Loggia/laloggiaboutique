@@ -4,6 +4,7 @@ interface ProductCardProps {
   product: Product;
   onClick: () => void;
   index: number;
+  featured?: boolean;
 }
 
 // Map brand names to descriptive categories for better alt text
@@ -19,7 +20,7 @@ const brandCategories: Record<string, string> = {
   'JOTT': 'técnico de alta gama',
 };
 
-const ProductCard = ({ product, onClick, index }: ProductCardProps) => {
+const ProductCard = ({ product, onClick, index, featured = false }: ProductCardProps) => {
   const category = brandCategories[product.brand] || 'exclusivo';
   
   // Generate descriptive, SEO-friendly alt text
@@ -33,17 +34,17 @@ const ProductCard = ({ product, onClick, index }: ProductCardProps) => {
       itemScope
       itemType="https://schema.org/Product"
     >
-      <div className="relative overflow-hidden bg-secondary">
+      <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[4/3]' : ''}`}>
         <img
           src={product.imageUrl}
           alt={altText}
-          className="product-image transition-transform duration-500 group-hover:scale-105"
+          className={`product-image transition-transform duration-500 group-hover:scale-105 ${featured ? 'object-cover w-full h-full' : ''}`}
           loading="lazy"
           itemProp="image"
         />
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
       </div>
-      <p className="brand-name text-center" itemProp="brand">{product.brand}</p>
+      <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`} itemProp="brand">{product.brand}</p>
       <meta itemProp="name" content={`Moda ${product.brand} mujer en La Loggia`} />
       <meta itemProp="description" content={`${product.brand} - Colección de moda femenina ${category} disponible en La Loggia Altea, San Juan y Campello`} />
       <link itemProp="url" href={`https://laloggia.shop/marca/${product.brand.toLowerCase()}`} />
