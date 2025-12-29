@@ -34,9 +34,9 @@ const HomeBrandsBlock = () => {
   return (
     <section className="py-10">
       <div className="text-center mb-8">
-        <h2 className="section-title">Ver Novedades por Marca</h2>
-        <p className="font-sans text-xs text-muted-foreground mt-2">
-          Toca una marca para ver sus últimas novedades
+        <h2 className="section-title">Descubre las novedades de cada marca</h2>
+        <p className="font-sans text-xs text-muted-foreground mt-2 max-w-sm mx-auto">
+          Explora las últimas novedades de cada firma y encuentra el estilo que mejor encaja contigo
         </p>
         <div className="w-12 h-px bg-border mx-auto mt-4" />
       </div>

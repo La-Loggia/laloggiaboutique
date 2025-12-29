@@ -37,10 +37,10 @@ const Index = () => {
         {/* H1 único para SEO - visualmente integrado */}
         <header className="text-center py-8 px-4">
           <h1 className="font-serif text-xl md:text-2xl font-light text-foreground tracking-wide">
-            Boutique de moda femenina en Alicante
+            Moda italiana para mujer
           </h1>
           <p className="font-sans text-xs text-muted-foreground mt-2 max-w-md mx-auto">
-            Moda italiana exclusiva en Altea, San Juan y Campello
+            Selección de marcas italianas con estilo y personalidad
           </p>
         </header>
 

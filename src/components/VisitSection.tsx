@@ -9,7 +9,7 @@ const VisitSection = () => {
     <section className="py-12 px-4 bg-secondary/50" aria-label="Ubicaciones de La Loggia">
       <h2 className="section-title text-center mb-4">Ven a Visitarnos</h2>
       <p className="font-sans text-sm text-muted-foreground text-center mb-8 max-w-lg mx-auto">
-        La Loggia cuenta con tiendas en Altea, San Juan y Campello, ofreciendo moda italiana de mujer en la provincia de Alicante.
+        La Loggia cuenta con tiendas físicas en Altea, San Juan y Campello, donde podrás descubrir nuestras colecciones de moda italiana y recibir un trato cercano y personalizado.
       </p>
       
       <div className="space-y-8 max-w-md mx-auto" itemScope itemType="https://schema.org/Organization">
