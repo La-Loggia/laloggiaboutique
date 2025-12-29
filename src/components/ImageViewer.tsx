@@ -13,18 +13,33 @@ interface ImageViewerProps {
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [brandCanScrollLeft, setBrandCanScrollLeft] = useState(false);
   const [brandCanScrollRight, setBrandCanScrollRight] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  const lastTouchDistance = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const brandScrollRef = useRef<HTMLDivElement>(null);
 
-  // Reset index when product changes
+  // Reset index and zoom when product changes
   useEffect(() => {
     setCurrentIndex(0);
     setIsFullscreen(false);
+    setZoomScale(1);
+    setZoomPosition({ x: 0, y: 0 });
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product.id]);
+
+  // Reset zoom when closing fullscreen
+  useEffect(() => {
+    if (!isFullscreen) {
+      setZoomScale(1);
+      setZoomPosition({ x: 0, y: 0 });
+    }
+  }, [isFullscreen]);
 
   const { data: additionalImages = [] } = useProductImages(product.id);
   const { data: brandProducts = [] } = useProductsByBrand(product.brand);
@@ -106,6 +121,66 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const scrollBrandRight = () => {
     if (brandScrollRef.current) {
       brandScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
+  // Zoom handlers for fullscreen
+  const handleImageWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.2 : 0.2;
+    setZoomScale(prev => Math.min(Math.max(prev + delta, 1), 4));
+    if (zoomScale + delta <= 1) {
+      setZoomPosition({ x: 0, y: 0 });
+    }
+  };
+
+  const handleImageTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      lastTouchDistance.current = distance;
+    } else if (e.touches.length === 1 && zoomScale > 1) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.touches[0].clientX - zoomPosition.x,
+        y: e.touches[0].clientY - zoomPosition.y
+      });
+    }
+  };
+
+  const handleImageTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && lastTouchDistance.current) {
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const delta = (distance - lastTouchDistance.current) * 0.01;
+      setZoomScale(prev => Math.min(Math.max(prev + delta, 1), 4));
+      lastTouchDistance.current = distance;
+      if (zoomScale + delta <= 1) {
+        setZoomPosition({ x: 0, y: 0 });
+      }
+    } else if (e.touches.length === 1 && isDragging && zoomScale > 1) {
+      setZoomPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleImageTouchEnd = () => {
+    lastTouchDistance.current = null;
+    setIsDragging(false);
+  };
+
+  const handleDoubleClick = () => {
+    if (zoomScale > 1) {
+      setZoomScale(1);
+      setZoomPosition({ x: 0, y: 0 });
+    } else {
+      setZoomScale(2.5);
     }
   };
 
@@ -272,11 +347,11 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
       {/* WhatsApp button - fixed on both mobile and desktop */}
       <WhatsAppButton href={whatsappUrl} fixed label="Preguntar en La Loggia más información sobre esta prenda" />
 
-      {/* Fullscreen image modal */}
+      {/* Fullscreen image modal with fade animation */}
       {isFullscreen && (
         <div 
-          className="fixed inset-0 z-[200] bg-neutral-100 flex items-center justify-center"
-          onClick={() => setIsFullscreen(false)}
+          className="fixed inset-0 z-[200] bg-neutral-100 flex items-center justify-center animate-fade-in"
+          onClick={() => zoomScale === 1 && setIsFullscreen(false)}
         >
           {/* Close button */}
           <button
@@ -287,16 +362,37 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <X className="w-5 h-5 text-black" />
           </button>
 
-          {/* Fullscreen image */}
-          <img
-            src={allImages[currentIndex]}
-            alt={`Prenda de ${product.brand}`}
-            className="max-w-[95vw] max-h-[85vh] object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
+          {/* Zoomable fullscreen image */}
+          <div 
+            className="overflow-hidden flex items-center justify-center w-full h-full"
+            onWheel={handleImageWheel}
+            onTouchStart={handleImageTouchStart}
+            onTouchMove={handleImageTouchMove}
+            onTouchEnd={handleImageTouchEnd}
+            onDoubleClick={handleDoubleClick}
+          >
+            <img
+              src={allImages[currentIndex]}
+              alt={`Prenda de ${product.brand}`}
+              className="max-w-[95vw] max-h-[80vh] object-contain transition-transform duration-150 select-none"
+              style={{
+                transform: `scale(${zoomScale}) translate(${zoomPosition.x / zoomScale}px, ${zoomPosition.y / zoomScale}px)`,
+                cursor: zoomScale > 1 ? 'grab' : 'zoom-in'
+              }}
+              onClick={(e) => e.stopPropagation()}
+              draggable={false}
+            />
+          </div>
 
-          {/* WhatsApp button in fullscreen - solid background */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[94vw] max-w-[560px]">
+          {/* Zoom indicator */}
+          {zoomScale > 1 && (
+            <div className="absolute top-4 left-4 z-[210] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-neutral-600">
+              {Math.round(zoomScale * 100)}%
+            </div>
+          )}
+
+          {/* WhatsApp button in fullscreen - solid background, always visible */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[94vw] max-w-[560px] z-[210]">
             <a
               href={whatsappUrl}
               target="_blank"
