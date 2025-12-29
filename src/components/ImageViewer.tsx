@@ -86,18 +86,29 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
+      {/* Fixed header with logo */}
+      <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
+        <div className="px-4 py-3 text-center">
+          <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
+            LA LOGGIA
+          </h1>
+          <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
+            Altea · San Juan · Campello
+          </p>
+        </div>
+      </header>
+
       {/* Back button */}
       <button
         onClick={onClose}
-        className="fixed top-4 left-4 z-[110] flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full transition-colors hover:bg-white shadow-sm"
+        className="fixed top-3 left-3 z-[110] flex items-center justify-center w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full transition-colors hover:bg-white shadow-sm"
         aria-label="Volver"
       >
         <ArrowLeft className="w-4 h-4 text-black" />
-        <span className="text-sm font-medium text-black">Volver</span>
       </button>
 
       {/* Main content */}
-      <div className="pt-14 md:pt-16 pb-28 md:pb-24">
+      <div className="pt-20 md:pt-20 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
           {/* Main image */}
@@ -202,13 +213,18 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                 <button
                   key={relatedProduct.id}
                   onClick={() => handleRelatedProductClick(relatedProduct)}
-                  className="aspect-[9/16] overflow-hidden rounded bg-secondary"
+                  className="text-left"
                 >
-                  <img
-                    src={relatedProduct.imageUrl}
-                    alt={`Prenda de ${relatedProduct.brand}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
+                    <img
+                      src={relatedProduct.imageUrl}
+                      alt={`Prenda de ${relatedProduct.brand}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p className="text-[11px] md:text-xs text-center text-neutral-600 mt-1.5 tracking-wide">
+                    {relatedProduct.brand}
+                  </p>
                 </button>
               ))}
             </div>
