@@ -157,6 +157,7 @@ const Admin = () => {
   
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
   const [filterBrand, setFilterBrand] = useState<Brand | 'ALL'>('ALL');
+  const [filterVisibility, setFilterVisibility] = useState<ProductVisibility | 'ALL'>('ALL');
   const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
@@ -183,10 +184,12 @@ const Admin = () => {
     })
   );
 
-  // Filter products by brand
-  const filteredProducts = products?.filter(p => 
-    filterBrand === 'ALL' ? true : p.brand === filterBrand
-  ) || [];
+  // Filter products by brand and visibility
+  const filteredProducts = products?.filter(p => {
+    const brandMatch = filterBrand === 'ALL' || p.brand === filterBrand;
+    const visibilityMatch = filterVisibility === 'ALL' || p.visibility === filterVisibility;
+    return brandMatch && visibilityMatch;
+  }) || [];
 
   if (loading) {
     return (
@@ -480,9 +483,9 @@ const Admin = () => {
             </h2>
           </div>
           
-          {/* Brand Filter */}
+          {/* Filters */}
           <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-4 h-4 text-muted-foreground" />
+            <Filter className="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <Select value={filterBrand} onValueChange={(v) => setFilterBrand(v as Brand | 'ALL')}>
               <SelectTrigger className="flex-1">
                 <SelectValue placeholder="Filtrar por marca" />
@@ -491,6 +494,17 @@ const Admin = () => {
                 <SelectItem value="ALL">Todas las marcas</SelectItem>
                 {brands.map((brand) => (
                   <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterVisibility} onValueChange={(v) => setFilterVisibility(v as ProductVisibility | 'ALL')}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Filtrar por visibilidad" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Toda visibilidad</SelectItem>
+                {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+                  <SelectItem key={vis} value={vis}>{visibilityLabels[vis]}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
