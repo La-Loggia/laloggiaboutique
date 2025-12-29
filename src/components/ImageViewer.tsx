@@ -30,10 +30,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ...additionalImages.map(img => img.imageUrl)
   ];
 
-  // Filter out current product and get 3 most recent from same brand
+  // Filter out current product and get more from same brand
   const moreBrandProducts = brandProducts
     .filter(p => p.id !== product.id)
-    .slice(0, 3);
+    .slice(0, 10);
 
   // Filter out current product from latest products
   const alsoLikeProducts = latestProducts
@@ -134,12 +134,12 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
               Más de {product.brand}
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               {moreBrandProducts.map((relatedProduct) => (
                 <button
                   key={relatedProduct.id}
                   onClick={() => handleRelatedProductClick(relatedProduct)}
-                  className="aspect-[9/16] overflow-hidden rounded bg-secondary"
+                  className="w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
                 >
                   <img
                     src={relatedProduct.imageUrl}
