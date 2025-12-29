@@ -132,7 +132,7 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ brand, imageUrl, campaignId }: { brand: Brand; imageUrl: string; campaignId?: string }) => {
+    mutationFn: async ({ brand, imageUrl, campaignId, category }: { brand: Brand; imageUrl: string; campaignId?: string; category?: ProductCategory }) => {
       // First, increment display_order of all existing products to make room for the new one at position 0
       await supabase.rpc('increment_all_product_orders' as any);
       
@@ -144,6 +144,7 @@ export const useCreateProduct = () => {
           image_url: imageUrl,
           campaign_id: campaignId || null,
           display_order: 0,
+          category: category || 'ropa',
         })
         .select()
         .single();
@@ -161,13 +162,14 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, visibility }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null; imageUrl?: string; visibility?: ProductVisibility }) => {
+    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, visibility, category }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null; imageUrl?: string; visibility?: ProductVisibility; category?: ProductCategory }) => {
       const updates: Record<string, unknown> = {};
       if (isActive !== undefined) updates.is_active = isActive;
       if (brand !== undefined) updates.brand = brand;
       if (campaignId !== undefined) updates.campaign_id = campaignId;
       if (imageUrl !== undefined) updates.image_url = imageUrl;
       if (visibility !== undefined) updates.visibility = visibility;
+      if (category !== undefined) updates.category = category;
       
       const { error } = await supabase
         .from('products')

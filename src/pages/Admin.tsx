@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductVisibility } from '@/hooks/useProducts';
+import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
 import { useCampaigns, useCreateCampaign, useSetActiveCampaign } from '@/hooks/useCampaigns';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
@@ -37,6 +37,7 @@ interface SortableProductProps {
   onReplaceImage: (product: Product) => void;
   onChangeBrand: (product: Product, newBrand: Brand) => void;
   onChangeVisibility: (product: Product, visibility: ProductVisibility) => void;
+  onChangeCategory: (product: Product, category: ProductCategory) => void;
 }
 
 const visibilityLabels: Record<ProductVisibility, string> = {
@@ -45,7 +46,12 @@ const visibilityLabels: Record<ProductVisibility, string> = {
   'latest_only': 'Solo novedades',
 };
 
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility }: SortableProductProps) => {
+const categoryLabels: Record<ProductCategory, string> = {
+  'ropa': 'Ropa',
+  'bolsos': 'Bolsos',
+};
+
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility, onChangeCategory }: SortableProductProps) => {
   const {
     attributes,
     listeners,
@@ -119,6 +125,19 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             ))}
           </SelectContent>
         </Select>
+        <Select 
+          value={product.category} 
+          onValueChange={(v) => onChangeCategory(product, v as ProductCategory)}
+        >
+          <SelectTrigger className="h-7 text-xs w-24">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+              <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <p className="text-xs text-muted-foreground">
           {product.createdAt.toLocaleDateString('es-ES')}
         </p>
@@ -156,8 +175,10 @@ const Admin = () => {
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('ropa');
   const [filterBrand, setFilterBrand] = useState<Brand | 'ALL'>('ALL');
   const [filterVisibility, setFilterVisibility] = useState<ProductVisibility | 'ALL'>('ALL');
+  const [filterCategory, setFilterCategory] = useState<ProductCategory | 'ALL'>('ALL');
   const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
@@ -184,11 +205,12 @@ const Admin = () => {
     })
   );
 
-  // Filter products by brand and visibility
+  // Filter products by brand, visibility, and category
   const filteredProducts = products?.filter(p => {
     const brandMatch = filterBrand === 'ALL' || p.brand === filterBrand;
     const visibilityMatch = filterVisibility === 'ALL' || p.visibility === filterVisibility;
-    return brandMatch && visibilityMatch;
+    const categoryMatch = filterCategory === 'ALL' || p.category === filterCategory;
+    return brandMatch && visibilityMatch && categoryMatch;
   }) || [];
 
   if (loading) {
@@ -230,6 +252,7 @@ const Admin = () => {
         brand: selectedBrand,
         imageUrl,
         campaignId: activeCampaign?.id,
+        category: selectedCategory,
       });
       
       toast.success('Prenda añadida correctamente');
@@ -310,6 +333,20 @@ const Admin = () => {
       toast.success(`Visibilidad cambiada a "${visibilityLabels[visibility]}"`);
     } catch (error) {
       toast.error('Error al cambiar la visibilidad');
+    }
+  };
+
+  const handleChangeCategory = async (product: Product, category: ProductCategory) => {
+    if (product.category === category) return;
+    
+    try {
+      await updateProduct.mutateAsync({
+        id: product.id,
+        category,
+      });
+      toast.success(`Categoría cambiada a "${categoryLabels[category]}"`);
+    } catch (error) {
+      toast.error('Error al cambiar la categoría');
     }
   };
 
@@ -404,6 +441,16 @@ const Admin = () => {
               <SelectContent>
                 {brands.map((brand) => (
                   <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as ProductCategory)}>
+              <SelectTrigger className="w-28">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                  <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -508,6 +555,17 @@ const Admin = () => {
                 ))}
               </SelectContent>
             </Select>
+            <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as ProductCategory | 'ALL')}>
+              <SelectTrigger className="w-24">
+                <SelectValue placeholder="Categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Todas</SelectItem>
+                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                  <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <p className="text-xs text-muted-foreground mb-4">
@@ -541,6 +599,7 @@ const Admin = () => {
                       onReplaceImage={handleReplaceImage}
                       onChangeBrand={handleChangeBrand}
                       onChangeVisibility={handleChangeVisibility}
+                      onChangeCategory={handleChangeCategory}
                     />
                   ))}
                 </div>
