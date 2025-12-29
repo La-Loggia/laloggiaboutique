@@ -58,6 +58,7 @@ const BolsosProductGrid = ({ products, onProductClick }: BolsosProductGridProps)
               onClick={() => onProductClick(product)}
               index={index}
               featured={isMobileFeatured || isDesktopFeatured}
+              hideBrandName
             />
           </div>
         );
