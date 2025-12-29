@@ -97,9 +97,9 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
       </button>
 
       {/* Main content */}
-      <div className="pt-16 pb-24">
+      <div className="pt-14 md:pt-16 pb-28 md:pb-24">
         {/* Product images section */}
-        <div className="px-4 md:px-8 max-w-6xl mx-auto">
+        <div className="px-3 md:px-8 max-w-6xl mx-auto">
           {/* Main image */}
           <div 
             className="w-full"
@@ -115,12 +115,12 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
           {/* Thumbnails below main image */}
           {allImages.length > 1 && (
-            <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex justify-center gap-2 mt-3 md:mt-4 overflow-x-auto pb-2 scrollbar-hide">
               {allImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`relative w-16 aspect-[3/4] overflow-hidden rounded shrink-0 ${
+                  className={`relative w-12 md:w-16 aspect-[3/4] overflow-hidden rounded shrink-0 ${
                     index === currentIndex 
                       ? 'ring-2 ring-black ring-offset-1' 
                       : 'opacity-60 hover:opacity-100'
@@ -139,11 +139,11 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 my-8" />
+        <div className="w-full h-px bg-neutral-200 my-6 md:my-8" />
 
         {/* More from brand section */}
         {moreBrandProducts.length > 0 && (
-          <div className="px-4 md:px-8 max-w-6xl mx-auto">
+          <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
               Más de {product.brand}
             </p>
@@ -159,13 +159,13 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               
               <div 
                 ref={brandScrollRef}
-                className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+                className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide"
               >
                 {moreBrandProducts.map((relatedProduct) => (
                   <button
                     key={relatedProduct.id}
                     onClick={() => handleRelatedProductClick(relatedProduct)}
-                    className="w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
+                    className="w-24 md:w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
                   >
                     <img
                       src={relatedProduct.imageUrl}
@@ -189,15 +189,15 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         )}
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 my-8" />
+        <div className="w-full h-px bg-neutral-200 my-6 md:my-8" />
 
         {/* Also like section */}
         {alsoLikeProducts.length > 0 && (
-          <div className="px-4 md:px-8 max-w-6xl mx-auto">
-            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
+          <div className="px-3 md:px-8 max-w-6xl mx-auto">
+            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-3 md:mb-4">
               También te puede interesar
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
               {alsoLikeProducts.map((relatedProduct) => (
                 <button
                   key={relatedProduct.id}
