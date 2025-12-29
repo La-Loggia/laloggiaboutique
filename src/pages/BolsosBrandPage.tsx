@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import BolsosBrandNav from '@/components/BolsosBrandNav';
 import BolsosProductGrid from '@/components/BolsosProductGrid';
 import BolsosImageViewer from '@/components/BolsosImageViewer';
 import SEOHead from '@/components/SEOHead';
@@ -90,6 +91,7 @@ const BolsosBrandPage = () => {
       />
       
       <Header />
+      <BolsosBrandNav activeBrand={brand} />
 
       <main className="py-6">
         {/* Brand header */}
