@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import BrandMarquee from '@/components/BrandMarquee';
 import HomeLatestPreview from '@/components/HomeLatestPreview';
 import HomeBrandsBlock from '@/components/HomeBrandsBlock';
+import HomeBolsosBlock from '@/components/HomeBolsosBlock';
 import VisitSection from '@/components/VisitSection';
 import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
@@ -51,6 +52,10 @@ const Index = () => {
         <div className="border-t border-border/30" />
 
         <HomeBrandsBlock />
+
+        <div className="border-t border-border/30" />
+
+        <HomeBolsosBlock />
 
         <div className="border-t border-border/30" />
 

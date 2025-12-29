@@ -71,6 +71,7 @@ export type Database = {
         Row: {
           brand: Database["public"]["Enums"]["brand_type"]
           campaign_id: string | null
+          category: Database["public"]["Enums"]["product_category"]
           created_at: string
           display_order: number
           id: string
@@ -81,6 +82,7 @@ export type Database = {
         Insert: {
           brand: Database["public"]["Enums"]["brand_type"]
           campaign_id?: string | null
+          category?: Database["public"]["Enums"]["product_category"]
           created_at?: string
           display_order?: number
           id?: string
@@ -91,6 +93,7 @@ export type Database = {
         Update: {
           brand?: Database["public"]["Enums"]["brand_type"]
           campaign_id?: string | null
+          category?: Database["public"]["Enums"]["product_category"]
           created_at?: string
           display_order?: number
           id?: string
@@ -153,6 +156,7 @@ export type Database = {
         | "RueMadam"
         | "JOTT"
         | "LolaCasademunt"
+      product_category: "ropa" | "bolsos"
       product_visibility: "all" | "brand_only" | "latest_only"
     }
     CompositeTypes: {
@@ -294,6 +298,7 @@ export const Constants = {
         "JOTT",
         "LolaCasademunt",
       ],
+      product_category: ["ropa", "bolsos"],
       product_visibility: ["all", "brand_only", "latest_only"],
     },
   },
