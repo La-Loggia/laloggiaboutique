@@ -138,16 +138,16 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
       <div className="pt-20 md:pt-20 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
-          {/* Desktop: Thumbnails on left + Main image on right */}
-          <div className="flex gap-3 md:gap-4">
-            {/* Thumbnails column - left side on desktop, hidden on mobile */}
+          {/* Thumbnails on left + Main image on right (both mobile and desktop) */}
+          <div className="flex gap-2 md:gap-4">
+            {/* Thumbnails column - left side on both mobile and desktop */}
             {allImages.length > 1 && (
-              <div className="hidden md:flex flex-col gap-2 shrink-0">
+              <div className="flex flex-col gap-1.5 md:gap-2 shrink-0">
                 {allImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`relative w-14 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
+                    className={`relative w-8 md:w-14 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
                       index === currentIndex 
                         ? 'opacity-100' 
                         : 'opacity-50 hover:opacity-80'
@@ -177,30 +177,6 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               />
             </div>
           </div>
-
-          {/* Mobile thumbnails - below main image */}
-          {allImages.length > 1 && (
-            <div className="flex md:hidden justify-center gap-2 mt-3 overflow-x-auto pb-2 scrollbar-hide">
-              {allImages.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`relative w-10 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
-                    index === currentIndex 
-                      ? 'opacity-100' 
-                      : 'opacity-50 hover:opacity-80'
-                  }`}
-                  aria-label={`Ver imagen ${index + 1}`}
-                >
-                  <img
-                    src={img}
-                    alt={`Miniatura ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Divider */}
