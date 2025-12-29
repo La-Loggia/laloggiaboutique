@@ -12,14 +12,11 @@ interface ImageViewerProps {
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
   const [brandCanScrollLeft, setBrandCanScrollLeft] = useState(false);
   const [brandCanScrollRight, setBrandCanScrollRight] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const brandScrollRef = useRef<HTMLDivElement>(null);
-  const alsoLikeScrollRef = useRef<HTMLDivElement>(null);
 
   // Reset index when product changes
   useEffect(() => {
@@ -55,38 +52,21 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     }
   }, []);
 
-  // Check scroll availability for also like section
-  const checkAlsoLikeScroll = useCallback(() => {
-    if (alsoLikeScrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = alsoLikeScrollRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
-    }
-  }, []);
-
   useEffect(() => {
     checkBrandScroll();
-    checkAlsoLikeScroll();
     
     const brandEl = brandScrollRef.current;
-    const alsoLikeEl = alsoLikeScrollRef.current;
     
     if (brandEl) {
       brandEl.addEventListener('scroll', checkBrandScroll);
-    }
-    if (alsoLikeEl) {
-      alsoLikeEl.addEventListener('scroll', checkAlsoLikeScroll);
     }
     
     return () => {
       if (brandEl) {
         brandEl.removeEventListener('scroll', checkBrandScroll);
       }
-      if (alsoLikeEl) {
-        alsoLikeEl.removeEventListener('scroll', checkAlsoLikeScroll);
-      }
     };
-  }, [checkBrandScroll, checkAlsoLikeScroll, moreBrandProducts.length, alsoLikeProducts.length]);
+  }, [checkBrandScroll, moreBrandProducts.length]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -124,18 +104,6 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const scrollBrandRight = () => {
     if (brandScrollRef.current) {
       brandScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
-    }
-  };
-
-  const scrollAlsoLikeLeft = () => {
-    if (alsoLikeScrollRef.current) {
-      alsoLikeScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-    }
-  };
-
-  const scrollAlsoLikeRight = () => {
-    if (alsoLikeScrollRef.current) {
-      alsoLikeScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
     }
   };
 
@@ -298,52 +266,25 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-3 md:mb-4">
               También te puede interesar
             </p>
-            <div className="relative flex items-center">
-              {/* Left arrow - appears when can scroll left */}
-              {canScrollLeft && (
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
+              {alsoLikeProducts.map((relatedProduct) => (
                 <button
-                  onClick={scrollAlsoLikeLeft}
-                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-neutral-100 via-neutral-100/90 to-transparent"
-                  aria-label="Anterior"
+                  key={relatedProduct.id}
+                  onClick={() => handleRelatedProductClick(relatedProduct)}
+                  className="text-left"
                 >
-                  <ChevronLeft className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                  <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
+                    <img
+                      src={relatedProduct.imageUrl}
+                      alt={`Prenda de ${relatedProduct.brand}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p className="brand-name text-center">
+                    {relatedProduct.brand}
+                  </p>
                 </button>
-              )}
-
-              <div 
-                ref={alsoLikeScrollRef}
-                className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide w-full"
-              >
-                {alsoLikeProducts.map((relatedProduct) => (
-                  <button
-                    key={relatedProduct.id}
-                    onClick={() => handleRelatedProductClick(relatedProduct)}
-                    className="shrink-0 w-[calc(50%-6px)] md:w-40 text-left"
-                  >
-                    <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
-                      <img
-                        src={relatedProduct.imageUrl}
-                        alt={`Prenda de ${relatedProduct.brand}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <p className="brand-name text-center">
-                      {relatedProduct.brand}
-                    </p>
-                  </button>
-                ))}
-              </div>
-
-              {/* Right arrow - appears when can scroll right */}
-              {canScrollRight && (
-                <button
-                  onClick={scrollAlsoLikeRight}
-                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-neutral-100 via-neutral-100/90 to-transparent"
-                  aria-label="Siguiente"
-                >
-                  <ChevronRight className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
-                </button>
-              )}
+              ))}
             </div>
           </div>
         )}
