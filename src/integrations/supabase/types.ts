@@ -76,6 +76,7 @@ export type Database = {
           id: string
           image_url: string
           is_active: boolean
+          visibility: Database["public"]["Enums"]["product_visibility"]
         }
         Insert: {
           brand: Database["public"]["Enums"]["brand_type"]
@@ -85,6 +86,7 @@ export type Database = {
           id?: string
           image_url: string
           is_active?: boolean
+          visibility?: Database["public"]["Enums"]["product_visibility"]
         }
         Update: {
           brand?: Database["public"]["Enums"]["brand_type"]
@@ -94,6 +96,7 @@ export type Database = {
           id?: string
           image_url?: string
           is_active?: boolean
+          visibility?: Database["public"]["Enums"]["product_visibility"]
         }
         Relationships: [
           {
@@ -150,6 +153,7 @@ export type Database = {
         | "RueMadam"
         | "JOTT"
         | "LolaCasademunt"
+      product_visibility: "all" | "brand_only" | "latest_only"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -290,6 +294,7 @@ export const Constants = {
         "JOTT",
         "LolaCasademunt",
       ],
+      product_visibility: ["all", "brand_only", "latest_only"],
     },
   },
 } as const

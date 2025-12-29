@@ -9,6 +9,8 @@ export interface ProductImage {
   displayOrder: number;
 }
 
+export type ProductVisibility = 'all' | 'brand_only' | 'latest_only';
+
 export interface Product {
   id: string;
   brand: Brand;
@@ -17,6 +19,7 @@ export interface Product {
   campaignId: string | null;
   createdAt: Date;
   displayOrder: number;
+  visibility: ProductVisibility;
   additionalImages?: ProductImage[];
 }
 
@@ -28,6 +31,7 @@ interface RawProduct {
   campaign_id: string | null;
   created_at: string;
   display_order: number;
+  visibility: ProductVisibility;
 }
 
 const mapProduct = (raw: RawProduct): Product => ({
@@ -38,6 +42,7 @@ const mapProduct = (raw: RawProduct): Product => ({
   campaignId: raw.campaign_id,
   createdAt: new Date(raw.created_at),
   displayOrder: raw.display_order,
+  visibility: raw.visibility,
 });
 
 const mapProductImage = (raw: { id: string; product_id: string; image_url: string; display_order: number }): ProductImage => ({
@@ -72,6 +77,7 @@ export const useLatestProducts = (limit?: number) => {
         .from('products')
         .select('*')
         .eq('is_active', true)
+        .in('visibility', ['all', 'latest_only'])
         .order('display_order', { ascending: true });
       
       if (limit) {
@@ -94,6 +100,7 @@ export const useProductsByBrand = (brand: Brand) => {
         .select('*')
         .eq('brand', brand)
         .eq('is_active', true)
+        .in('visibility', ['all', 'brand_only'])
         .order('display_order', { ascending: true });
       
       if (error) throw error;
@@ -150,12 +157,13 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null; imageUrl?: string }) => {
+    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, visibility }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null; imageUrl?: string; visibility?: ProductVisibility }) => {
       const updates: Record<string, unknown> = {};
       if (isActive !== undefined) updates.is_active = isActive;
       if (brand !== undefined) updates.brand = brand;
       if (campaignId !== undefined) updates.campaign_id = campaignId;
       if (imageUrl !== undefined) updates.image_url = imageUrl;
+      if (visibility !== undefined) updates.visibility = visibility;
       
       const { error } = await supabase
         .from('products')

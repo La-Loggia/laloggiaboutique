@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product } from '@/hooks/useProducts';
+import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductVisibility } from '@/hooks/useProducts';
 import { useCampaigns, useCreateCampaign, useSetActiveCampaign } from '@/hooks/useCampaigns';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
@@ -36,9 +36,16 @@ interface SortableProductProps {
   onManageImages: (product: Product) => void;
   onReplaceImage: (product: Product) => void;
   onChangeBrand: (product: Product, newBrand: Brand) => void;
+  onChangeVisibility: (product: Product, visibility: ProductVisibility) => void;
 }
 
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand }: SortableProductProps) => {
+const visibilityLabels: Record<ProductVisibility, string> = {
+  'all': 'Toda la web',
+  'brand_only': 'Solo marca',
+  'latest_only': 'Solo novedades',
+};
+
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility }: SortableProductProps) => {
   const {
     attributes,
     listeners,
@@ -85,7 +92,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
         </button>
       </div>
       
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 space-y-1">
         <Select 
           value={product.brand} 
           onValueChange={(v) => onChangeBrand(product, v as Brand)}
@@ -99,7 +106,20 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             ))}
           </SelectContent>
         </Select>
-        <p className="text-xs text-muted-foreground mt-1">
+        <Select 
+          value={product.visibility} 
+          onValueChange={(v) => onChangeVisibility(product, v as ProductVisibility)}
+        >
+          <SelectTrigger className="h-7 text-xs w-28">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+              <SelectItem key={vis} value={vis} className="text-xs">{visibilityLabels[vis]}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground">
           {product.createdAt.toLocaleDateString('es-ES')}
         </p>
       </div>
@@ -273,6 +293,20 @@ const Admin = () => {
       toast.success(`Marca cambiada a ${newBrand}`);
     } catch (error) {
       toast.error('Error al cambiar la marca');
+    }
+  };
+
+  const handleChangeVisibility = async (product: Product, visibility: ProductVisibility) => {
+    if (product.visibility === visibility) return;
+    
+    try {
+      await updateProduct.mutateAsync({
+        id: product.id,
+        visibility,
+      });
+      toast.success(`Visibilidad cambiada a "${visibilityLabels[visibility]}"`);
+    } catch (error) {
+      toast.error('Error al cambiar la visibilidad');
     }
   };
 
@@ -492,6 +526,7 @@ const Admin = () => {
                       onManageImages={setManagingProduct}
                       onReplaceImage={handleReplaceImage}
                       onChangeBrand={handleChangeBrand}
+                      onChangeVisibility={handleChangeVisibility}
                     />
                   ))}
                 </div>
