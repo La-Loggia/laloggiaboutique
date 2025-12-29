@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
 import WhatsAppButton from './WhatsAppButton';
@@ -14,6 +14,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const brandScrollRef = useRef<HTMLDivElement>(null);
 
   // Reset index when product changes
   useEffect(() => {
@@ -64,6 +65,18 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const handleRelatedProductClick = (relatedProduct: Product) => {
     if (onProductClick) {
       onProductClick(relatedProduct);
+    }
+  };
+
+  const scrollBrandLeft = () => {
+    if (brandScrollRef.current) {
+      brandScrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+    }
+  };
+
+  const scrollBrandRight = () => {
+    if (brandScrollRef.current) {
+      brandScrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
     }
   };
 
@@ -134,20 +147,43 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
               Más de {product.brand}
             </p>
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              {moreBrandProducts.map((relatedProduct) => (
-                <button
-                  key={relatedProduct.id}
-                  onClick={() => handleRelatedProductClick(relatedProduct)}
-                  className="w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
-                >
-                  <img
-                    src={relatedProduct.imageUrl}
-                    alt={`Prenda de ${relatedProduct.brand}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
+            <div className="relative">
+              {/* Left arrow - desktop only */}
+              <button
+                onClick={scrollBrandLeft}
+                className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 items-center justify-center bg-white rounded-full shadow-md hover:bg-neutral-50"
+                aria-label="Anterior"
+              >
+                <ChevronLeft className="w-5 h-5 text-black" />
+              </button>
+              
+              <div 
+                ref={brandScrollRef}
+                className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+              >
+                {moreBrandProducts.map((relatedProduct) => (
+                  <button
+                    key={relatedProduct.id}
+                    onClick={() => handleRelatedProductClick(relatedProduct)}
+                    className="w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
+                  >
+                    <img
+                      src={relatedProduct.imageUrl}
+                      alt={`Prenda de ${relatedProduct.brand}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Right arrow - desktop only */}
+              <button
+                onClick={scrollBrandRight}
+                className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 items-center justify-center bg-white rounded-full shadow-md hover:bg-neutral-50"
+                aria-label="Siguiente"
+              >
+                <ChevronRight className="w-5 h-5 text-black" />
+              </button>
             </div>
           </div>
         )}
