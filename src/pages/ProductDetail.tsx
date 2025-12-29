@@ -5,7 +5,6 @@ import Header from '@/components/Header';
 import SEOHead from '@/components/SEOHead';
 import { Badge } from '@/components/ui/badge';
 import WhatsAppButton from '@/components/WhatsAppButton';
-import ProductGrid from '@/components/ProductGrid';
 import { useProduct, useLatestProducts, useProductsByBrand, useProductImages } from '@/hooks/useProducts';
 import { whatsappNumber } from '@/data/products';
 import { Brand } from '@/data/products';
@@ -99,11 +98,11 @@ const ProductDetail = () => {
 
       {/* Main product section */}
       <main className="px-3">
-        {/* Product image */}
-        <div className="relative aspect-[3/4] md:aspect-[4/5] max-w-2xl mx-auto overflow-hidden bg-secondary rounded-lg">
+        {/* Product image - full width */}
+        <div className="relative aspect-[9/16] max-w-lg mx-auto overflow-hidden bg-secondary">
           <img
             src={allImages[currentImageIndex]}
-            alt={`Prenda de ${product.brand} para mujer - La Loggia`}
+            alt={`Prenda de moda femenina - La Loggia`}
             className="w-full h-full object-cover"
           />
           {isNew && (
@@ -113,14 +112,14 @@ const ProductDetail = () => {
           )}
         </div>
 
-        {/* Thumbnail navigation */}
+        {/* Thumbnail gallery - horizontal scroll */}
         {allImages.length > 1 && (
-          <div className="flex justify-center gap-2 mt-3 overflow-x-auto py-2">
+          <div className="flex gap-2 mt-3 overflow-x-auto py-2 scrollbar-hide">
             {allImages.map((img, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentImageIndex(index)}
-                className={`w-16 h-20 rounded overflow-hidden shrink-0 transition-all ${
+                className={`w-16 h-24 shrink-0 overflow-hidden transition-all ${
                   index === currentImageIndex
                     ? 'ring-2 ring-primary ring-offset-2'
                     : 'opacity-60 hover:opacity-100'
@@ -132,29 +131,53 @@ const ProductDetail = () => {
           </div>
         )}
 
-        {/* Product info */}
-        <div className="text-center mt-4 mb-8">
-          <h1 className="text-xl font-serif tracking-wide">{product.brand}</h1>
-          {isNew && (
-            <span className="inline-block mt-1 text-xs text-muted-foreground">Nueva colección</span>
-          )}
-        </div>
-
-        {/* More from brand */}
+        {/* Block 1: "También te puede interesar" - Same brand, 3-4 products, horizontal row */}
         {moreBrandProducts.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-lg font-serif text-center mb-4">Más de {product.brand}</h2>
-            <div className="w-12 h-px bg-border mx-auto mb-6" />
-            <ProductGrid products={moreBrandProducts} showBadge />
+          <section className="mt-10">
+            <p className="text-sm text-muted-foreground text-center mb-4">También te puede interesar</p>
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+              {moreBrandProducts.slice(0, 4).map((p, index) => (
+                <Link 
+                  key={p.id} 
+                  to={`/producto/${p.id}`}
+                  className="shrink-0 w-[140px] group"
+                >
+                  <div className="aspect-[9/16] overflow-hidden bg-secondary">
+                    <img 
+                      src={p.imageUrl} 
+                      alt="Producto relacionado" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
 
-        {/* Also might like */}
+        {/* Block 2: "También te puede interesar" - Other brands, max 6, 2 per row */}
         {alsoLikeProducts.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-lg font-serif text-center mb-4">También te puede interesar</h2>
-            <div className="w-12 h-px bg-border mx-auto mb-6" />
-            <ProductGrid products={alsoLikeProducts} showBadge />
+          <section className="mt-10 mb-8">
+            <p className="text-sm text-muted-foreground text-center mb-4">También te puede interesar</p>
+            <div className="grid grid-cols-2 gap-3">
+              {alsoLikeProducts.slice(0, 6).map((p, index) => (
+                <Link 
+                  key={p.id} 
+                  to={`/producto/${p.id}`}
+                  className="group"
+                >
+                  <div className="aspect-[9/16] overflow-hidden bg-secondary">
+                    <img 
+                      src={p.imageUrl} 
+                      alt="Producto relacionado" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
       </main>
@@ -163,7 +186,7 @@ const ProductDetail = () => {
       <WhatsAppButton 
         href={whatsappUrl} 
         fixed 
-        label="Preguntar por este producto" 
+        label="Consultar por WhatsApp" 
       />
     </div>
   );

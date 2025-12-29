@@ -35,12 +35,13 @@ const ProductCard = ({ product, onClick, index, isHero = false, showBadge = fals
   
   const content = (
     <article 
-      className={`animate-slide-up opacity-0 group ${isHero ? 'col-span-2 md:col-span-2 lg:col-span-2' : ''}`}
+      className={`animate-slide-up opacity-0 group ${isHero ? 'col-span-2' : ''}`}
       style={{ animationDelay: `${index * 0.05}s`, animationFillMode: 'forwards' }}
       itemScope
       itemType="https://schema.org/Product"
     >
-      <div className={`relative overflow-hidden bg-secondary ${isHero ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
+      {/* Always 9:16 aspect ratio, never cut images */}
+      <div className={`relative overflow-hidden bg-secondary aspect-[9/16]`}>
         <img
           src={product.imageUrl}
           alt={altText}
@@ -59,7 +60,7 @@ const ProductCard = ({ product, onClick, index, isHero = false, showBadge = fals
           </Badge>
         )}
       </div>
-      <p className="brand-name text-center mt-2" itemProp="brand">{product.brand}</p>
+      <meta itemProp="brand" content={product.brand} />
       <meta itemProp="name" content={`Moda ${product.brand} mujer en La Loggia`} />
       <meta itemProp="description" content={`${product.brand} - Colección de moda femenina ${category} disponible en La Loggia Altea, San Juan y Campello`} />
     </article>
