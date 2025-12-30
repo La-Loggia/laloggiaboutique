@@ -1,12 +1,27 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ChevronDown } from 'lucide-react';
 import Header from '@/components/Header';
 import SEOHead from '@/components/SEOHead';
 import { BolsoBrand } from '@/hooks/useBolsos';
+import { Brand, brands } from '@/data/products';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
 import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
+
+import dixieLogo from '@/assets/logo-dixie.png';
+import saintTropezLogo from '@/assets/logo-sainttropez.png';
+import moorLogo from '@/assets/logo-moor.png';
+import dileiLogo from '@/assets/logo-dilei.png';
+import melaLogo from '@/assets/logo-mela.png';
+import pecattoLogo from '@/assets/logo-pecatto.png';
+import jottLogo from '@/assets/logo-jott.png';
 
 interface BolsosBrandInfo {
   brand: BolsoBrand;
@@ -40,7 +55,30 @@ const bolsosBrands: BolsosBrandInfo[] = [
   },
 ];
 
+// Brands to show in "Ver más novedades" dropdown (exclude bolsos brands)
+const bolsoBrandNames: Brand[] = ['Replay', 'RueMadam', 'LolaCasademunt'];
+const novedadesBrands = brands.filter(brand => !bolsoBrandNames.includes(brand));
+
+const brandLogos: Record<Brand, string> = {
+  'MOOR': moorLogo,
+  'SaintTropez': saintTropezLogo,
+  'DiLei': dileiLogo,
+  'Mela': melaLogo,
+  'Pecatto': pecattoLogo,
+  'Dixie': dixieLogo,
+  'Replay': logoReplay,
+  'RueMadam': logoRueMadam,
+  'JOTT': jottLogo,
+  'LolaCasademunt': logoLolaCasademunt,
+};
+
+const getBrandSlug = (brand: Brand): string => {
+  return brand.toLowerCase();
+};
+
 const Bolsos = () => {
+  const navigate = useNavigate();
+  
   const breadcrumbs = [
     { name: 'Inicio', url: '/' },
     { name: 'Bolsos', url: '/bolsos' }
@@ -56,6 +94,48 @@ const Bolsos = () => {
       />
       
       <Header />
+
+      {/* Navigation bar */}
+      <nav className="sticky top-[61px] z-40 bg-background border-b border-border/30">
+        <div className="flex items-center justify-between px-4 py-2.5">
+          {/* Back button */}
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
+          </button>
+
+          {/* Novedades dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
+              Ver más novedades
+              <ChevronDown className="w-3.5 h-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
+              {novedadesBrands.map((brand) => (
+                <DropdownMenuItem
+                  key={brand}
+                  asChild
+                >
+                  <Link
+                    to={`/marca/${getBrandSlug(brand)}`}
+                    className="flex items-center gap-3 px-3 py-2 cursor-pointer"
+                  >
+                    <img 
+                      src={brandLogos[brand]} 
+                      alt={brand} 
+                      className="h-5 w-auto object-contain grayscale opacity-70"
+                    />
+                    <span className="text-xs tracking-[0.1em] uppercase">{brand}</span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </nav>
 
       <main className="py-10">
         <div className="text-center mb-8">
@@ -83,10 +163,6 @@ const Bolsos = () => {
                   <p className="font-sans text-xs text-muted-foreground mt-3 tracking-wide">
                     {item.tagline}
                   </p>
-                </div>
-                <div className="flex items-center gap-2 text-foreground/60 group-hover:text-foreground transition-colors">
-                  <span className="font-sans text-xs tracking-wide hidden sm:inline">Ver bolsos</span>
-                  <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </Link>
