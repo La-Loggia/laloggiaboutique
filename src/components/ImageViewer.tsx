@@ -246,16 +246,16 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               </div>
             )}
 
-            {/* Main image - clickable to open fullscreen */}
+            {/* Main image - fixed height container to prevent layout shift */}
             <div 
-              className="flex-1 flex justify-center"
+              className="flex-1 flex justify-center items-start h-[60vh] md:h-[70vh]"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
               <img
                 src={allImages[currentIndex]}
                 alt={`Prenda de ${product.brand}`}
-                className="w-auto max-w-[65vw] md:max-w-lg max-h-[60vh] md:max-h-none object-contain rounded cursor-pointer"
+                className="w-auto max-w-[65vw] md:max-w-lg h-full object-contain rounded cursor-pointer"
                 onClick={() => setIsFullscreen(true)}
               />
             </div>
