@@ -252,11 +252,11 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const otherBrands = ropaBrands.filter(b => b !== product.brand);
 
   return (
-    <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
+    <div ref={contentRef} className="fixed inset-0 z-[100] bg-background overflow-y-auto">
       {/* Fixed header with banner + navigation */}
-      <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
+      <header className="fixed top-0 left-0 right-0 z-[105] bg-background/95 backdrop-blur-sm border-b border-border">
         {/* Logo banner - FIRST */}
-        <div className="px-4 py-3 text-center border-b border-neutral-200/30">
+        <div className="px-4 py-3 text-center border-b border-border/30">
           <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
             LA LOGGIA
           </h1>
@@ -311,17 +311,17 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
           {/* Thumbnails on left + Main image on right (both mobile and desktop) */}
-          <div className="flex gap-2 md:gap-4">
+          <div className="flex gap-1 md:gap-2">
             {/* Thumbnails column - left side on both mobile and desktop */}
             {allImages.length > 1 && (
-              <div className="flex flex-col gap-1.5 md:gap-2 shrink-0">
+              <div className="flex flex-col gap-1 md:gap-1.5 shrink-0 mt-2">
                 {allImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`relative w-12 md:w-14 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
+                    className={`relative w-14 md:w-16 aspect-[9/16] overflow-hidden shrink-0 transition-all ${
                       index === currentIndex 
-                        ? 'opacity-100' 
+                        ? 'opacity-100 ring-2 ring-foreground ring-offset-1' 
                         : 'opacity-50 hover:opacity-80'
                     }`}
                     aria-label={`Ver imagen ${index + 1}`}
@@ -353,12 +353,12 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 my-6 md:my-8" />
+        <div className="w-full h-px bg-border my-3 md:my-4" />
 
         {/* More from brand section */}
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
-            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
               Más de {product.brand}
             </p>
             <div className="relative flex items-center">
@@ -366,10 +366,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               {brandCanScrollLeft && (
                 <button
                   onClick={scrollBrandLeft}
-                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-neutral-100 via-neutral-100/90 to-transparent"
+                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-background via-background/90 to-transparent"
                   aria-label="Anterior"
                 >
-                  <ChevronLeft className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                  <ChevronLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 </button>
               )}
               
@@ -396,10 +396,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               {brandCanScrollRight && (
                 <button
                   onClick={scrollBrandRight}
-                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-neutral-100 via-neutral-100/90 to-transparent"
+                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-background via-background/90 to-transparent"
                   aria-label="Siguiente"
                 >
-                  <ChevronRight className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 </button>
               )}
             </div>
@@ -407,12 +407,12 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         )}
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 my-6 md:my-8" />
+        <div className="w-full h-px bg-border my-3 md:my-4" />
 
         {/* Also like section */}
         {alsoLikeProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
-            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-3 md:mb-4">
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-3 md:mb-4">
               También te puede interesar
             </p>
             <div className="grid grid-cols-2 gap-2 md:gap-3">
