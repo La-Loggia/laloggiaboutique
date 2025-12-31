@@ -253,10 +253,20 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
-      {/* Fixed header with navigation + logo */}
+      {/* Fixed header with banner + navigation */}
       <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
-        {/* Navigation bar */}
-        <nav className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-200/30">
+        {/* Logo banner - FIRST */}
+        <div className="px-4 py-3 text-center border-b border-neutral-200/30">
+          <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
+            LA LOGGIA
+          </h1>
+          <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
+            Altea · San Juan · Campello
+          </p>
+        </div>
+
+        {/* Navigation bar - BELOW BANNER */}
+        <nav className="flex items-center justify-between px-4 py-2.5">
           {/* Back button */}
           <button
             onClick={onClose}
@@ -269,7 +279,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
           {/* Brand dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
-              Ver más novedades
+              Ver otras marcas
               <ChevronDown className="w-3.5 h-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
@@ -294,16 +304,6 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
-
-        {/* Logo banner */}
-        <div className="px-4 py-3 text-center">
-          <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
-            LA LOGGIA
-          </h1>
-          <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
-            Altea · San Juan · Campello
-          </p>
-        </div>
       </header>
 
       {/* Main content */}

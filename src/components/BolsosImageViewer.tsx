@@ -12,29 +12,47 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import replayLogo from '@/assets/logo-replay.png';
-import rueMadamLogo from '@/assets/logo-ruemadam.png';
-import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
+import moorLogo from '@/assets/logo-moor.png';
+import saintTropezLogo from '@/assets/logo-sainttropez.png';
+import dileiLogo from '@/assets/logo-dilei.png';
+import melaLogo from '@/assets/logo-mela.png';
+import pecattoLogo from '@/assets/logo-pecatto.png';
+import dixieLogo from '@/assets/logo-dixie.png';
+import jottLogo from '@/assets/logo-jott.png';
 
-const bolsoBrands: BolsoBrand[] = ['Replay', 'RueMadam', 'LolaCasademunt'];
+// Brands for "Ver más novedades" dropdown (all ropa brands - excludes Replay, RueMadam, LolaCasademunt)
+type RopaBrand = 'MOOR' | 'SaintTropez' | 'DiLei' | 'Mela' | 'Pecatto' | 'Dixie' | 'JOTT';
+const ropaBrands: RopaBrand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie', 'JOTT'];
 
-const brandLogos: Record<BolsoBrand, string> = {
-  'Replay': replayLogo,
-  'RueMadam': rueMadamLogo,
-  'LolaCasademunt': lolaCasademuntLogo,
+const brandLogos: Record<RopaBrand, string> = {
+  'MOOR': moorLogo,
+  'SaintTropez': saintTropezLogo,
+  'DiLei': dileiLogo,
+  'Mela': melaLogo,
+  'Pecatto': pecattoLogo,
+  'Dixie': dixieLogo,
+  'JOTT': jottLogo,
 };
 
-const brandDisplayNames: Record<BolsoBrand, string> = {
-  'Replay': 'Replay',
-  'RueMadam': 'Rue Madam',
-  'LolaCasademunt': 'Lola Casademunt',
+const brandDisplayNames: Record<RopaBrand, string> = {
+  'MOOR': 'MOOR',
+  'SaintTropez': 'Saint Tropez',
+  'DiLei': 'Di Lei',
+  'Mela': 'Mela',
+  'Pecatto': 'Pecatto',
+  'Dixie': 'Dixie',
+  'JOTT': 'JOTT',
 };
 
-const getBrandSlug = (brand: BolsoBrand): string => {
-  const slugMap: Record<BolsoBrand, string> = {
-    'Replay': 'replay',
-    'RueMadam': 'rue-madam',
-    'LolaCasademunt': 'lola-casademunt',
+const getBrandSlug = (brand: RopaBrand): string => {
+  const slugMap: Record<RopaBrand, string> = {
+    'MOOR': 'moor',
+    'SaintTropez': 'saint-tropez',
+    'DiLei': 'di-lei',
+    'Mela': 'mela',
+    'Pecatto': 'pecatto',
+    'Dixie': 'dixie',
+    'JOTT': 'jott',
   };
   return slugMap[brand];
 };
@@ -227,14 +245,22 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
   const messageWithImage = `${whatsappMessage}\n\nBolso: ${currentImageUrl}`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
-  const currentBrand = product.brand as BolsoBrand;
-  const otherBrands = bolsoBrands.filter(b => b !== currentBrand);
-
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
-      {/* Fixed navigation header */}
-      <nav className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
-        <div className="flex items-center justify-between px-4 py-2.5">
+      {/* Fixed header with banner + navigation */}
+      <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
+        {/* Logo banner - FIRST */}
+        <div className="px-4 py-3 text-center border-b border-neutral-200/30">
+          <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
+            LA LOGGIA
+          </h1>
+          <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
+            Altea · San Juan · Campello
+          </p>
+        </div>
+
+        {/* Navigation bar - BELOW BANNER */}
+        <nav className="flex items-center justify-between px-4 py-2.5">
           {/* Back button */}
           <button
             onClick={onClose}
@@ -244,20 +270,20 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
             <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
           </button>
 
-          {/* Brand dropdown */}
+          {/* Ver más novedades dropdown - links to ropa brands */}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
-              Ver otras marcas
+              Ver más novedades
               <ChevronDown className="w-3.5 h-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
-              {otherBrands.map((brand) => (
+              {ropaBrands.map((brand) => (
                 <DropdownMenuItem
                   key={brand}
                   asChild
                 >
                   <Link
-                    to={`/bolsos/${getBrandSlug(brand)}`}
+                    to={`/marca/${getBrandSlug(brand)}`}
                     className="flex items-center gap-3 px-3 py-2 cursor-pointer"
                   >
                     <img 
@@ -271,11 +297,12 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {/* Main content */}
-      <div className="pt-14 md:pt-14 pb-28 md:pb-24">
+      {/* Main content - adjusted padding for new header height */}
+      <div className="pt-28 md:pt-28 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
           <div className="flex gap-2 md:gap-4">
