@@ -71,98 +71,111 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg"
+      className="bg-secondary/30 rounded-lg p-3"
     >
-      {/* Drag handle */}
-      <button
-        {...attributes}
-        {...listeners}
-        className="p-1 cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground"
-        aria-label="Arrastrar para reordenar"
-      >
-        <GripVertical className="w-5 h-5" />
-      </button>
-      
-      <div className="relative">
-        <img
-          src={product.imageUrl}
-          alt={product.brand}
-          className="w-16 h-20 object-cover rounded"
-        />
+      {/* Mobile: Stack layout */}
+      <div className="flex gap-3">
+        {/* Drag handle */}
         <button
-          onClick={() => onReplaceImage(product)}
-          className="absolute -top-1 -right-1 p-1 bg-foreground text-background rounded-full hover:bg-foreground/80"
-          title="Reemplazar imagen"
+          {...attributes}
+          {...listeners}
+          className="p-1 cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground self-start mt-2"
+          aria-label="Arrastrar para reordenar"
         >
-          <Pencil className="w-3 h-3" />
+          <GripVertical className="w-5 h-5" />
         </button>
-      </div>
-      
-      <div className="flex-1 min-w-0 space-y-1">
-        <Select 
-          value={product.brand} 
-          onValueChange={(v) => onChangeBrand(product, v as Brand)}
-        >
-          <SelectTrigger className="h-7 text-xs w-28">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {brands.map((brand) => (
-              <SelectItem key={brand} value={brand} className="text-xs">{brand}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select 
-          value={product.visibility} 
-          onValueChange={(v) => onChangeVisibility(product, v as ProductVisibility)}
-        >
-          <SelectTrigger className="h-7 text-xs w-28">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
-              <SelectItem key={vis} value={vis} className="text-xs">{visibilityLabels[vis]}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select 
-          value={product.category} 
-          onValueChange={(v) => onChangeCategory(product, v as ProductCategory)}
-        >
-          <SelectTrigger className="h-7 text-xs w-24">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
-              <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <p className="text-xs text-muted-foreground">
-          {product.createdAt.toLocaleDateString('es-ES')}
-        </p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onManageImages(product)}
-          title="Gestionar imágenes"
-        >
-          <Images className="w-4 h-4" />
-        </Button>
-        <Switch
-          checked={product.isActive}
-          onCheckedChange={() => onToggleActive(product)}
-        />
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onDelete(product.id)}
-          className="text-destructive hover:text-destructive"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+        
+        {/* Image with replace button */}
+        <div className="relative shrink-0">
+          <img
+            src={product.imageUrl}
+            alt={product.brand}
+            className="w-16 h-20 md:w-20 md:h-24 object-cover rounded"
+          />
+          <button
+            onClick={() => onReplaceImage(product)}
+            className="absolute -top-1 -right-1 p-1.5 bg-foreground text-background rounded-full hover:bg-foreground/80"
+            title="Reemplazar imagen"
+          >
+            <Pencil className="w-3 h-3" />
+          </button>
+        </div>
+        
+        {/* Content area */}
+        <div className="flex-1 min-w-0">
+          {/* Top row: Date + Actions */}
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs text-muted-foreground">
+              {product.createdAt.toLocaleDateString('es-ES')}
+            </p>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onManageImages(product)}
+                title="Gestionar imágenes"
+              >
+                <Images className="w-4 h-4" />
+              </Button>
+              <Switch
+                checked={product.isActive}
+                onCheckedChange={() => onToggleActive(product)}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onDelete(product.id)}
+                className="text-destructive hover:text-destructive h-8 w-8"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          
+          {/* Selectors row - grid for mobile */}
+          <div className="grid grid-cols-3 gap-1.5">
+            <Select 
+              value={product.brand} 
+              onValueChange={(v) => onChangeBrand(product, v as Brand)}
+            >
+              <SelectTrigger className="h-8 text-xs px-2">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {brands.map((brand) => (
+                  <SelectItem key={brand} value={brand} className="text-xs">{brand}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select 
+              value={product.category} 
+              onValueChange={(v) => onChangeCategory(product, v as ProductCategory)}
+            >
+              <SelectTrigger className="h-8 text-xs px-2">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                  <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select 
+              value={product.visibility} 
+              onValueChange={(v) => onChangeVisibility(product, v as ProductVisibility)}
+            >
+              <SelectTrigger className="h-8 text-xs px-2">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+                  <SelectItem key={vis} value={vis} className="text-xs">{visibilityLabels[vis]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -530,42 +543,46 @@ const Admin = () => {
             </h2>
           </div>
           
-          {/* Filters */}
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-            <Select value={filterBrand} onValueChange={(v) => setFilterBrand(v as Brand | 'ALL')}>
-              <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Filtrar por marca" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Todas las marcas</SelectItem>
-                {brands.map((brand) => (
-                  <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filterVisibility} onValueChange={(v) => setFilterVisibility(v as ProductVisibility | 'ALL')}>
-              <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Filtrar por visibilidad" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Toda visibilidad</SelectItem>
-                {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
-                  <SelectItem key={vis} value={vis}>{visibilityLabels[vis]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as ProductCategory | 'ALL')}>
-              <SelectTrigger className="w-24">
-                <SelectValue placeholder="Categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Todas</SelectItem>
-                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
-                  <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Filters - Stack on mobile, row on desktop */}
+          <div className="space-y-2 md:space-y-0 md:flex md:items-center md:gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <Select value={filterBrand} onValueChange={(v) => setFilterBrand(v as Brand | 'ALL')}>
+                <SelectTrigger className="flex-1 md:w-40">
+                  <SelectValue placeholder="Marca" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Todas las marcas</SelectItem>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-2 md:flex md:gap-2">
+              <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as ProductCategory | 'ALL')}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Todas</SelectItem>
+                  {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                    <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={filterVisibility} onValueChange={(v) => setFilterVisibility(v as ProductVisibility | 'ALL')}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Visibilidad" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Toda visibilidad</SelectItem>
+                  {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+                    <SelectItem key={vis} value={vis}>{visibilityLabels[vis]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <p className="text-xs text-muted-foreground mb-4">
