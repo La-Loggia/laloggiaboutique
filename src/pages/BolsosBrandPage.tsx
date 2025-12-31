@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BolsosBrandNav from '@/components/BolsosBrandNav';
@@ -47,6 +47,8 @@ const brandSEO: Record<BolsoBrand, {
 const BolsosBrandPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const savedScrollPosition = useRef<number>(0);
+  const hasScrolledToTop = useRef(false);
 
   const brandMap: Record<string, BolsoBrand> = {
     'replay': 'Replay',
@@ -56,6 +58,19 @@ const BolsosBrandPage = () => {
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
 
+  // Scroll to top on mount (only once per page load)
+  useEffect(() => {
+    if (!hasScrolledToTop.current) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      hasScrolledToTop.current = true;
+    }
+  }, []);
+
+  // Reset scroll flag when brand changes
+  useEffect(() => {
+    hasScrolledToTop.current = false;
+  }, [brandSlug]);
+
   if (!brand) {
     return <Navigate to="/" replace />;
   }
@@ -63,6 +78,8 @@ const BolsosBrandPage = () => {
   const { data: products = [], isLoading } = useBolsosByBrand(brand);
 
   const handleProductClick = (product: Product) => {
+    // Save scroll position before opening viewer
+    savedScrollPosition.current = window.scrollY;
     setSelectedProduct(product);
     document.body.style.overflow = 'hidden';
   };
@@ -70,6 +87,10 @@ const BolsosBrandPage = () => {
   const handleCloseViewer = () => {
     setSelectedProduct(null);
     document.body.style.overflow = '';
+    // Restore scroll position after closing viewer
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: savedScrollPosition.current, behavior: 'instant' });
+    });
   };
 
   const brandLogo = brandLogos[brand];
