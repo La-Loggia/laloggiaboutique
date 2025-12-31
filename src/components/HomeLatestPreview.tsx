@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useLatestProducts, Product } from '@/hooks/useProducts';
 import ProductGrid from './ProductGrid';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface HomeLatestPreviewProps {
   onProductClick: (product: Product) => void;
 }
 
 const HomeLatestPreview = ({ onProductClick }: HomeLatestPreviewProps) => {
-  const { data: previewProducts = [], isLoading } = useLatestProducts(6);
+  const isMobile = useIsMobile();
+  // Fetch 7 products, show all on mobile, 6 on desktop
+  const { data: allProducts = [], isLoading } = useLatestProducts(7);
+  const previewProducts = isMobile ? allProducts : allProducts.slice(0, 6);
 
   if (isLoading) {
     return (
