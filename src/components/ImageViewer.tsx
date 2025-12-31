@@ -1,8 +1,63 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
+import { Brand } from '@/data/products';
 import WhatsAppButton from './WhatsAppButton';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+import moorLogo from '@/assets/logo-moor.png';
+import saintTropezLogo from '@/assets/logo-sainttropez.png';
+import dileiLogo from '@/assets/logo-dilei.png';
+import melaLogo from '@/assets/logo-mela.png';
+import pecattoLogo from '@/assets/logo-pecatto.png';
+import dixieLogo from '@/assets/logo-dixie.png';
+import jottLogo from '@/assets/logo-jott.png';
+
+// Ropa brands only (excluding bolsos brands: Replay, RueMadam, LolaCasademunt)
+const ropaBrands: Brand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie', 'JOTT'];
+
+const brandLogos: Record<string, string> = {
+  'MOOR': moorLogo,
+  'SaintTropez': saintTropezLogo,
+  'DiLei': dileiLogo,
+  'Mela': melaLogo,
+  'Pecatto': pecattoLogo,
+  'Dixie': dixieLogo,
+  'JOTT': jottLogo,
+};
+
+const brandDisplayNames: Record<string, string> = {
+  'MOOR': 'MOOR',
+  'SaintTropez': 'Saint Tropez',
+  'DiLei': 'Di Lei',
+  'Mela': 'Mela',
+  'Pecatto': 'Pecatto',
+  'Dixie': 'Dixie',
+  'JOTT': 'JOTT',
+};
+
+const getBrandSlug = (brand: Brand): string => {
+  const slugMap: Record<Brand, string> = {
+    'MOOR': 'moor',
+    'SaintTropez': 'saint-tropez',
+    'DiLei': 'di-lei',
+    'Mela': 'mela',
+    'Pecatto': 'pecatto',
+    'Dixie': 'dixie',
+    'JOTT': 'jott',
+    'Replay': 'replay',
+    'RueMadam': 'rue-madam',
+    'LolaCasademunt': 'lola-casademunt',
+  };
+  return slugMap[brand];
+};
 
 interface ImageViewerProps {
   product: Product;
@@ -193,10 +248,54 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const messageWithImage = `${whatsappMessage}\n\nPrenda: ${currentImageUrl}`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
+  // Get other brands for dropdown (excluding current brand)
+  const otherBrands = ropaBrands.filter(b => b !== product.brand);
+
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
-      {/* Fixed header with logo */}
+      {/* Fixed header with navigation + logo */}
       <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
+        {/* Navigation bar */}
+        <nav className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-200/30">
+          {/* Back button */}
+          <button
+            onClick={onClose}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
+          </button>
+
+          {/* Brand dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
+              Ver más novedades
+              <ChevronDown className="w-3.5 h-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
+              {otherBrands.map((brand) => (
+                <DropdownMenuItem
+                  key={brand}
+                  asChild
+                >
+                  <Link
+                    to={`/marca/${getBrandSlug(brand)}`}
+                    className="flex items-center gap-3 px-3 py-2 cursor-pointer"
+                  >
+                    <img 
+                      src={brandLogos[brand]} 
+                      alt={brandDisplayNames[brand]} 
+                      className="h-5 w-auto object-contain grayscale opacity-70"
+                    />
+                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </nav>
+
+        {/* Logo banner */}
         <div className="px-4 py-3 text-center">
           <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
             LA LOGGIA
@@ -207,17 +306,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         </div>
       </header>
 
-      {/* Back button */}
-      <button
-        onClick={onClose}
-        className="fixed top-3 left-3 z-[110] flex items-center justify-center w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full transition-colors hover:bg-white shadow-sm"
-        aria-label="Volver"
-      >
-        <ArrowLeft className="w-4 h-4 text-black" />
-      </button>
-
       {/* Main content */}
-      <div className="pt-20 md:pt-20 pb-28 md:pb-24">
+      <div className="pt-28 md:pt-28 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
           {/* Thumbnails on left + Main image on right (both mobile and desktop) */}
