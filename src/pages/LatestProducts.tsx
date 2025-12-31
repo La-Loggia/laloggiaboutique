@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import LatestProductGrid from '@/components/LatestProductGrid';
@@ -9,8 +9,20 @@ import { useLatestProducts, Product } from '@/hooks/useProducts';
 const LatestProducts = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { data: allProducts = [], isLoading } = useLatestProducts();
+  const savedScrollPosition = useRef<number>(0);
+  const hasScrolledToTop = useRef(false);
+
+  // Scroll to top on mount (only once per page load)
+  useEffect(() => {
+    if (!hasScrolledToTop.current) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      hasScrolledToTop.current = true;
+    }
+  }, []);
 
   const handleProductClick = (product: Product) => {
+    // Save scroll position before opening viewer
+    savedScrollPosition.current = window.scrollY;
     setSelectedProduct(product);
     document.body.style.overflow = 'hidden';
   };
@@ -18,6 +30,10 @@ const LatestProducts = () => {
   const handleCloseViewer = () => {
     setSelectedProduct(null);
     document.body.style.overflow = '';
+    // Restore scroll position after closing viewer
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: savedScrollPosition.current, behavior: 'instant' });
+    });
   };
 
   // Breadcrumbs for structured navigation

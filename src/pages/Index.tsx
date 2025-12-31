@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandMarquee from '@/components/BrandMarquee';
@@ -14,6 +14,16 @@ import { Product } from '@/hooks/useProducts';
 const Index = () => {
   const location = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const savedScrollPosition = useRef<number>(0);
+  const hasScrolledToTop = useRef(false);
+
+  // Scroll to top on mount (only once per page load), unless there's a hash
+  useEffect(() => {
+    if (!hasScrolledToTop.current && !location.hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      hasScrolledToTop.current = true;
+    }
+  }, [location.hash]);
 
   useEffect(() => {
     if (location.hash) {
@@ -27,6 +37,8 @@ const Index = () => {
   }, [location]);
 
   const handleProductClick = (product: Product) => {
+    // Save scroll position before opening viewer
+    savedScrollPosition.current = window.scrollY;
     setSelectedProduct(product);
     document.body.style.overflow = 'hidden';
   };
@@ -34,6 +46,10 @@ const Index = () => {
   const handleCloseViewer = () => {
     setSelectedProduct(null);
     document.body.style.overflow = '';
+    // Restore scroll position after closing viewer
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: savedScrollPosition.current, behavior: 'instant' });
+    });
   };
 
   return (
