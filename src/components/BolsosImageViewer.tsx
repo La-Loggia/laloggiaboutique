@@ -301,21 +301,20 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
       </header>
 
       {/* Main content */}
-      {/* Main content - adjusted padding for new header height */}
       <div className="pt-28 md:pt-28 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
-          <div className="flex gap-2 md:gap-4">
+          <div className="flex gap-1 md:gap-2">
             {/* Thumbnails column */}
             {allImages.length > 1 && (
-              <div className="flex flex-col gap-1.5 md:gap-2 shrink-0">
+              <div className="flex flex-col gap-1 md:gap-1.5 shrink-0 mt-2">
                 {allImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`relative w-12 md:w-14 aspect-[9/16] overflow-hidden shrink-0 transition-opacity ${
+                    className={`relative w-14 md:w-16 aspect-[9/16] overflow-hidden shrink-0 transition-all ${
                       index === currentIndex 
-                        ? 'opacity-100' 
+                        ? 'opacity-100 ring-2 ring-foreground ring-offset-1' 
                         : 'opacity-50 hover:opacity-80'
                     }`}
                     aria-label={`Ver imagen ${index + 1}`}
@@ -347,7 +346,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-border my-6 md:my-8" />
+        <div className="w-full h-px bg-border my-3 md:my-4" />
 
         {/* More from brand section */}
         {moreBrandProducts.length > 0 && (
@@ -399,7 +398,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
         )}
 
         {/* Divider */}
-        <div className="w-full h-px bg-border my-6 md:my-8" />
+        <div className="w-full h-px bg-border my-3 md:my-4" />
 
         {/* Also like section - bolsos from other brands */}
         {alsoLikeProducts.length > 0 && (
