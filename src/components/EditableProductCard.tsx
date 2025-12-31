@@ -1,14 +1,24 @@
-import { useState } from 'react';
-import { Product, useUpdateProduct, useDeleteProduct, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
+import { useState, useRef } from 'react';
+import { Product, useUpdateProduct, useDeleteProduct, useUploadImage, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
 import { useAdminContext } from '@/contexts/AdminContext';
 import { Brand, brands } from '@/data/products';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Trash2, GripVertical, X, Check } from 'lucide-react';
+import { Trash2, GripVertical, X, Check, Eye, EyeOff, Store, Sparkles, Globe, ImagePlus, Loader2 } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 
 interface EditableProductCardProps {
   product: Product;
@@ -43,6 +53,18 @@ const brandCategories: Record<string, string> = {
   'JOTT': 'técnico de alta gama',
 };
 
+const visibilityIcons: Record<ProductVisibility, React.ReactNode> = {
+  'all': <Globe className="w-3 h-3" />,
+  'brand_only': <Store className="w-3 h-3" />,
+  'latest_only': <Sparkles className="w-3 h-3" />,
+};
+
+const visibilityColors: Record<ProductVisibility, string> = {
+  'all': 'bg-green-500',
+  'brand_only': 'bg-blue-500',
+  'latest_only': 'bg-amber-500',
+};
+
 const EditableProductCard = ({ 
   product, 
   onClick, 
@@ -53,8 +75,11 @@ const EditableProductCard = ({
 }: EditableProductCardProps) => {
   const { isEditMode } = useAdminContext();
   const [showEditPanel, setShowEditPanel] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
+  const uploadImage = useUploadImage();
   
   const {
     attributes,
@@ -127,8 +152,8 @@ const EditableProductCard = ({
     }
   };
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDelete = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (!confirm('¿Eliminar este producto?')) return;
     
     try {
@@ -136,6 +161,28 @@ const EditableProductCard = ({
       toast.success('Producto eliminado');
     } catch {
       toast.error('Error al eliminar');
+    }
+  };
+
+  const handleReplaceImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadImage.mutateAsync(file);
+      await updateProduct.mutateAsync({
+        id: product.id,
+        imageUrl,
+      });
+      toast.success('Imagen reemplazada');
+    } catch {
+      toast.error('Error al reemplazar imagen');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -147,7 +194,8 @@ const EditableProductCard = ({
     }
   };
 
-  return (
+  const cardContent = (
+
     <article 
       ref={setNodeRef}
       style={style}
@@ -156,6 +204,15 @@ const EditableProductCard = ({
       itemScope
       itemType="https://schema.org/Product"
     >
+      {/* Hidden file input for image replacement */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleReplaceImage}
+      />
+      
       {/* Drag handle - only visible in edit mode with draggable */}
       {isEditMode && isDraggable && (
         <button
@@ -167,20 +224,49 @@ const EditableProductCard = ({
           <GripVertical className="w-4 h-4" />
         </button>
       )}
+
+      {/* Visibility indicator badge - only in edit mode */}
+      {isEditMode && (
+        <div 
+          className={`absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-2 py-1 rounded-full text-white text-[10px] font-medium ${visibilityColors[product.visibility]}`}
+          title={visibilityLabels[product.visibility]}
+        >
+          {visibilityIcons[product.visibility]}
+          <span className="hidden sm:inline">{visibilityLabels[product.visibility]}</span>
+        </div>
+      )}
       
       {/* Quick action buttons in edit mode */}
       {isEditMode && !showEditPanel && (
-        <div className="absolute top-2 right-2 z-20 flex items-center gap-1">
+        <div className="absolute top-10 right-2 z-20 flex flex-col items-center gap-1">
           <Button
             variant="secondary"
             size="icon"
             className="h-7 w-7 bg-background/90 hover:bg-background shadow-sm"
             onClick={handleToggleActive}
+            title={product.isActive ? 'Desactivar' : 'Activar'}
           >
             {product.isActive ? (
-              <Check className="w-3.5 h-3.5 text-green-600" />
+              <Eye className="w-3.5 h-3.5 text-green-600" />
             ) : (
-              <X className="w-3.5 h-3.5 text-muted-foreground" />
+              <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
+            )}
+          </Button>
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-7 w-7 bg-background/90 hover:bg-background shadow-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              fileInputRef.current?.click();
+            }}
+            disabled={isUploading}
+            title="Reemplazar imagen"
+          >
+            {isUploading ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <ImagePlus className="w-3.5 h-3.5" />
             )}
           </Button>
           <Button
@@ -188,6 +274,7 @@ const EditableProductCard = ({
             size="icon"
             className="h-7 w-7 bg-background/90 hover:bg-background shadow-sm text-destructive hover:text-destructive"
             onClick={handleDelete}
+            title="Eliminar"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </Button>
@@ -250,11 +337,26 @@ const EditableProductCard = ({
             </div>
             
             <div className="flex gap-3 mb-4">
-              <img
-                src={product.imageUrl}
-                alt={product.brand}
-                className="w-16 h-20 object-cover rounded"
-              />
+              <div className="relative">
+                <img
+                  src={product.imageUrl}
+                  alt={product.brand}
+                  className="w-16 h-20 object-cover rounded"
+                />
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full shadow"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                >
+                  {isUploading ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <ImagePlus className="w-3 h-3" />
+                  )}
+                </Button>
+              </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">Activo</span>
@@ -324,6 +426,100 @@ const EditableProductCard = ({
       )}
     </article>
   );
+
+  // Wrap with context menu only in edit mode
+  if (isEditMode) {
+    return (
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          {cardContent}
+        </ContextMenuTrigger>
+        <ContextMenuContent className="w-48 z-[200] bg-popover">
+          <ContextMenuItem onClick={() => handleToggleActive({} as React.MouseEvent)}>
+            {product.isActive ? (
+              <>
+                <EyeOff className="w-4 h-4 mr-2" />
+                Desactivar
+              </>
+            ) : (
+              <>
+                <Eye className="w-4 h-4 mr-2" />
+                Activar
+              </>
+            )}
+          </ContextMenuItem>
+          <ContextMenuItem onClick={() => fileInputRef.current?.click()}>
+            <ImagePlus className="w-4 h-4 mr-2" />
+            Reemplazar imagen
+          </ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>
+              <Store className="w-4 h-4 mr-2" />
+              Marca
+            </ContextMenuSubTrigger>
+            <ContextMenuSubContent className="z-[210] bg-popover">
+              {brands.map((brand) => (
+                <ContextMenuItem 
+                  key={brand} 
+                  onClick={() => handleChangeBrand(brand)}
+                  className={product.brand === brand ? 'bg-accent' : ''}
+                >
+                  {brand}
+                </ContextMenuItem>
+              ))}
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>
+              {visibilityIcons[product.visibility]}
+              <span className="ml-2">Visibilidad</span>
+            </ContextMenuSubTrigger>
+            <ContextMenuSubContent className="z-[210] bg-popover">
+              {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+                <ContextMenuItem 
+                  key={vis} 
+                  onClick={() => handleChangeVisibility(vis)}
+                  className={product.visibility === vis ? 'bg-accent' : ''}
+                >
+                  <span className="flex items-center gap-2">
+                    {visibilityIcons[vis]}
+                    {visibilityLabels[vis]}
+                  </span>
+                </ContextMenuItem>
+              ))}
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>
+              Categoría
+            </ContextMenuSubTrigger>
+            <ContextMenuSubContent className="z-[210] bg-popover">
+              {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                <ContextMenuItem 
+                  key={cat} 
+                  onClick={() => handleChangeCategory(cat)}
+                  className={product.category === cat ? 'bg-accent' : ''}
+                >
+                  {categoryLabels[cat]}
+                </ContextMenuItem>
+              ))}
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+          <ContextMenuSeparator />
+          <ContextMenuItem 
+            onClick={() => handleDelete()}
+            className="text-destructive focus:text-destructive"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Eliminar
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    );
+  }
+
+  return cardContent;
 };
 
 export default EditableProductCard;
