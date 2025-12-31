@@ -35,7 +35,7 @@ const bolsosBrands: BolsosBrandInfo[] = [
 
 const HomeBolsosBlock = () => {
   return (
-    <section className="py-10">
+    <section id="bolsos-section" className="py-10">
       <Link to="/bolsos" className="block text-center mb-8 group">
         <h2 className="section-title group-hover:text-foreground/80 transition-colors">Bolsos</h2>
         <p className="font-sans text-xs text-muted-foreground mt-2">
