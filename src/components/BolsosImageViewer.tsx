@@ -1,9 +1,43 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages } from '@/hooks/useProducts';
 import { useBolsosByBrand, useBolsosExcludingBrand, BolsoBrand } from '@/hooks/useBolsos';
 import WhatsAppButton from './WhatsAppButton';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+import replayLogo from '@/assets/logo-replay.png';
+import rueMadamLogo from '@/assets/logo-ruemadam.png';
+import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
+
+const bolsoBrands: BolsoBrand[] = ['Replay', 'RueMadam', 'LolaCasademunt'];
+
+const brandLogos: Record<BolsoBrand, string> = {
+  'Replay': replayLogo,
+  'RueMadam': rueMadamLogo,
+  'LolaCasademunt': lolaCasademuntLogo,
+};
+
+const brandDisplayNames: Record<BolsoBrand, string> = {
+  'Replay': 'Replay',
+  'RueMadam': 'Rue Madam',
+  'LolaCasademunt': 'Lola Casademunt',
+};
+
+const getBrandSlug = (brand: BolsoBrand): string => {
+  const slugMap: Record<BolsoBrand, string> = {
+    'Replay': 'replay',
+    'RueMadam': 'rue-madam',
+    'LolaCasademunt': 'lola-casademunt',
+  };
+  return slugMap[brand];
+};
 
 interface BolsosImageViewerProps {
   product: Product;
@@ -193,31 +227,55 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
   const messageWithImage = `${whatsappMessage}\n\nBolso: ${currentImageUrl}`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
+  const currentBrand = product.brand as BolsoBrand;
+  const otherBrands = bolsoBrands.filter(b => b !== currentBrand);
+
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
-      {/* Fixed header with logo */}
-      <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
-        <div className="px-4 py-3 text-center">
-          <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
-            LA LOGGIA
-          </h1>
-          <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
-            Altea · San Juan · Campello
-          </p>
-        </div>
-      </header>
+      {/* Fixed navigation header */}
+      <nav className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
+        <div className="flex items-center justify-between px-4 py-2.5">
+          {/* Back button */}
+          <button
+            onClick={onClose}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
+          </button>
 
-      {/* Back button */}
-      <button
-        onClick={onClose}
-        className="fixed top-3 left-3 z-[110] flex items-center justify-center w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full transition-colors hover:bg-white shadow-sm"
-        aria-label="Volver"
-      >
-        <ArrowLeft className="w-4 h-4 text-black" />
-      </button>
+          {/* Brand dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
+              Ver otras marcas
+              <ChevronDown className="w-3.5 h-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
+              {otherBrands.map((brand) => (
+                <DropdownMenuItem
+                  key={brand}
+                  asChild
+                >
+                  <Link
+                    to={`/bolsos/${getBrandSlug(brand)}`}
+                    className="flex items-center gap-3 px-3 py-2 cursor-pointer"
+                  >
+                    <img 
+                      src={brandLogos[brand]} 
+                      alt={brandDisplayNames[brand]} 
+                      className="h-5 w-auto object-contain grayscale opacity-70"
+                    />
+                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </nav>
 
       {/* Main content */}
-      <div className="pt-20 md:pt-20 pb-28 md:pb-24">
+      <div className="pt-14 md:pt-14 pb-28 md:pb-24">
         {/* Product images section */}
         <div className="px-3 md:px-8 max-w-6xl mx-auto">
           <div className="flex gap-2 md:gap-4">
