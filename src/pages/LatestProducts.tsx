@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
-import LatestProductGrid from '@/components/LatestProductGrid';
+import EditableProductGrid from '@/components/EditableProductGrid';
 import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
 import { useLatestProducts, Product } from '@/hooks/useProducts';
@@ -69,7 +69,7 @@ const LatestProducts = () => {
         ) : allProducts.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay novedades disponibles</p>
         ) : (
-          <LatestProductGrid products={allProducts} onProductClick={handleProductClick} />
+          <EditableProductGrid products={allProducts} onProductClick={handleProductClick} />
         )}
       </main>
 

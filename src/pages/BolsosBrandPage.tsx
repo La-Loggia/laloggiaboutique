@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BolsosBrandNav from '@/components/BolsosBrandNav';
-import BolsosProductGrid from '@/components/BolsosProductGrid';
+import EditableBolsosProductGrid from '@/components/EditableBolsosProductGrid';
 import BolsosImageViewer from '@/components/BolsosImageViewer';
 import SEOHead from '@/components/SEOHead';
 import { Product } from '@/hooks/useProducts';
@@ -130,7 +130,7 @@ const BolsosBrandPage = () => {
         ) : products.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay bolsos disponibles de esta marca</p>
         ) : (
-          <BolsosProductGrid products={products} onProductClick={handleProductClick} />
+          <EditableBolsosProductGrid products={products} onProductClick={handleProductClick} />
         )}
       </main>
 

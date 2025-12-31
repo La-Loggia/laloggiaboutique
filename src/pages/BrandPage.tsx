@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
-import ProductGrid from '@/components/ProductGrid';
+import EditableProductGrid from '@/components/EditableProductGrid';
 import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
 import { Brand, brands } from '@/data/products';
@@ -208,7 +208,7 @@ const BrandPage = () => {
         ) : products.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay prendas de esta marca</p>
         ) : (
-          <ProductGrid products={products} onProductClick={handleProductClick} />
+          <EditableProductGrid products={products} onProductClick={handleProductClick} />
         )}
       </main>
 
