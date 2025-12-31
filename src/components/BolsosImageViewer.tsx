@@ -246,11 +246,11 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
   return (
-    <div ref={contentRef} className="fixed inset-0 z-[100] bg-neutral-100 overflow-y-auto">
+    <div ref={contentRef} className="fixed inset-0 z-[100] bg-background overflow-y-auto">
       {/* Fixed header with banner + navigation */}
-      <header className="fixed top-0 left-0 right-0 z-[105] bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50">
+      <header className="fixed top-0 left-0 right-0 z-[105] bg-background/95 backdrop-blur-sm border-b border-border">
         {/* Logo banner - FIRST */}
-        <div className="px-4 py-3 text-center border-b border-neutral-200/30">
+        <div className="px-4 py-3 text-center border-b border-border/30">
           <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
             LA LOGGIA
           </h1>
@@ -347,22 +347,22 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 my-6 md:my-8" />
+        <div className="w-full h-px bg-border my-6 md:my-8" />
 
         {/* More from brand section */}
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
-            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-4">
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
               Más de {product.brand === 'RueMadam' ? 'Rue Madam' : product.brand === 'LolaCasademunt' ? 'Lola Casademunt' : product.brand}
             </p>
             <div className="relative flex items-center">
               {brandCanScrollLeft && (
                 <button
                   onClick={scrollBrandLeft}
-                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-neutral-100 via-neutral-100/90 to-transparent"
+                  className="absolute left-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-r from-background via-background/90 to-transparent"
                   aria-label="Anterior"
                 >
-                  <ChevronLeft className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                  <ChevronLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 </button>
               )}
               
@@ -388,10 +388,10 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
               {brandCanScrollRight && (
                 <button
                   onClick={scrollBrandRight}
-                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-neutral-100 via-neutral-100/90 to-transparent"
+                  className="absolute right-0 z-10 flex items-center justify-center w-6 h-12 bg-gradient-to-l from-background via-background/90 to-transparent"
                   aria-label="Siguiente"
                 >
-                  <ChevronRight className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 </button>
               )}
             </div>
@@ -399,12 +399,12 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
         )}
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 my-6 md:my-8" />
+        <div className="w-full h-px bg-border my-6 md:my-8" />
 
         {/* Also like section - bolsos from other brands */}
         {alsoLikeProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
-            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 mb-3 md:mb-4">
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-3 md:mb-4">
               También te puede interesar
             </p>
             <div className="grid grid-cols-2 gap-2 md:gap-3">
