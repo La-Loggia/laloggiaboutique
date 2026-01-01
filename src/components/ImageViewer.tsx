@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
@@ -66,6 +66,7 @@ interface ImageViewerProps {
 }
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
@@ -282,23 +283,24 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               Ver otras marcas
               <ChevronDown className="w-3.5 h-3.5" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
+            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px] z-[150]">
               {otherBrands.map((brand) => (
                 <DropdownMenuItem
                   key={brand}
-                  asChild
+                  onClick={() => {
+                    onClose();
+                    setTimeout(() => {
+                      navigate(`/marca/${getBrandSlug(brand)}`);
+                    }, 50);
+                  }}
+                  className="flex items-center gap-3 px-3 py-2 cursor-pointer"
                 >
-                  <Link
-                    to={`/marca/${getBrandSlug(brand)}`}
-                    className="flex items-center gap-3 px-3 py-2 cursor-pointer"
-                  >
-                    <img 
-                      src={brandLogos[brand]} 
-                      alt={brandDisplayNames[brand]} 
-                      className="h-5 w-auto object-contain grayscale opacity-70"
-                    />
-                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
-                  </Link>
+                  <img 
+                    src={brandLogos[brand]} 
+                    alt={brandDisplayNames[brand]} 
+                    className="h-5 w-auto object-contain grayscale opacity-70"
+                  />
+                  <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
