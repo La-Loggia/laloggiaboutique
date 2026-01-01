@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
-import { Brand } from '@/data/products';
+import { Brand, brands } from '@/data/products';
 import WhatsAppButton from './WhatsAppButton';
 import {
   DropdownMenu,
@@ -19,11 +19,11 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import dixieLogo from '@/assets/logo-dixie.png';
 import jottLogo from '@/assets/logo-jott.png';
+import replayLogo from '@/assets/logo-replay.png';
+import rueMadamLogo from '@/assets/logo-ruemadam.png';
+import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 
-// Ropa brands only (excluding bolsos brands: Replay, RueMadam, LolaCasademunt)
-const ropaBrands: Brand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie', 'JOTT'];
-
-const brandLogos: Record<string, string> = {
+const brandLogos: Record<Brand, string> = {
   'MOOR': moorLogo,
   'SaintTropez': saintTropezLogo,
   'DiLei': dileiLogo,
@@ -31,32 +31,13 @@ const brandLogos: Record<string, string> = {
   'Pecatto': pecattoLogo,
   'Dixie': dixieLogo,
   'JOTT': jottLogo,
-};
-
-const brandDisplayNames: Record<string, string> = {
-  'MOOR': 'MOOR',
-  'SaintTropez': 'Saint Tropez',
-  'DiLei': 'Di Lei',
-  'Mela': 'Mela',
-  'Pecatto': 'Pecatto',
-  'Dixie': 'Dixie',
-  'JOTT': 'JOTT',
+  'Replay': replayLogo,
+  'RueMadam': rueMadamLogo,
+  'LolaCasademunt': lolaCasademuntLogo,
 };
 
 const getBrandSlug = (brand: Brand): string => {
-  const slugMap: Record<Brand, string> = {
-    'MOOR': 'moor',
-    'SaintTropez': 'saint-tropez',
-    'DiLei': 'di-lei',
-    'Mela': 'mela',
-    'Pecatto': 'pecatto',
-    'Dixie': 'dixie',
-    'JOTT': 'jott',
-    'Replay': 'replay',
-    'RueMadam': 'rue-madam',
-    'LolaCasademunt': 'lola-casademunt',
-  };
-  return slugMap[brand];
+  return brand.toLowerCase();
 };
 
 interface ImageViewerProps {
@@ -66,7 +47,6 @@ interface ImageViewerProps {
 }
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
-  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
@@ -249,8 +229,6 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const messageWithImage = `${whatsappMessage}\n\nPrenda: ${currentImageUrl}`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
-  // Get other brands for dropdown (excluding current brand)
-  const otherBrands = ropaBrands.filter(b => b !== product.brand);
 
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-background overflow-y-auto">
@@ -277,38 +255,32 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
           </button>
 
-          {/* Brand dropdown */}
+          {/* Brand dropdown - identical to BrandNav */}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
               Ver otras marcas
               <ChevronDown className="w-3.5 h-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px] z-[150]">
-              {otherBrands.map((brand) => {
-                const slug = getBrandSlug(brand);
-                return (
-                  <DropdownMenuItem
-                    key={brand}
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      const targetUrl = `/marca/${slug}`;
-                      onClose();
-                      // Use window.location for navigation to avoid hook issues during unmount
-                      setTimeout(() => {
-                        window.location.href = targetUrl;
-                      }, 100);
-                    }}
+              {brands.map((brand) => (
+                <DropdownMenuItem
+                  key={brand}
+                  asChild
+                  className={product.brand === brand ? 'bg-muted' : ''}
+                >
+                  <Link
+                    to={`/marca/${getBrandSlug(brand)}`}
                     className="flex items-center gap-3 px-3 py-2 cursor-pointer"
                   >
                     <img 
                       src={brandLogos[brand]} 
-                      alt={brandDisplayNames[brand]} 
+                      alt={brand} 
                       className="h-5 w-auto object-contain grayscale opacity-70"
                     />
-                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
-                  </DropdownMenuItem>
-                );
-              })}
+                    <span className="text-xs tracking-[0.1em] uppercase">{brand}</span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
