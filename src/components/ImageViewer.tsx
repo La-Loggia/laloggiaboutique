@@ -284,25 +284,31 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               <ChevronDown className="w-3.5 h-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px] z-[150]">
-              {otherBrands.map((brand) => (
-                <DropdownMenuItem
-                  key={brand}
-                  onClick={() => {
-                    onClose();
-                    setTimeout(() => {
-                      navigate(`/marca/${getBrandSlug(brand)}`);
-                    }, 50);
-                  }}
-                  className="flex items-center gap-3 px-3 py-2 cursor-pointer"
-                >
-                  <img 
-                    src={brandLogos[brand]} 
-                    alt={brandDisplayNames[brand]} 
-                    className="h-5 w-auto object-contain grayscale opacity-70"
-                  />
-                  <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
-                </DropdownMenuItem>
-              ))}
+              {otherBrands.map((brand) => {
+                const slug = getBrandSlug(brand);
+                return (
+                  <DropdownMenuItem
+                    key={brand}
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      const targetUrl = `/marca/${slug}`;
+                      onClose();
+                      // Use window.location for navigation to avoid hook issues during unmount
+                      setTimeout(() => {
+                        window.location.href = targetUrl;
+                      }, 100);
+                    }}
+                    className="flex items-center gap-3 px-3 py-2 cursor-pointer"
+                  >
+                    <img 
+                      src={brandLogos[brand]} 
+                      alt={brandDisplayNames[brand]} 
+                      className="h-5 w-auto object-contain grayscale opacity-70"
+                    />
+                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
+                  </DropdownMenuItem>
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
