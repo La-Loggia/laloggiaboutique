@@ -1,20 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandMarquee from '@/components/BrandMarquee';
 import HomeLatestPreview from '@/components/HomeLatestPreview';
 import HomeBrandsBlock from '@/components/HomeBrandsBlock';
 import HomeBolsosBlock from '@/components/HomeBolsosBlock';
 import VisitSection from '@/components/VisitSection';
-import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
 import LocalSEOContent from '@/components/LocalSEOContent';
 import { Product } from '@/hooks/useProducts';
 
 const Index = () => {
   const location = useLocation();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const savedScrollPosition = useRef<number>(0);
+  const navigate = useNavigate();
   const hasScrolledToTop = useRef(false);
 
   // Scroll to top on mount (only once per page load), unless there's a hash
@@ -37,19 +35,9 @@ const Index = () => {
   }, [location]);
 
   const handleProductClick = (product: Product) => {
-    // Save scroll position before opening viewer
-    savedScrollPosition.current = window.scrollY;
-    setSelectedProduct(product);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const handleCloseViewer = () => {
-    setSelectedProduct(null);
-    document.body.style.overflow = '';
-    // Restore scroll position after closing viewer
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: savedScrollPosition.current, behavior: 'instant' });
-    });
+    // Navigate to the brand page
+    const brandSlug = product.brand.toLowerCase();
+    navigate(`/marca/${brandSlug}`);
   };
 
   return (
@@ -90,14 +78,6 @@ const Index = () => {
 
         <VisitSection />
       </main>
-
-      {selectedProduct && (
-        <ImageViewer 
-          product={selectedProduct} 
-          onClose={handleCloseViewer} 
-          onProductClick={handleProductClick}
-        />
-      )}
     </div>
   );
 };
