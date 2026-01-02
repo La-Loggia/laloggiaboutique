@@ -35,9 +35,9 @@ const Index = () => {
   }, [location]);
 
   const handleProductClick = (product: Product) => {
-    // Navigate to the brand page
+    // Navigate to the brand page with the product ID
     const brandSlug = product.brand.toLowerCase();
-    navigate(`/marca/${brandSlug}`);
+    navigate(`/marca/${brandSlug}?producto=${product.id}`);
   };
 
   return (
