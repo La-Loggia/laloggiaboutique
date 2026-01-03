@@ -7,6 +7,7 @@ import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
 import { Brand, brands } from '@/data/products';
 import { useProductsByBrand, Product } from '@/hooks/useProducts';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 
 import replayLogo from '@/assets/logo-replay.png';
 import dixieLogo from '@/assets/logo-dixie.png';
@@ -174,7 +175,7 @@ const BrandPage = () => {
   // Breadcrumbs for structured navigation
   const breadcrumbs = [
     { name: 'Inicio', url: '/' },
-    { name: brand, url: `/marca/${brandSlug?.toLowerCase()}` }
+    { name: getBrandDisplayName(brand), url: `/marca/${brandSlug?.toLowerCase()}` }
   ];
 
   return (
@@ -195,7 +196,7 @@ const BrandPage = () => {
           <h1 className="sr-only">{seo.h1}</h1>
           <img 
             src={brandLogo.src} 
-            alt={`Logo ${brand} - Moda italiana mujer en La Loggia Alicante`} 
+            alt={`Logo ${getBrandDisplayName(brand)} - Moda italiana mujer en La Loggia Alicante`} 
             className={`${brandLogo.height} w-auto object-contain grayscale opacity-80`}
           />
           

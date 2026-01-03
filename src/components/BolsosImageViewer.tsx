@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages } from '@/hooks/useProducts';
 import { useBolsosByBrand, useBolsosExcludingBrand, BolsoBrand } from '@/hooks/useBolsos';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 import WhatsAppButton from './WhatsAppButton';
 
 interface BolsosImageViewerProps {
@@ -272,7 +273,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-              Más de {product.brand === 'RueMadam' ? 'Rue Madam' : product.brand === 'LolaCasademunt' ? 'Lola Casademunt' : product.brand}
+              Más de {getBrandDisplayName(product.brand)}
             </p>
             <div className="relative flex items-center">
               {brandCanScrollLeft && (
@@ -341,7 +342,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
                     />
                   </div>
                   <p className="brand-name text-center">
-                    {relatedProduct.brand === 'RueMadam' ? 'Rue Madam' : relatedProduct.brand === 'LolaCasademunt' ? 'Lola Casademunt' : relatedProduct.brand}
+                    {getBrandDisplayName(relatedProduct.brand)}
                   </p>
                 </button>
               ))}

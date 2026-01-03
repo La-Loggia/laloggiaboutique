@@ -1,4 +1,5 @@
 import { Product } from '@/hooks/useProducts';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 
 interface ProductCardProps {
   product: Product;
@@ -25,7 +26,7 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
   const category = brandCategories[product.brand] || 'exclusivo';
   
   // Generate descriptive, SEO-friendly alt text
-  const altText = `Prenda ${category} de ${product.brand} para mujer - La Loggia boutique Alicante`;
+  const altText = `Prenda ${category} de ${getBrandDisplayName(product.brand)} para mujer - La Loggia boutique Alicante`;
   
   return (
     <article 
@@ -46,10 +47,10 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
       </div>
       {!hideBrandName && (
-        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`} itemProp="brand">{product.brand}</p>
+        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`} itemProp="brand">{getBrandDisplayName(product.brand)}</p>
       )}
-      <meta itemProp="name" content={`Moda ${product.brand} mujer en La Loggia`} />
-      <meta itemProp="description" content={`${product.brand} - Colección de moda femenina ${category} disponible en La Loggia Altea, San Juan y Campello`} />
+      <meta itemProp="name" content={`Moda ${getBrandDisplayName(product.brand)} mujer en La Loggia`} />
+      <meta itemProp="description" content={`${getBrandDisplayName(product.brand)} - Colección de moda femenina ${category} disponible en La Loggia Altea, San Juan y Campello`} />
       <link itemProp="url" href={`https://laloggia.shop/marca/${product.brand.toLowerCase()}`} />
     </article>
   );
