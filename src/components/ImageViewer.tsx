@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 import WhatsAppButton from './WhatsAppButton';
 
 interface ImageViewerProps {
@@ -273,7 +274,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-              Más de {product.brand}
+              Más de {getBrandDisplayName(product.brand)}
             </p>
             <div className="relative flex items-center">
               {/* Left arrow - appears when can scroll left */}
@@ -344,7 +345,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                     />
                   </div>
                   <p className="brand-name text-center">
-                    {relatedProduct.brand}
+                    {getBrandDisplayName(relatedProduct.brand)}
                   </p>
                 </button>
               ))}

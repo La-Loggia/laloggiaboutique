@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Product, useUpdateProduct, useDeleteProduct, useUploadImage, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
 import { useAdminContext } from '@/contexts/AdminContext';
 import { Brand, brands } from '@/data/products';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -101,7 +102,8 @@ const EditableProductCard = ({
   } : {};
 
   const category = brandCategories[product.brand] || 'exclusivo';
-  const altText = `Prenda ${category} de ${product.brand} para mujer - La Loggia boutique Alicante`;
+  const displayBrandName = getBrandDisplayName(product.brand);
+  const altText = `Prenda ${category} de ${displayBrandName} para mujer - La Loggia boutique Alicante`;
 
   const handleToggleActive = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -122,7 +124,7 @@ const EditableProductCard = ({
         id: product.id,
         brand: newBrand,
       });
-      toast.success(`Marca cambiada a ${newBrand}`);
+      toast.success(`Marca cambiada a ${getBrandDisplayName(newBrand)}`);
     } catch {
       toast.error('Error al cambiar marca');
     }
@@ -303,12 +305,12 @@ const EditableProductCard = ({
       
       {!hideBrandName && (
         <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`} itemProp="brand">
-          {product.brand}
+          {displayBrandName}
         </p>
       )}
       
-      <meta itemProp="name" content={`Moda ${product.brand} mujer en La Loggia`} />
-      <meta itemProp="description" content={`${product.brand} - Colección de moda femenina ${category} disponible en La Loggia`} />
+      <meta itemProp="name" content={`Moda ${displayBrandName} mujer en La Loggia`} />
+      <meta itemProp="description" content={`${displayBrandName} - Colección de moda femenina ${category} disponible en La Loggia`} />
       
       {/* Edit panel overlay */}
       {showEditPanel && (
@@ -378,7 +380,7 @@ const EditableProductCard = ({
                 </SelectTrigger>
                 <SelectContent>
                   {brands.map((brand) => (
-                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                    <SelectItem key={brand} value={brand}>{getBrandDisplayName(brand)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -465,7 +467,7 @@ const EditableProductCard = ({
                   onClick={() => handleChangeBrand(brand)}
                   className={product.brand === brand ? 'bg-accent' : ''}
                 >
-                  {brand}
+                  {getBrandDisplayName(brand)}
                 </ContextMenuItem>
               ))}
             </ContextMenuSubContent>

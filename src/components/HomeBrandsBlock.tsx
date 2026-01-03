@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Brand, brands } from '@/data/products';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 
 import logoMoor from '@/assets/logo-moor.png';
 import logoSaintTropez from '@/assets/logo-sainttropez.png';
@@ -50,7 +51,7 @@ const HomeBrandsBlock = () => {
           >
             <img
               src={brandLogos[brand].src}
-              alt={brand}
+              alt={getBrandDisplayName(brand)}
               className={`${brandLogos[brand].height} object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300`}
             />
           </Link>

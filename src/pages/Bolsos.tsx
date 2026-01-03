@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import SEOHead from '@/components/SEOHead';
 import { BolsoBrand } from '@/hooks/useBolsos';
 import { Brand, brands } from '@/data/products';
+import { getBrandDisplayName } from '@/lib/brandUtils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -125,10 +126,10 @@ const Bolsos = () => {
                   >
                     <img 
                       src={brandLogos[brand]} 
-                      alt={brand} 
+                      alt={getBrandDisplayName(brand)} 
                       className="h-5 w-auto object-contain grayscale opacity-70"
                     />
-                    <span className="text-xs tracking-[0.1em] uppercase">{brand}</span>
+                    <span className="text-xs tracking-[0.1em] uppercase">{getBrandDisplayName(brand)}</span>
                   </Link>
                 </DropdownMenuItem>
               ))}

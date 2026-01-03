@@ -26,7 +26,7 @@ const brandLogos: Record<BolsoBrand, string> = {
 
 const brandDisplayNames: Record<BolsoBrand, string> = {
   'Replay': 'Replay',
-  'RueMadam': 'Rue Madam',
+  'RueMadam': 'Rue Madam Paris',
   'LolaCasademunt': 'Lola Casademunt',
 };
 
