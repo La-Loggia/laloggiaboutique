@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useSearchParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandNav from '@/components/BrandNav';
 import EditableProductGrid from '@/components/EditableProductGrid';
@@ -114,11 +114,9 @@ const brandSEO: Record<Brand, {
 
 const BrandPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const savedScrollPosition = useRef<number>(0);
   const hasScrolledToTop = useRef(false);
-  const hasOpenedFromUrl = useRef(false);
 
   const brandMap: Record<string, Brand> = {
     'moor': 'MOOR',
@@ -134,35 +132,14 @@ const BrandPage = () => {
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
-  const productIdFromUrl = searchParams.get('producto');
-
-  // Fetch products (moved before conditional return for hook consistency)
-  const { data: products = [], isLoading } = useProductsByBrand(brand || 'MOOR');
-
-  // Open product from URL parameter
-  useEffect(() => {
-    if (productIdFromUrl && products.length > 0 && !hasOpenedFromUrl.current) {
-      const productToOpen = products.find(p => p.id === productIdFromUrl);
-      if (productToOpen) {
-        setSelectedProduct(productToOpen);
-        document.body.style.overflow = 'hidden';
-        hasOpenedFromUrl.current = true;
-      }
-    }
-  }, [productIdFromUrl, products]);
-
-  // Reset flag when brand changes
-  useEffect(() => {
-    hasOpenedFromUrl.current = false;
-  }, [brandSlug]);
 
   // Scroll to top on mount (only once per page load)
   useEffect(() => {
-    if (!hasScrolledToTop.current && !productIdFromUrl) {
+    if (!hasScrolledToTop.current) {
       window.scrollTo({ top: 0, behavior: 'instant' });
       hasScrolledToTop.current = true;
     }
-  }, [productIdFromUrl]);
+  }, []);
 
   // Reset scroll flag when brand changes
   useEffect(() => {
@@ -173,7 +150,7 @@ const BrandPage = () => {
     return <Navigate to="/" replace />;
   }
 
-  
+  const { data: products = [], isLoading } = useProductsByBrand(brand);
 
   const handleProductClick = (product: Product) => {
     // Save scroll position before opening viewer
@@ -185,11 +162,6 @@ const BrandPage = () => {
   const handleCloseViewer = () => {
     setSelectedProduct(null);
     document.body.style.overflow = '';
-    // Clear product param from URL
-    if (searchParams.has('producto')) {
-      searchParams.delete('producto');
-      setSearchParams(searchParams, { replace: true });
-    }
     // Restore scroll position after closing viewer
     requestAnimationFrame(() => {
       window.scrollTo({ top: savedScrollPosition.current, behavior: 'instant' });

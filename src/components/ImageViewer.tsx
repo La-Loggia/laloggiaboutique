@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
-import { Brand, brands } from '@/data/products';
+import { Brand } from '@/data/products';
 import WhatsAppButton from './WhatsAppButton';
 import {
   DropdownMenu,
@@ -19,11 +19,11 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import dixieLogo from '@/assets/logo-dixie.png';
 import jottLogo from '@/assets/logo-jott.png';
-import replayLogo from '@/assets/logo-replay.png';
-import rueMadamLogo from '@/assets/logo-ruemadam.png';
-import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 
-const brandLogos: Record<Brand, string> = {
+// Ropa brands only (excluding bolsos brands: Replay, RueMadam, LolaCasademunt)
+const ropaBrands: Brand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie', 'JOTT'];
+
+const brandLogos: Record<string, string> = {
   'MOOR': moorLogo,
   'SaintTropez': saintTropezLogo,
   'DiLei': dileiLogo,
@@ -31,13 +31,32 @@ const brandLogos: Record<Brand, string> = {
   'Pecatto': pecattoLogo,
   'Dixie': dixieLogo,
   'JOTT': jottLogo,
-  'Replay': replayLogo,
-  'RueMadam': rueMadamLogo,
-  'LolaCasademunt': lolaCasademuntLogo,
+};
+
+const brandDisplayNames: Record<string, string> = {
+  'MOOR': 'MOOR',
+  'SaintTropez': 'Saint Tropez',
+  'DiLei': 'Di Lei',
+  'Mela': 'Mela',
+  'Pecatto': 'Pecatto',
+  'Dixie': 'Dixie',
+  'JOTT': 'JOTT',
 };
 
 const getBrandSlug = (brand: Brand): string => {
-  return brand.toLowerCase();
+  const slugMap: Record<Brand, string> = {
+    'MOOR': 'moor',
+    'SaintTropez': 'saint-tropez',
+    'DiLei': 'di-lei',
+    'Mela': 'mela',
+    'Pecatto': 'pecatto',
+    'Dixie': 'dixie',
+    'JOTT': 'jott',
+    'Replay': 'replay',
+    'RueMadam': 'rue-madam',
+    'LolaCasademunt': 'lola-casademunt',
+  };
+  return slugMap[brand];
 };
 
 interface ImageViewerProps {
@@ -229,6 +248,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const messageWithImage = `${whatsappMessage}\n\nPrenda: ${currentImageUrl}`;
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
+  // Get other brands for dropdown (excluding current brand)
+  const otherBrands = ropaBrands.filter(b => b !== product.brand);
 
   return (
     <div ref={contentRef} className="fixed inset-0 z-[100] bg-background overflow-y-auto">
@@ -255,18 +276,17 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
           </button>
 
-          {/* Brand dropdown - identical to BrandNav */}
+          {/* Brand dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
               Ver otras marcas
               <ChevronDown className="w-3.5 h-3.5" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px] z-[150]">
-              {brands.map((brand) => (
+            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
+              {otherBrands.map((brand) => (
                 <DropdownMenuItem
                   key={brand}
                   asChild
-                  className={product.brand === brand ? 'bg-muted' : ''}
                 >
                   <Link
                     to={`/marca/${getBrandSlug(brand)}`}
@@ -274,10 +294,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                   >
                     <img 
                       src={brandLogos[brand]} 
-                      alt={brand} 
+                      alt={brandDisplayNames[brand]} 
                       className="h-5 w-auto object-contain grayscale opacity-70"
                     />
-                    <span className="text-xs tracking-[0.1em] uppercase">{brand}</span>
+                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
                   </Link>
                 </DropdownMenuItem>
               ))}
