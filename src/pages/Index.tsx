@@ -10,20 +10,15 @@ import ImageViewer from '@/components/ImageViewer';
 import SEOHead from '@/components/SEOHead';
 import LocalSEOContent from '@/components/LocalSEOContent';
 import { Product } from '@/hooks/useProducts';
+import { useRestoreScroll } from '@/hooks/useScrollPosition';
 
 const Index = () => {
   const location = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const savedScrollPosition = useRef<number>(0);
-  const hasScrolledToTop = useRef(false);
 
-  // Scroll to top on mount (only once per page load), unless there's a hash
-  useEffect(() => {
-    if (!hasScrolledToTop.current && !location.hash) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      hasScrolledToTop.current = true;
-    }
-  }, [location.hash]);
+  // Restore scroll position when returning to this page
+  useRestoreScroll();
 
   useEffect(() => {
     if (location.hash) {
