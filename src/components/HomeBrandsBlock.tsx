@@ -33,7 +33,7 @@ const getBrandSlug = (brand: Brand): string => {
 
 const HomeBrandsBlock = () => {
   return (
-    <section className="py-10">
+    <section id="marcas-section" className="py-10">
       <div className="text-center mb-8">
         <h2 className="section-title">Ver Novedades por Marca</h2>
         <p className="font-sans text-xs text-muted-foreground mt-2">
