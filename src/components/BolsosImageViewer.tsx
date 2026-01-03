@@ -1,61 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages } from '@/hooks/useProducts';
 import { useBolsosByBrand, useBolsosExcludingBrand, BolsoBrand } from '@/hooks/useBolsos';
 import WhatsAppButton from './WhatsAppButton';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
-import moorLogo from '@/assets/logo-moor.png';
-import saintTropezLogo from '@/assets/logo-sainttropez.png';
-import dileiLogo from '@/assets/logo-dilei.png';
-import melaLogo from '@/assets/logo-mela.png';
-import pecattoLogo from '@/assets/logo-pecatto.png';
-import dixieLogo from '@/assets/logo-dixie.png';
-import jottLogo from '@/assets/logo-jott.png';
-
-// Brands for "Ver más novedades" dropdown (all ropa brands - excludes Replay, RueMadam, LolaCasademunt)
-type RopaBrand = 'MOOR' | 'SaintTropez' | 'DiLei' | 'Mela' | 'Pecatto' | 'Dixie' | 'JOTT';
-const ropaBrands: RopaBrand[] = ['MOOR', 'SaintTropez', 'DiLei', 'Mela', 'Pecatto', 'Dixie', 'JOTT'];
-
-const brandLogos: Record<RopaBrand, string> = {
-  'MOOR': moorLogo,
-  'SaintTropez': saintTropezLogo,
-  'DiLei': dileiLogo,
-  'Mela': melaLogo,
-  'Pecatto': pecattoLogo,
-  'Dixie': dixieLogo,
-  'JOTT': jottLogo,
-};
-
-const brandDisplayNames: Record<RopaBrand, string> = {
-  'MOOR': 'MOOR',
-  'SaintTropez': 'Saint Tropez',
-  'DiLei': 'Di Lei',
-  'Mela': 'Mela',
-  'Pecatto': 'Pecatto',
-  'Dixie': 'Dixie',
-  'JOTT': 'JOTT',
-};
-
-const getBrandSlug = (brand: RopaBrand): string => {
-  const slugMap: Record<RopaBrand, string> = {
-    'MOOR': 'moor',
-    'SaintTropez': 'saint-tropez',
-    'DiLei': 'di-lei',
-    'Mela': 'mela',
-    'Pecatto': 'pecatto',
-    'Dixie': 'dixie',
-    'JOTT': 'jott',
-  };
-  return slugMap[brand];
-};
 
 interface BolsosImageViewerProps {
   product: Product;
@@ -260,7 +208,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
         </div>
 
         {/* Navigation bar - BELOW BANNER */}
-        <nav className="flex items-center justify-between px-4 py-2.5">
+        <nav className="flex items-center px-4 py-2.5">
           {/* Back button */}
           <button
             onClick={onClose}
@@ -269,34 +217,6 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
             <ArrowLeft className="w-4 h-4" />
             <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
           </button>
-
-          {/* Ver más novedades dropdown - links to ropa brands */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors">
-              Ver más novedades
-              <ChevronDown className="w-3.5 h-3.5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-background border border-border/50 min-w-[160px]">
-              {ropaBrands.map((brand) => (
-                <DropdownMenuItem
-                  key={brand}
-                  asChild
-                >
-                  <Link
-                    to={`/marca/${getBrandSlug(brand)}`}
-                    className="flex items-center gap-3 px-3 py-2 cursor-pointer"
-                  >
-                    <img 
-                      src={brandLogos[brand]} 
-                      alt={brandDisplayNames[brand]} 
-                      className="h-5 w-auto object-contain grayscale opacity-70"
-                    />
-                    <span className="text-xs tracking-[0.1em] uppercase">{brandDisplayNames[brand]}</span>
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </nav>
       </header>
 
