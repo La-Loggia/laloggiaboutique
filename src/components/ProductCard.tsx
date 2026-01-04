@@ -33,8 +33,6 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
       className="animate-slide-up opacity-0 cursor-pointer group"
       style={{ animationDelay: `${index * 0.08}s`, animationFillMode: 'forwards' }}
       onClick={onClick}
-      itemScope
-      itemType="https://schema.org/Product"
     >
       <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[9/16]' : ''}`}>
         <img
@@ -42,16 +40,12 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
           alt={altText}
           className={`product-image transition-transform duration-500 group-hover:scale-105 ${featured ? 'object-cover w-full h-full' : ''}`}
           loading="lazy"
-          itemProp="image"
         />
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
       </div>
       {!hideBrandName && (
-        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`} itemProp="brand">{getBrandDisplayName(product.brand)}</p>
+        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>{getBrandDisplayName(product.brand)}</p>
       )}
-      <meta itemProp="name" content={`Moda ${getBrandDisplayName(product.brand)} mujer en La Loggia`} />
-      <meta itemProp="description" content={`${getBrandDisplayName(product.brand)} - Colección de moda femenina ${category} disponible en La Loggia Altea, San Juan y Campello`} />
-      <link itemProp="url" href={`https://laloggia.shop/marca/${product.brand.toLowerCase()}`} />
     </article>
   );
 };
