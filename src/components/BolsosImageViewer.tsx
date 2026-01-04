@@ -21,10 +21,17 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [brandCanScrollLeft, setBrandCanScrollLeft] = useState(false);
   const [brandCanScrollRight, setBrandCanScrollRight] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const lastTouchDistance = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const brandScrollRef = useRef<HTMLDivElement>(null);
+
+  // Fade in on mount
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 10);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Reset index and zoom when product changes
   useEffect(() => {
@@ -195,7 +202,10 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithImage)}`;
 
   return (
-    <div ref={contentRef} className="fixed inset-0 z-[100] bg-background overflow-y-auto">
+    <div 
+      ref={contentRef} 
+      className={`fixed inset-0 z-[100] bg-background overflow-y-auto transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+    >
       {/* Fixed header with banner + navigation */}
       <header className="fixed top-0 left-0 right-0 z-[105] bg-background/95 backdrop-blur-sm border-b border-border">
         {/* Logo banner - FIRST */}
