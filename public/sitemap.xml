@@ -11,6 +11,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://laloggia.shop/bolsos</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://laloggia.shop/marca/moor</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -52,6 +57,26 @@
   </url>
   <url>
     <loc>https://laloggia.shop/marca/jott</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laloggia.shop/marca/lolacasademunt</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laloggia.shop/bolsos/replay</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laloggia.shop/bolsos/ruemadam</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laloggia.shop/bolsos/lolacasademunt</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
