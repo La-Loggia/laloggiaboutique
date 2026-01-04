@@ -203,8 +203,6 @@ const EditableProductCard = ({
       style={style}
       className={`relative animate-slide-up opacity-0 cursor-pointer group ${isDragging ? 'cursor-grabbing' : ''}`}
       onClick={handleCardClick}
-      itemScope
-      itemType="https://schema.org/Product"
     >
       {/* Hidden file input for image replacement */}
       <input
@@ -295,7 +293,6 @@ const EditableProductCard = ({
           alt={altText}
           className={`product-image transition-transform duration-500 group-hover:scale-105 ${featured ? 'object-cover w-full h-full' : ''}`}
           loading="lazy"
-          itemProp="image"
           style={{ animationDelay: `${index * 0.08}s`, animationFillMode: 'forwards' }}
         />
         {!isEditMode && (
@@ -304,13 +301,10 @@ const EditableProductCard = ({
       </div>
       
       {!hideBrandName && (
-        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`} itemProp="brand">
+        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>
           {displayBrandName}
         </p>
       )}
-      
-      <meta itemProp="name" content={`Moda ${displayBrandName} mujer en La Loggia`} />
-      <meta itemProp="description" content={`${displayBrandName} - Colección de moda femenina ${category} disponible en La Loggia`} />
       
       {/* Edit panel overlay */}
       {showEditPanel && (
