@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Pencil, Upload, LogOut, X, Settings } from 'lucide-react';
+import { Pencil, Upload, LogOut, X, Settings, ChevronDown } from 'lucide-react';
 
 const categoryLabels: Record<ProductCategory, string> = {
   'ropa': 'Ropa',
@@ -25,12 +25,26 @@ const AdminToolbar = () => {
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('ropa');
   const [showUploadPanel, setShowUploadPanel] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   
   const uploadImage = useUploadImage();
   const createProduct = useCreateProduct();
   const { data: campaigns } = useCampaigns();
 
   if (!isAdmin) return null;
+
+  // Collapsed state - mini floating circle button
+  if (isCollapsed) {
+    return (
+      <button
+        onClick={() => setIsCollapsed(false)}
+        className="fixed bottom-4 right-4 z-[150] w-12 h-12 bg-foreground text-background rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform duration-200"
+        aria-label="Abrir herramientas de admin"
+      >
+        <Settings className="w-5 h-5" />
+      </button>
+    );
+  }
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,6 +87,19 @@ const AdminToolbar = () => {
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[150] flex items-center gap-2">
         {/* Main toolbar */}
         <div className="flex items-center gap-3 bg-foreground text-background px-4 py-2.5 rounded-full shadow-lg">
+          {/* Collapse button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsCollapsed(true)}
+            className="text-background hover:text-background hover:bg-background/20 h-8 w-8"
+            aria-label="Minimizar barra"
+          >
+            <ChevronDown className="w-4 h-4" />
+          </Button>
+          
+          <div className="w-px h-5 bg-background/30" />
+          
           {/* Edit mode toggle */}
           <div className="flex items-center gap-2">
             <Pencil className="w-4 h-4" />
