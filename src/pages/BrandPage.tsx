@@ -19,6 +19,7 @@ import pecattoLogo from '@/assets/logo-pecatto.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
 import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
+import vicoloLogo from '@/assets/logo-vicolo.png';
 
 const brandLogos: Record<Brand, { src: string; height: string }> = {
   'MOOR': { src: moorLogo, height: 'h-[72px]' },
@@ -31,6 +32,7 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'RueMadam': { src: rueMadamLogo, height: 'h-[75px]' },
   'JOTT': { src: jottLogo, height: 'h-[72px]' },
   'LolaCasademunt': { src: lolaCasademuntLogo, height: 'h-[72px]' },
+  'Vicolo': { src: vicoloLogo, height: 'h-[72px]' },
 };
 
 // SEO-optimized brand metadata
@@ -111,6 +113,13 @@ const brandSEO: Record<Brand, {
     origin: 'España',
     style: 'Lola Casademunt es una marca de moda femenina reconocida por su estilo sofisticado, femenino y lleno de personalidad. Sus colecciones destacan por el uso de diseños actuales, colores cuidados y detalles que aportan carácter a cada prenda. En La Loggia encontrarás una selección de ropa y bolsos Lola Casademunt pensada para mujeres que buscan un estilo elegante, actual y con identidad propia. La marca combina moda urbana, tendencia y calidad, ofreciendo piezas versátiles ideales tanto para el día a día como para ocasiones especiales. La colección de Lola Casademunt disponible en La Loggia incluye bolsos y prendas seleccionadas que reflejan el espíritu creativo y femenino de la marca, convirtiéndola en una referencia dentro de la moda femenina actual.'
   },
+  'Vicolo': {
+    title: 'Vicolo | Moda Italiana Femenina en La Loggia Alicante',
+    description: 'Vicolo en La Loggia. Moda italiana femenina con estilo urbano y contemporáneo. Vestidos, tops y prendas con personalidad en Altea, San Juan y Campello.',
+    h1: 'Vicolo – Moda italiana urbana y femenina en La Loggia',
+    origin: 'Italia',
+    style: 'Vicolo es una marca italiana de moda femenina reconocida por su estilo urbano, fresco y contemporáneo. Sus colecciones destacan por combinar tendencias actuales con un toque femenino y versátil, ofreciendo prendas ideales tanto para el día a día como para ocasiones especiales. En La Loggia seleccionamos piezas Vicolo que reflejan el espíritu creativo de la marca italiana.'
+  },
 };
 
 const BrandPage = () => {
@@ -130,6 +139,7 @@ const BrandPage = () => {
     'ruemadam': 'RueMadam',
     'jott': 'JOTT',
     'lolacasademunt': 'LolaCasademunt',
+    'vicolo': 'Vicolo',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;

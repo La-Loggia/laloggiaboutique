@@ -15,6 +15,7 @@ export const brandDisplayNames: Record<Brand, string> = {
   'RueMadam': 'Rue Madam',
   'JOTT': 'JOTT',
   'LolaCasademunt': 'Lola Casademunt',
+  'Vicolo': 'Vicolo',
 };
 
 /**

@@ -27,6 +27,7 @@ import dileiLogo from '@/assets/logo-dilei.png';
 import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import jottLogo from '@/assets/logo-jott.png';
+import vicoloLogo from '@/assets/logo-vicolo.png';
 
 interface BolsosBrandInfo {
   brand: BolsoBrand;
@@ -71,6 +72,7 @@ const brandLogos: Record<Brand, string> = {
   'RueMadam': logoRueMadam,
   'JOTT': jottLogo,
   'LolaCasademunt': logoLolaCasademunt,
+  'Vicolo': vicoloLogo,
 };
 
 const getBrandSlug = (brand: Brand): string => {
