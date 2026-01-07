@@ -14,19 +14,19 @@ import logoJott from '@/assets/logo-jott.png';
 import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 import logoVicolo from '@/assets/logo-vicolo.png';
 
-// Logos maximized to fill button area
-const brandLogos: Record<Brand, { src: string; height: string }> = {
-  MOOR: { src: logoMoor, height: 'h-[120px]' },
-  SaintTropez: { src: logoSaintTropez, height: 'h-[130px]' },
-  DiLei: { src: logoDiLei, height: 'h-[125px]' },
-  Mela: { src: logoMela, height: 'h-[150px]' },
-  Pecatto: { src: logoPecatto, height: 'h-[140px]' },
-  Dixie: { src: logoDixie, height: 'h-[105px]' },
-  Replay: { src: logoReplay, height: 'h-[120px]' },
-  RueMadam: { src: logoRueMadam, height: 'h-[125px]' },
-  JOTT: { src: logoJott, height: 'h-[120px]' },
-  LolaCasademunt: { src: logoLolaCasademunt, height: 'h-[120px]' },
-  Vicolo: { src: logoVicolo, height: 'h-[120px]' },
+// Logos with responsive heights (smaller on mobile, larger on desktop)
+const brandLogos: Record<Brand, { src: string; heightMobile: string; heightDesktop: string }> = {
+  MOOR: { src: logoMoor, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
+  SaintTropez: { src: logoSaintTropez, heightMobile: 'h-[75px]', heightDesktop: 'md:h-[110px]' },
+  DiLei: { src: logoDiLei, heightMobile: 'h-[72px]', heightDesktop: 'md:h-[105px]' },
+  Mela: { src: logoMela, heightMobile: 'h-[85px]', heightDesktop: 'md:h-[125px]' },
+  Pecatto: { src: logoPecatto, heightMobile: 'h-[80px]', heightDesktop: 'md:h-[115px]' },
+  Dixie: { src: logoDixie, heightMobile: 'h-[60px]', heightDesktop: 'md:h-[85px]' },
+  Replay: { src: logoReplay, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
+  RueMadam: { src: logoRueMadam, heightMobile: 'h-[72px]', heightDesktop: 'md:h-[105px]' },
+  JOTT: { src: logoJott, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
+  LolaCasademunt: { src: logoLolaCasademunt, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
+  Vicolo: { src: logoVicolo, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
@@ -44,7 +44,7 @@ const HomeBrandsBlock = () => {
         <div className="w-12 h-px bg-border mx-auto mt-4" />
       </div>
 
-      <div className="grid grid-cols-3 gap-3 px-4 max-w-lg mx-auto">
+      <div className="grid grid-cols-3 md:grid-cols-5 gap-2 md:gap-3 px-4 max-w-4xl mx-auto">
         {brands.filter((brand) => brand !== 'Replay').map((brand) => (
           <Link
             key={brand}
@@ -54,7 +54,7 @@ const HomeBrandsBlock = () => {
             <img
               src={brandLogos[brand].src}
               alt={getBrandDisplayName(brand)}
-              className={`${brandLogos[brand].height} object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300`}
+              className={`${brandLogos[brand].heightMobile} ${brandLogos[brand].heightDesktop} object-contain grayscale opacity-80 group-hover:invert group-hover:opacity-100 transition-all duration-300`}
             />
           </Link>
         ))}
