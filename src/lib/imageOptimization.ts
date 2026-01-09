@@ -23,7 +23,6 @@ interface OptimizedImageOptions {
   width?: number;
   height?: number;
   quality?: number;
-  format?: 'webp' | 'avif' | 'origin';
 }
 
 /**
@@ -67,19 +66,19 @@ export const getOptimizedImageUrl = (
   if (!parsed) return originalUrl;
 
   const { bucket, path } = parsed;
-  const { width, height, quality = DEFAULT_QUALITY, format = 'webp' } = options;
+  const { width, height, quality = DEFAULT_QUALITY } = options;
 
-  // Build transformation parameters
+  // Build transformation parameters - Supabase only supports width, height, quality, resize
+  // Format conversion to WebP/AVIF is NOT supported via URL params
   const params = new URLSearchParams();
   if (width) params.set('width', width.toString());
   if (height) params.set('height', height.toString());
   params.set('quality', quality.toString());
-  if (format !== 'origin') params.set('format', format);
   
   // Use resize mode to maintain aspect ratio
   params.set('resize', 'contain');
 
-  // Construct render URL
+  // Construct render URL - Supabase handles format based on Accept header
   return `${SUPABASE_URL}/storage/v1/render/image/public/${bucket}/${path}?${params.toString()}`;
 };
 
@@ -130,8 +129,7 @@ export const getResponsiveImageUrls = (originalUrl: string) => {
 export const getThumbnailUrl = (originalUrl: string, size: number = 200): string => {
   return getOptimizedImageUrl(originalUrl, { 
     width: size, 
-    quality: 60,
-    format: 'webp' 
+    quality: 60
   });
 };
 
