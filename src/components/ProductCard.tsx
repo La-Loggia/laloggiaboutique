@@ -1,5 +1,6 @@
 import { Product } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
+import OptimizedImage from './OptimizedImage';
 
 interface ProductCardProps {
   product: Product;
@@ -20,6 +21,8 @@ const brandCategories: Record<string, string> = {
   'Replay': 'denim premium',
   'RueMadam': 'elegancia parisina',
   'JOTT': 'técnico de alta gama',
+  'LolaCasademunt': 'diseño español',
+  'Vicolo': 'moda italiana',
 };
 
 const ProductCard = ({ product, onClick, index, featured = false, hideBrandName = false }: ProductCardProps) => {
@@ -28,20 +31,34 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
   // Generate descriptive, SEO-friendly alt text
   const altText = `Prenda ${category} de ${getBrandDisplayName(product.brand)} para mujer - La Loggia boutique Alicante`;
   
+  // First 4 products are above the fold and should load with priority
+  const isPriority = index < 4;
+  
+  // Responsive image sizes based on grid layout
+  const imageSizes = featured 
+    ? '(max-width: 640px) 100vw, 50vw' 
+    : '(max-width: 640px) 50vw, 25vw';
+  
+  // Max width to request based on featured status
+  const maxWidth = featured ? 1200 : 800;
+  
   return (
     <article 
       className="animate-slide-up opacity-0 cursor-pointer group"
       style={{ animationDelay: `${index * 0.08}s`, animationFillMode: 'forwards' }}
       onClick={onClick}
     >
-      <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[9/16]' : ''}`}>
-        <img
+      <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[9/16]' : 'aspect-[9/16]'}`}>
+        <OptimizedImage
           src={product.imageUrl}
           alt={altText}
-          className={`product-image transition-transform duration-500 group-hover:scale-105 ${featured ? 'object-cover w-full h-full' : ''}`}
-          loading="lazy"
+          className="w-full h-full"
+          priority={isPriority}
+          sizes={imageSizes}
+          maxWidth={maxWidth}
+          quality={featured ? 80 : 75}
         />
-        <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300 pointer-events-none" />
       </div>
       {!hideBrandName && (
         <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>{getBrandDisplayName(product.brand)}</p>

@@ -4,6 +4,7 @@ import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages } from '@/hooks/useProducts';
 import { useBolsosByBrand, useBolsosExcludingBrand, BolsoBrand } from '@/hooks/useBolsos';
 import { getBrandDisplayName } from '@/lib/brandUtils';
+import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 import WhatsAppButton from './WhatsAppButton';
 
 interface BolsosImageViewerProps {
@@ -251,9 +252,10 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
                     aria-label={`Ver imagen ${index + 1}`}
                   >
                     <img
-                      src={img}
+                      src={getThumbnailUrl(img, 100)}
                       alt={`Miniatura ${index + 1}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -267,7 +269,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
               onTouchEnd={handleTouchEnd}
             >
               <img
-                src={allImages[currentIndex]}
+                src={getOptimizedImageUrl(allImages[currentIndex], { width: 800, quality: 85 })}
                 alt={`Bolso de ${product.brand}`}
                 className="w-auto max-w-[65vw] md:max-w-lg h-full object-contain rounded cursor-pointer"
                 onClick={() => setIsFullscreen(true)}
@@ -307,9 +309,10 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
                     className="w-24 md:w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
                   >
                     <img
-                      src={relatedProduct.imageUrl}
+                      src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 200, quality: 70 })}
                       alt={`Bolso de ${relatedProduct.brand}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -346,9 +349,10 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
                 >
                   <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
                     <img
-                      src={relatedProduct.imageUrl}
+                      src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 400, quality: 75 })}
                       alt={`Bolso de ${relatedProduct.brand}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                   <p className="brand-name text-center">
@@ -388,7 +392,7 @@ const BolsosImageViewer = ({ product, onClose, onProductClick }: BolsosImageView
             onDoubleClick={handleDoubleClick}
           >
             <img
-              src={allImages[currentIndex]}
+              src={getOptimizedImageUrl(allImages[currentIndex], { width: 1200, quality: 90 })}
               alt={`Bolso de ${product.brand}`}
               className="w-full h-full object-contain select-none"
               style={{

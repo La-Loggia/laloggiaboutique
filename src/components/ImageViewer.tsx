@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
+import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 import WhatsAppButton from './WhatsAppButton';
 
 interface ImageViewerProps {
@@ -252,9 +253,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                     aria-label={`Ver imagen ${index + 1}`}
                   >
                     <img
-                      src={img}
+                      src={getThumbnailUrl(img, 100)}
                       alt={`Miniatura ${index + 1}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -268,7 +270,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               onTouchEnd={handleTouchEnd}
             >
               <img
-                src={allImages[currentIndex]}
+                src={getOptimizedImageUrl(allImages[currentIndex], { width: 800, quality: 85 })}
                 alt={`Prenda de ${product.brand}`}
                 className="w-auto max-w-[65vw] md:max-w-lg h-full object-contain rounded cursor-pointer"
                 onClick={() => setIsFullscreen(true)}
@@ -309,9 +311,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                     className="w-24 md:w-32 shrink-0 aspect-[9/16] overflow-hidden rounded bg-secondary"
                   >
                     <img
-                      src={relatedProduct.imageUrl}
+                      src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 200, quality: 70 })}
                       alt={`Prenda de ${relatedProduct.brand}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -349,9 +352,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                 >
                   <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
                     <img
-                      src={relatedProduct.imageUrl}
+                      src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 400, quality: 75 })}
                       alt={`Prenda de ${relatedProduct.brand}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                   <p className="brand-name text-center">
@@ -393,7 +397,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             onDoubleClick={handleDoubleClick}
           >
             <img
-              src={allImages[currentIndex]}
+              src={getOptimizedImageUrl(allImages[currentIndex], { width: 1200, quality: 90 })}
               alt={`Prenda de ${product.brand}`}
               className="w-full h-full object-contain select-none"
               style={{
