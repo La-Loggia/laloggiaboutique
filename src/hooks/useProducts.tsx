@@ -82,7 +82,8 @@ export const useLatestProducts = (limit?: number) => {
         .select('*')
         .eq('is_active', true)
         .in('visibility', ['all', 'latest_only'])
-        .order('display_order', { ascending: true });
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
       
       if (limit) {
         query = query.limit(limit);
@@ -105,7 +106,8 @@ export const useProductsByBrand = (brand: Brand) => {
         .eq('brand', brand)
         .eq('is_active', true)
         .in('visibility', ['all', 'brand_only'])
-        .order('display_order', { ascending: true });
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       return (data as RawProduct[]).map(mapProduct);
@@ -120,7 +122,8 @@ export const useAllProducts = () => {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('display_order', { ascending: true });
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       return (data as RawProduct[]).map(mapProduct);
