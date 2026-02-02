@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import SEOHead from '@/components/SEOHead';
@@ -7,6 +8,7 @@ import ProductGrid from '@/components/ProductGrid';
 import ImageViewer from '@/components/ImageViewer';
 import { useAdminContext } from '@/contexts/AdminContext';
 import EditableProductGrid from '@/components/EditableProductGrid';
+import { ArrowLeft } from 'lucide-react';
 import type { Product, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
 import type { Brand } from '@/data/products';
 
@@ -35,6 +37,7 @@ const mapProduct = (raw: RawProduct): Product => ({
 });
 
 const Plumiferos = () => {
+  const navigate = useNavigate();
   const { isEditMode } = useAdminContext();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const savedScrollPosition = useRef<number>(0);
@@ -86,6 +89,19 @@ const Plumiferos = () => {
       />
       <div className="min-h-screen bg-background">
         <Header />
+        
+        {/* Back navigation bar */}
+        <nav className="sticky top-[61px] z-40 bg-background border-b border-border/30">
+          <div className="flex items-center px-4 py-2.5">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-xs tracking-[0.15em] uppercase">Volver</span>
+            </button>
+          </div>
+        </nav>
         
         <main className="py-6">
           <header className="text-center mb-6">
