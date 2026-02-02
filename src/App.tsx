@@ -11,6 +11,8 @@ import LatestProducts from "./pages/LatestProducts";
 import BrandPage from "./pages/BrandPage";
 import Bolsos from "./pages/Bolsos";
 import BolsosBrandPage from "./pages/BolsosBrandPage";
+import Plumiferos from "./pages/Plumiferos";
+import Camisetas from "./pages/Camisetas";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
@@ -31,6 +33,8 @@ const App = () => (
               <Route path="/marca/:brandSlug" element={<BrandPage />} />
               <Route path="/bolsos" element={<Bolsos />} />
               <Route path="/bolsos/:brandSlug" element={<BolsosBrandPage />} />
+              <Route path="/plumiferos" element={<Plumiferos />} />
+              <Route path="/camisetas" element={<Camisetas />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="*" element={<NotFound />} />
