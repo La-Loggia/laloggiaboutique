@@ -14,6 +14,8 @@ import { Pencil, Upload, LogOut, X, Settings, ChevronDown } from 'lucide-react';
 const categoryLabels: Record<ProductCategory, string> = {
   'ropa': 'Ropa',
   'bolsos': 'Bolsos',
+  'plumiferos': 'Plumíferos',
+  'camisetas': 'Camisetas',
 };
 
 const AdminToolbar = () => {
@@ -183,7 +185,7 @@ const AdminToolbar = () => {
                 <SelectValue placeholder="Categoría" />
               </SelectTrigger>
               <SelectContent>
-                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
                   <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>

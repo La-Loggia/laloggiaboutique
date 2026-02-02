@@ -10,7 +10,7 @@ export interface ProductImage {
 }
 
 export type ProductVisibility = 'all' | 'brand_only' | 'latest_only';
-export type ProductCategory = 'ropa' | 'bolsos';
+export type ProductCategory = 'ropa' | 'bolsos' | 'plumiferos' | 'camisetas';
 
 export interface Product {
   id: string;

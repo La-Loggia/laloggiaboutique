@@ -39,6 +39,8 @@ const visibilityLabels: Record<ProductVisibility, string> = {
 const categoryLabels: Record<ProductCategory, string> = {
   'ropa': 'Ropa',
   'bolsos': 'Bolsos',
+  'plumiferos': 'Plumíferos',
+  'camisetas': 'Camisetas',
 };
 
 // Map brand names to descriptive categories for better alt text
@@ -384,7 +386,7 @@ const EditableProductCard = ({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                  {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
                     <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                   ))}
                 </SelectContent>
@@ -491,7 +493,7 @@ const EditableProductCard = ({
               Categoría
             </ContextMenuSubTrigger>
             <ContextMenuSubContent className="z-[210] bg-popover">
-              {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+              {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
                 <ContextMenuItem 
                   key={cat} 
                   onClick={() => handleChangeCategory(cat)}
