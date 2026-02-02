@@ -7,9 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Trash2, GripVertical, X, Check, Eye, EyeOff, Store, Sparkles, Globe, ImagePlus, Loader2 } from 'lucide-react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { Trash2, X, Eye, EyeOff, Store, Sparkles, Globe, ImagePlus, Loader2, Move } from 'lucide-react';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -27,7 +25,8 @@ interface EditableProductCardProps {
   index: number;
   featured?: boolean;
   hideBrandName?: boolean;
-  isDraggable?: boolean;
+  onStartMove?: (productId: string) => void;
+  isInMoveMode?: boolean;
 }
 
 const visibilityLabels: Record<ProductVisibility, string> = {
@@ -74,7 +73,8 @@ const EditableProductCard = ({
   index, 
   featured = false, 
   hideBrandName = false,
-  isDraggable = false 
+  onStartMove,
+  isInMoveMode = false
 }: EditableProductCardProps) => {
   const { isEditMode } = useAdminContext();
   const [showEditPanel, setShowEditPanel] = useState(false);
@@ -83,25 +83,7 @@ const EditableProductCard = ({
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
   const uploadImage = useUploadImage();
-  
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ 
-    id: product.id,
-    disabled: !isEditMode || !isDraggable
-  });
 
-  const style = isDraggable ? {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 100 : undefined,
-  } : {};
 
   const category = brandCategories[product.brand] || 'exclusivo';
   const displayBrandName = getBrandDisplayName(product.brand);
@@ -201,9 +183,7 @@ const EditableProductCard = ({
   const cardContent = (
 
     <article 
-      ref={setNodeRef}
-      style={style}
-      className={`relative animate-slide-up opacity-0 cursor-pointer group ${isDragging ? 'cursor-grabbing' : ''}`}
+      className={`relative animate-slide-up opacity-0 cursor-pointer group ${isInMoveMode ? 'cursor-crosshair' : ''}`}
       onClick={handleCardClick}
     >
       {/* Hidden file input for image replacement */}
@@ -214,18 +194,6 @@ const EditableProductCard = ({
         className="hidden"
         onChange={handleReplaceImage}
       />
-      
-      {/* Drag handle - only visible in edit mode with draggable */}
-      {isEditMode && isDraggable && (
-        <button
-          {...attributes}
-          {...listeners}
-          className="absolute top-2 left-2 z-20 p-1.5 bg-foreground/80 text-background rounded cursor-grab active:cursor-grabbing touch-none"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <GripVertical className="w-4 h-4" />
-        </button>
-      )}
 
       {/* Visibility indicator badge - only in edit mode */}
       {isEditMode && (
@@ -450,6 +418,12 @@ const EditableProductCard = ({
             <ImagePlus className="w-4 h-4 mr-2" />
             Reemplazar imagen
           </ContextMenuItem>
+          {onStartMove && !isInMoveMode && (
+            <ContextMenuItem onClick={() => onStartMove(product.id)}>
+              <Move className="w-4 h-4 mr-2" />
+              Mover posición
+            </ContextMenuItem>
+          )}
           <ContextMenuSeparator />
           <ContextMenuSub>
             <ContextMenuSubTrigger>
