@@ -2,8 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, ChevronDown, ChevronUp } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import { brands } from '@/data/products';
+import { brands, Brand } from '@/data/products';
 import { getBrandDisplayName } from '@/lib/brandUtils';
+
+// Brands to exclude from "Marcas" section (they have their own categories)
+const excludedFromMarcas: Brand[] = ['LolaCasademunt', 'JOTT', 'RueMadam', 'Replay'];
+
+// Filter brands for Marcas section
+const marcasBrands = brands.filter(brand => !excludedFromMarcas.includes(brand));
 
 const MobileMenu = () => {
   const [open, setOpen] = useState(false);
@@ -60,18 +66,25 @@ const MobileMenu = () => {
             {expandedSections['bolsos'] && (
               <div className="bg-muted/30">
                 <Link 
-                  to="/bolsos/ruemadam" 
+                  to="/bolsos/rue-madam" 
                   onClick={handleLinkClick}
                   className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                 >
                   Rue Madam
                 </Link>
                 <Link 
-                  to="/bolsos/lolacasademunt" 
+                  to="/bolsos/lola-casademunt" 
                   onClick={handleLinkClick}
                   className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                 >
                   Lola Casademunt
+                </Link>
+                <Link 
+                  to="/bolsos/replay" 
+                  onClick={handleLinkClick}
+                  className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Replay
                 </Link>
               </div>
             )}
@@ -92,7 +105,7 @@ const MobileMenu = () => {
             </button>
             {expandedSections['marcas'] && (
               <div className="bg-muted/30">
-                {brands.map((brand) => (
+                {marcasBrands.map((brand) => (
                   <Link 
                     key={brand}
                     to={`/marca/${getBrandSlug(brand)}`} 
@@ -106,63 +119,26 @@ const MobileMenu = () => {
             )}
           </div>
 
-          {/* Plumíferos */}
+          {/* Plumíferos / Chalecos */}
           <div className="border-t border-border/30">
-            <button
-              onClick={() => toggleSection('plumiferos')}
-              className="w-full flex items-center justify-between px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
+            <Link 
+              to="/plumiferos" 
+              onClick={handleLinkClick}
+              className="block px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
             >
-              <span>Plumíferos</span>
-              {expandedSections['plumiferos'] ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </button>
-            {expandedSections['plumiferos'] && (
-              <div className="bg-muted/30">
-                <Link 
-                  to="/marca/jott" 
-                  onClick={handleLinkClick}
-                  className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  JOTT
-                </Link>
-              </div>
-            )}
+              Plumíferos / Chalecos
+            </Link>
           </div>
 
           {/* Camisetas */}
           <div className="border-t border-border/30">
-            <button
-              onClick={() => toggleSection('camisetas')}
-              className="w-full flex items-center justify-between px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
+            <Link 
+              to="/camisetas" 
+              onClick={handleLinkClick}
+              className="block px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
             >
-              <span>Camisetas</span>
-              {expandedSections['camisetas'] ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </button>
-            {expandedSections['camisetas'] && (
-              <div className="bg-muted/30">
-                <Link 
-                  to="/marca/vicolo" 
-                  onClick={handleLinkClick}
-                  className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Vicolo
-                </Link>
-                <Link 
-                  to="/marca/mela" 
-                  onClick={handleLinkClick}
-                  className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Mela
-                </Link>
-              </div>
-            )}
+              Camisetas
+            </Link>
           </div>
         </nav>
       </SheetContent>
