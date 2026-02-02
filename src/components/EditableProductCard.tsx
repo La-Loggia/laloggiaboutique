@@ -7,17 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Trash2, X, Eye, EyeOff, Store, Sparkles, Globe, ImagePlus, Loader2, Move } from 'lucide-react';
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu';
+import { Trash2, X, Eye, EyeOff, Store, Sparkles, Globe, ImagePlus, Loader2 } from 'lucide-react';
 
 interface EditableProductCardProps {
   product: Product;
@@ -180,11 +170,18 @@ const EditableProductCard = ({
     }
   };
 
-  const cardContent = (
+  const handleRightClick = (e: React.MouseEvent) => {
+    if (isEditMode && onStartMove && !isInMoveMode) {
+      e.preventDefault();
+      onStartMove(product.id);
+    }
+  };
 
+  const cardContent = (
     <article 
       className={`relative animate-slide-up opacity-0 cursor-pointer group ${isInMoveMode ? 'cursor-crosshair' : ''}`}
       onClick={handleCardClick}
+      onContextMenu={handleRightClick}
     >
       {/* Hidden file input for image replacement */}
       <input
@@ -393,104 +390,7 @@ const EditableProductCard = ({
     </article>
   );
 
-  // Wrap with context menu only in edit mode
-  if (isEditMode) {
-    return (
-      <ContextMenu>
-        <ContextMenuTrigger asChild>
-          {cardContent}
-        </ContextMenuTrigger>
-        <ContextMenuContent className="w-48 z-[200] bg-popover">
-          <ContextMenuItem onClick={() => handleToggleActive({} as React.MouseEvent)}>
-            {product.isActive ? (
-              <>
-                <EyeOff className="w-4 h-4 mr-2" />
-                Desactivar
-              </>
-            ) : (
-              <>
-                <Eye className="w-4 h-4 mr-2" />
-                Activar
-              </>
-            )}
-          </ContextMenuItem>
-          <ContextMenuItem onClick={() => fileInputRef.current?.click()}>
-            <ImagePlus className="w-4 h-4 mr-2" />
-            Reemplazar imagen
-          </ContextMenuItem>
-          {onStartMove && !isInMoveMode && (
-            <ContextMenuItem onClick={() => onStartMove(product.id)}>
-              <Move className="w-4 h-4 mr-2" />
-              Mover posición
-            </ContextMenuItem>
-          )}
-          <ContextMenuSeparator />
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>
-              <Store className="w-4 h-4 mr-2" />
-              Marca
-            </ContextMenuSubTrigger>
-            <ContextMenuSubContent className="z-[210] bg-popover">
-              {brands.map((brand) => (
-                <ContextMenuItem 
-                  key={brand} 
-                  onClick={() => handleChangeBrand(brand)}
-                  className={product.brand === brand ? 'bg-accent' : ''}
-                >
-                  {getBrandDisplayName(brand)}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>
-              {visibilityIcons[product.visibility]}
-              <span className="ml-2">Visibilidad</span>
-            </ContextMenuSubTrigger>
-            <ContextMenuSubContent className="z-[210] bg-popover">
-              {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
-                <ContextMenuItem 
-                  key={vis} 
-                  onClick={() => handleChangeVisibility(vis)}
-                  className={product.visibility === vis ? 'bg-accent' : ''}
-                >
-                  <span className="flex items-center gap-2">
-                    {visibilityIcons[vis]}
-                    {visibilityLabels[vis]}
-                  </span>
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>
-              Categoría
-            </ContextMenuSubTrigger>
-            <ContextMenuSubContent className="z-[210] bg-popover">
-              {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
-                <ContextMenuItem 
-                  key={cat} 
-                  onClick={() => handleChangeCategory(cat)}
-                  className={product.category === cat ? 'bg-accent' : ''}
-                >
-                  {categoryLabels[cat]}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-          <ContextMenuSeparator />
-          <ContextMenuItem 
-            onClick={() => handleDelete()}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Eliminar
-          </ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    );
-  }
-
+  // In edit mode, just return the card (right-click now starts move mode directly)
   return cardContent;
 };
 

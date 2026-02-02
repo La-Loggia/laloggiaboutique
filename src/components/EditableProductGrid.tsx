@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Product, useUpdateProductOrder } from '@/hooks/useProducts';
 import { useAdminContext } from '@/contexts/AdminContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,6 +19,7 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
   // Pick & place state
   const [movingProductId, setMovingProductId] = useState<string | null>(null);
   const [insertBeforeId, setInsertBeforeId] = useState<string | null>(null);
+  const [insertAfterLast, setInsertAfterLast] = useState(false);
 
   const getProductLayout = useCallback((index: number) => {
     const mobilePositionInPattern = index % 5;
@@ -39,40 +40,51 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
   const handleStartMove = (productId: string) => {
     setMovingProductId(productId);
     setInsertBeforeId(null);
+    setInsertAfterLast(false);
   };
 
-  const handleCancelMove = () => {
+  const handleCancelMove = useCallback(() => {
     setMovingProductId(null);
     setInsertBeforeId(null);
-  };
+    setInsertAfterLast(false);
+  }, []);
 
   const handleHoverProduct = (productId: string) => {
     if (movingProductId && productId !== movingProductId) {
       setInsertBeforeId(productId);
+      setInsertAfterLast(false);
     }
   };
 
   const handleConfirmMove = async () => {
-    if (!movingProductId || !insertBeforeId) {
+    if (!movingProductId) {
       handleCancelMove();
       return;
     }
 
     const movingIndex = products.findIndex(p => p.id === movingProductId);
-    const targetIndex = products.findIndex(p => p.id === insertBeforeId);
     
-    if (movingIndex === -1 || targetIndex === -1 || movingIndex === targetIndex) {
+    if (movingIndex === -1) {
       handleCancelMove();
       return;
     }
 
-    // Create new order: remove moving product, insert at target position
-    const newOrder = [...products];
+    let newOrder = [...products];
     const [movedProduct] = newOrder.splice(movingIndex, 1);
-    
-    // If moving forward, target index shifts back by 1 after removal
-    const adjustedTargetIndex = movingIndex < targetIndex ? targetIndex - 1 : targetIndex;
-    newOrder.splice(adjustedTargetIndex, 0, movedProduct);
+
+    if (insertAfterLast) {
+      newOrder.push(movedProduct);
+    } else if (insertBeforeId) {
+      const targetIndex = newOrder.findIndex(p => p.id === insertBeforeId);
+      if (targetIndex === -1) {
+        handleCancelMove();
+        return;
+      }
+      newOrder.splice(targetIndex, 0, movedProduct);
+    } else {
+      handleCancelMove();
+      return;
+    }
 
     const updates = newOrder.map((p, index) => ({
       id: p.id,
@@ -90,19 +102,18 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
   };
 
   // Handle ESC key to cancel
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape' && movingProductId) {
-      handleCancelMove();
-    }
-  }, [movingProductId]);
-
-  // Add/remove event listener
-  useState(() => {
-    if (typeof window !== 'undefined') {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && movingProductId) {
+        handleCancelMove();
+      }
+    };
+    
+    if (movingProductId) {
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     }
-  });
+  }, [movingProductId, handleCancelMove]);
 
   // Standard grid for non-admin or non-edit mode
   if (!isAdmin || !isEditMode) {
@@ -146,16 +157,20 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
   return (
     <>
       {/* Moving mode overlay with instructions */}
-      {movingProductId && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg text-sm font-medium animate-in fade-in slide-in-from-top-2">
-          Mueve el ratón sobre otra prenda y haz clic para colocar • ESC para cancelar
+      {movingProductId && movingProduct && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg text-sm font-medium animate-in fade-in slide-in-from-top-2 flex items-center gap-3">
+          <img 
+            src={movingProduct.imageUrl} 
+            alt="" 
+            className="w-8 h-10 object-cover rounded"
+          />
+          <span>Pasa el ratón por donde quieras colocarla y haz clic • ESC para cancelar</span>
         </div>
       )}
 
       <div 
         className="grid grid-cols-2 md:grid-cols-4 gap-3 px-3"
         onClick={(e) => {
-          // Click on grid background cancels move
           if (movingProductId && e.target === e.currentTarget) {
             handleCancelMove();
           }
@@ -167,11 +182,12 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
           
           const isMoving = product.id === movingProductId;
           const isInsertTarget = product.id === insertBeforeId;
+          const isLastProduct = index === products.length - 1;
 
           return (
             <div 
               key={product.id} 
-              className={`relative ${colSpanClass} ${isMoving ? 'opacity-40 scale-95' : ''} transition-all duration-200`}
+              className={`relative ${colSpanClass} ${isMoving ? 'opacity-30 scale-90 grayscale' : ''} transition-all duration-200`}
               onMouseEnter={() => handleHoverProduct(product.id)}
               onClick={() => {
                 if (movingProductId && !isMoving) {
@@ -179,14 +195,14 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
                 }
               }}
             >
-              {/* Insertion indicator - shows gap before this product */}
-              {isInsertTarget && movingProduct && (
-                <div className="absolute -left-1.5 top-0 bottom-0 w-1 bg-primary rounded-full z-10 animate-pulse" />
+              {/* Blue insertion indicator - LEFT side */}
+              {isInsertTarget && !isMoving && (
+                <div className="absolute -left-1.5 top-0 bottom-0 w-1.5 bg-blue-500 rounded-full z-30 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.7)]" />
               )}
               
-              {/* Highlight ring when this is the drop target */}
-              {isInsertTarget && (
-                <div className="absolute inset-0 ring-2 ring-primary ring-offset-2 rounded-lg z-10 pointer-events-none" />
+              {/* Highlight box when this is the drop target */}
+              {isInsertTarget && !isMoving && (
+                <div className="absolute inset-0 border-2 border-blue-500 border-dashed rounded-lg z-20 pointer-events-none bg-blue-500/10" />
               )}
 
               <EditableProductCard
@@ -201,9 +217,28 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
                 onStartMove={handleStartMove}
                 isInMoveMode={!!movingProductId}
               />
+
+              {/* Insert AFTER last product indicator */}
+              {isLastProduct && movingProductId && !isMoving && insertAfterLast && (
+                <div className="absolute -right-1.5 top-0 bottom-0 w-1.5 bg-blue-500 rounded-full z-30 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.7)]" />
+              )}
             </div>
           );
         })}
+
+        {/* Invisible drop zone after last product */}
+        {movingProductId && (
+          <div 
+            className="col-span-1 h-20 flex items-center justify-center border-2 border-dashed border-blue-300 rounded-lg bg-blue-50/50 cursor-pointer transition-all hover:border-blue-500 hover:bg-blue-100/50"
+            onMouseEnter={() => {
+              setInsertBeforeId(null);
+              setInsertAfterLast(true);
+            }}
+            onClick={handleConfirmMove}
+          >
+            <span className="text-xs text-blue-500 font-medium">Al final</span>
+          </div>
+        )}
       </div>
     </>
   );
