@@ -49,6 +49,8 @@ const visibilityLabels: Record<ProductVisibility, string> = {
 const categoryLabels: Record<ProductCategory, string> = {
   'ropa': 'Ropa',
   'bolsos': 'Bolsos',
+  'plumiferos': 'Plumíferos',
+  'camisetas': 'Camisetas',
 };
 
 const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility, onChangeCategory }: SortableProductProps) => {
@@ -156,7 +158,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
                   <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>
@@ -462,7 +464,7 @@ const Admin = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
                   <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>
