@@ -18,13 +18,10 @@ const Header = () => {
           </p>
         </Link>
         
-        {/* Hamburger menu - mobile only */}
-        <div className="md:hidden">
+        {/* Hamburger menu */}
+        <div>
           <MobileMenu />
         </div>
-        
-        {/* Spacer for desktop */}
-        <div className="hidden md:block w-9" />
       </div>
     </header>
   );
