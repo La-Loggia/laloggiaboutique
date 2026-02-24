@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import BrandMarquee from '@/components/BrandMarquee';
 import HomeLatestPreview from '@/components/HomeLatestPreview';
@@ -70,6 +70,31 @@ const Index = () => {
         </header>
 
         <LocalSEOContent />
+
+        {/* Espacio Jeans Banner */}
+        <Link 
+          to="/espacio-jeans" 
+          className="block mx-3 mb-6 relative overflow-hidden rounded-sm bg-foreground group"
+        >
+          <div className="flex items-center justify-between px-6 py-5 md:px-10 md:py-7">
+            <div className="flex-1">
+              <span className="inline-block text-[9px] tracking-[0.15em] uppercase bg-background text-foreground px-2.5 py-1 rounded-full font-semibold mb-3">
+                Nuevo
+              </span>
+              <h2 className="font-serif text-lg md:text-2xl text-background tracking-wide">
+                Espacio Jeans
+              </h2>
+              <p className="font-sans text-[11px] md:text-xs text-background/60 mt-1.5 tracking-wide">
+                Descubre nuestra nueva sección denim
+              </p>
+            </div>
+            <div className="text-background/80 group-hover:translate-x-1 transition-transform duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </Link>
 
         <HomeLatestPreview onProductClick={handleProductClick} />
         
