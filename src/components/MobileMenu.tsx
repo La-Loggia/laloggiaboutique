@@ -146,9 +146,12 @@ const MobileMenu = () => {
             <Link 
               to="/espacio-jeans" 
               onClick={handleLinkClick}
-              className="block px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
+              className="flex items-center justify-between px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors font-medium"
             >
-              Espacio Jeans
+              <span>Espacio Jeans</span>
+              <span className="text-[9px] tracking-[0.1em] uppercase bg-foreground text-background px-2 py-0.5 rounded-full font-semibold animate-pulse">
+                New
+              </span>
             </Link>
           </div>
         </nav>
