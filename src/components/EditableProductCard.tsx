@@ -30,6 +30,7 @@ const categoryLabels: Record<ProductCategory, string> = {
   'bolsos': 'Bolsos',
   'plumiferos': 'Plumíferos',
   'camisetas': 'Camisetas',
+  'jeans': 'Espacio Jeans',
 };
 
 // Map brand names to descriptive categories for better alt text

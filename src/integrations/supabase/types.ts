@@ -157,7 +157,7 @@ export type Database = {
         | "JOTT"
         | "LolaCasademunt"
         | "Vicolo"
-      product_category: "ropa" | "bolsos" | "plumiferos" | "camisetas"
+      product_category: "ropa" | "bolsos" | "plumiferos" | "camisetas" | "jeans"
       product_visibility: "all" | "brand_only" | "latest_only"
     }
     CompositeTypes: {
@@ -300,7 +300,7 @@ export const Constants = {
         "LolaCasademunt",
         "Vicolo",
       ],
-      product_category: ["ropa", "bolsos", "plumiferos", "camisetas"],
+      product_category: ["ropa", "bolsos", "plumiferos", "camisetas", "jeans"],
       product_visibility: ["all", "brand_only", "latest_only"],
     },
   },

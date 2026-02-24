@@ -51,6 +51,7 @@ const categoryLabels: Record<ProductCategory, string> = {
   'bolsos': 'Bolsos',
   'plumiferos': 'Plumíferos',
   'camisetas': 'Camisetas',
+  'jeans': 'Espacio Jeans',
 };
 
 const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility, onChangeCategory }: SortableProductProps) => {
