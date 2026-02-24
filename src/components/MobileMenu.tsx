@@ -140,6 +140,17 @@ const MobileMenu = () => {
               Camisetas
             </Link>
           </div>
+
+          {/* Espacio Jeans */}
+          <div className="border-t border-border/30">
+            <Link 
+              to="/espacio-jeans" 
+              onClick={handleLinkClick}
+              className="block px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
+            >
+              Espacio Jeans
+            </Link>
+          </div>
         </nav>
       </SheetContent>
     </Sheet>
