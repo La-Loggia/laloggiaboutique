@@ -4,9 +4,10 @@ import ProductCard from './ProductCard';
 interface ProductGridProps {
   products: Product[];
   onProductClick: (product: Product) => void;
+  hideBrandName?: boolean;
 }
 
-const ProductGrid = ({ products, onProductClick }: ProductGridProps) => {
+const ProductGrid = ({ products, onProductClick, hideBrandName = false }: ProductGridProps) => {
   const getProductLayout = (index: number) => {
     // Mobile pattern: every 5th product is featured (full width on 2-col grid)
     const mobilePositionInPattern = index % 5;
@@ -49,6 +50,7 @@ const ProductGrid = ({ products, onProductClick }: ProductGridProps) => {
               onClick={() => onProductClick(product)}
               index={index}
               featured={isMobileFeatured || isDesktopFeatured}
+              hideBrandName={hideBrandName}
             />
           </div>
         );

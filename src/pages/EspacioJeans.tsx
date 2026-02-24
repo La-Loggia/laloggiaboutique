@@ -120,7 +120,7 @@ const EspacioJeans = () => {
           ) : isEditMode ? (
             <EditableProductGrid products={products} onProductClick={handleProductClick} />
           ) : (
-            <ProductGrid products={products} onProductClick={handleProductClick} />
+            <ProductGrid products={products} onProductClick={handleProductClick} hideBrandName />
           )}
         </main>
 
