@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, Filter } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
 import {
   DndContext,
@@ -192,9 +192,13 @@ const Admin = () => {
   
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('ropa');
-  const [filterBrand, setFilterBrand] = useState<Brand | 'ALL'>('ALL');
-  const [filterVisibility, setFilterVisibility] = useState<ProductVisibility | 'ALL'>('ALL');
-  const [filterCategory, setFilterCategory] = useState<ProductCategory | 'ALL'>('ALL');
+  const [collapsedSections, setCollapsedSections] = useState<Record<ProductCategory, boolean>>({
+    ropa: false,
+    bolsos: false,
+    plumiferos: false,
+    camisetas: false,
+    jeans: false,
+  });
   const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
@@ -221,13 +225,13 @@ const Admin = () => {
     })
   );
 
-  // Filter products by brand, visibility, and category
-  const filteredProducts = products?.filter(p => {
-    const brandMatch = filterBrand === 'ALL' || p.brand === filterBrand;
-    const visibilityMatch = filterVisibility === 'ALL' || p.visibility === filterVisibility;
-    const categoryMatch = filterCategory === 'ALL' || p.category === filterCategory;
-    return brandMatch && visibilityMatch && categoryMatch;
-  }) || [];
+  // Group products by category
+  const productsByCategory = (category: ProductCategory) =>
+    products?.filter(p => p.category === category) || [];
+
+  const toggleSection = (cat: ProductCategory) => {
+    setCollapsedSections(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
 
   if (loading) {
     return (
@@ -403,16 +407,16 @@ const Admin = () => {
     navigate('/');
   };
 
-  const handleDragEnd = async (event: DragEndEvent) => {
+  const handleDragEnd = (category: ProductCategory) => async (event: DragEndEvent) => {
     const { active, over } = event;
+    const categoryProducts = productsByCategory(category);
     
-    if (over && active.id !== over.id && filteredProducts.length > 0) {
-      const oldIndex = filteredProducts.findIndex((p) => p.id === active.id);
-      const newIndex = filteredProducts.findIndex((p) => p.id === over.id);
+    if (over && active.id !== over.id && categoryProducts.length > 0) {
+      const oldIndex = categoryProducts.findIndex((p) => p.id === active.id);
+      const newIndex = categoryProducts.findIndex((p) => p.id === over.id);
       
-      const newOrder = arrayMove(filteredProducts, oldIndex, newIndex);
+      const newOrder = arrayMove(categoryProducts, oldIndex, newIndex);
       
-      // Update display orders in database
       const updates = newOrder.map((p, index) => ({
         id: p.id,
         displayOrder: index + 1,
@@ -540,95 +544,75 @@ const Admin = () => {
           </div>
         </section>
 
-        {/* Products List */}
-        <section>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="font-sans text-sm font-medium uppercase tracking-wider">
-              Prendas ({filteredProducts.length}{filterBrand !== 'ALL' ? ` de ${filterBrand}` : ''})
-            </h2>
-          </div>
-          
-          {/* Filters - Stack on mobile, row on desktop */}
-          <div className="space-y-2 md:space-y-0 md:flex md:items-center md:gap-2 mb-4">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-              <Select value={filterBrand} onValueChange={(v) => setFilterBrand(v as Brand | 'ALL')}>
-                <SelectTrigger className="flex-1 md:w-40">
-                  <SelectValue placeholder="Marca" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">Todas las marcas</SelectItem>
-                  {brands.map((brand) => (
-                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-2 gap-2 md:flex md:gap-2">
-              <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as ProductCategory | 'ALL')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">Todas</SelectItem>
-                  {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
-                    <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={filterVisibility} onValueChange={(v) => setFilterVisibility(v as ProductVisibility | 'ALL')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Visibilidad" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">Toda visibilidad</SelectItem>
-                  {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
-                    <SelectItem key={vis} value={vis}>{visibilityLabels[vis]}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <p className="text-xs text-muted-foreground mb-4">
-            Arrastra para reordenar • Lápiz para reemplazar imagen • Selector para cambiar marca
-          </p>
-          
-          {productsLoading ? (
-            <p className="text-muted-foreground text-center py-8">Cargando...</p>
-          ) : filteredProducts.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              {filterBrand !== 'ALL' ? `No hay prendas de ${filterBrand}` : 'No hay prendas'}
-            </p>
-          ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={filteredProducts.map(p => p.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="space-y-3">
-                  {filteredProducts.map((product) => (
-                    <SortableProduct
-                      key={product.id}
-                      product={product}
-                      onToggleActive={handleToggleActive}
-                      onDelete={handleDelete}
-                      onManageImages={setManagingProduct}
-                      onReplaceImage={handleReplaceImage}
-                      onChangeBrand={handleChangeBrand}
-                      onChangeVisibility={handleChangeVisibility}
-                      onChangeCategory={handleChangeCategory}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-          )}
-        </section>
+        {/* Products by Category Sections */}
+        {productsLoading ? (
+          <p className="text-muted-foreground text-center py-8">Cargando...</p>
+        ) : (
+          (['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((category) => {
+            const categoryProducts = productsByCategory(category);
+            const isCollapsed = collapsedSections[category];
+            
+            return (
+              <section key={category} className="bg-secondary/30 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleSection(category)}
+                  className="w-full flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-sans text-sm font-medium uppercase tracking-wider">
+                      {categoryLabels[category]}
+                    </h2>
+                    <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                      {categoryProducts.length}
+                    </span>
+                  </div>
+                  {isCollapsed ? (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </button>
+                
+                {!isCollapsed && (
+                  <div className="px-4 pb-4">
+                    {categoryProducts.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-4 text-sm">
+                        No hay prendas en esta sección
+                      </p>
+                    ) : (
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd(category)}
+                      >
+                        <SortableContext
+                          items={categoryProducts.map(p => p.id)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="space-y-3">
+                            {categoryProducts.map((product) => (
+                              <SortableProduct
+                                key={product.id}
+                                product={product}
+                                onToggleActive={handleToggleActive}
+                                onDelete={handleDelete}
+                                onManageImages={setManagingProduct}
+                                onReplaceImage={handleReplaceImage}
+                                onChangeBrand={handleChangeBrand}
+                                onChangeVisibility={handleChangeVisibility}
+                                onChangeCategory={handleChangeCategory}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                    )}
+                  </div>
+                )}
+              </section>
+            );
+          })
+        )}
       </main>
 
       {/* Product Image Manager Modal */}
