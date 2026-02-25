@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Brand } from '@/data/products';
-import type { Product, ProductVisibility } from './useProducts';
+import type { Product } from './useProducts';
 
 interface RawProduct {
   id: string;
@@ -11,7 +11,9 @@ interface RawProduct {
   campaign_id: string | null;
   created_at: string;
   display_order: number;
-  visibility: ProductVisibility;
+  show_in_latest: boolean;
+  show_in_section: boolean;
+  show_in_brand: boolean;
   category: 'ropa' | 'bolsos';
 }
 
@@ -23,7 +25,9 @@ const mapProduct = (raw: RawProduct): Product => ({
   campaignId: raw.campaign_id,
   createdAt: new Date(raw.created_at),
   displayOrder: raw.display_order,
-  visibility: raw.visibility,
+  showInLatest: raw.show_in_latest,
+  showInSection: raw.show_in_section,
+  showInBrand: raw.show_in_brand,
   category: raw.category,
 });
 
