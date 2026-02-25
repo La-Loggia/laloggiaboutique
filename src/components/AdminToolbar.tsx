@@ -186,7 +186,7 @@ const AdminToolbar = () => {
                 <SelectValue placeholder="Categoría" />
               </SelectTrigger>
               <SelectContent>
-                {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
+                {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
                   <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>
