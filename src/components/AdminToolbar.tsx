@@ -170,20 +170,9 @@ const AdminToolbar = () => {
           </div>
           
           <div className="space-y-3">
-            <Select value={selectedBrand} onValueChange={(v) => setSelectedBrand(v as Brand)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Marca" />
-              </SelectTrigger>
-              <SelectContent>
-                {brands.map((brand) => (
-                  <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
             <Select value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as ProductCategory)}>
               <SelectTrigger>
-                <SelectValue placeholder="Categoría" />
+                <SelectValue placeholder="Sección" />
               </SelectTrigger>
               <SelectContent>
                 {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
@@ -191,6 +180,19 @@ const AdminToolbar = () => {
                 ))}
               </SelectContent>
             </Select>
+            
+            {selectedCategory !== 'jeans' && (
+              <Select value={selectedBrand} onValueChange={(v) => setSelectedBrand(v as Brand)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Marca" />
+                </SelectTrigger>
+                <SelectContent>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             
             <input
               ref={fileInputRef}
