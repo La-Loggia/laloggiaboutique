@@ -192,7 +192,7 @@ const EditableProductCard = ({
       
       {!hideBrandName && (
         <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>
-          {displayBrandName}
+          {product.category === 'jeans' ? 'ESPACIO JEANS' : displayBrandName}
         </p>
       )}
       
