@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AdminProvider } from "@/contexts/AdminContext";
-import AdminToolbar from "@/components/AdminToolbar";
 import Index from "./pages/Index";
 import LatestProducts from "./pages/LatestProducts";
 import BrandPage from "./pages/BrandPage";
@@ -41,7 +40,6 @@ const App = () => (
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <AdminToolbar />
           </BrowserRouter>
         </TooltipProvider>
       </AdminProvider>

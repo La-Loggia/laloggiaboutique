@@ -2,14 +2,13 @@ import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
-import { useCampaigns, useCreateCampaign, useSetActiveCampaign } from '@/hooks/useCampaigns';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
 import {
   DndContext,
@@ -29,6 +28,32 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
+// --- Visibility system ---
+// 'all' = Aparece en todas partes (novedades + sección + marca)
+// 'brand_only' = Solo en la página de su marca
+// 'latest_only' = Solo en novedades
+
+const visibilityLabels: Record<ProductVisibility, string> = {
+  'all': 'Toda la web',
+  'brand_only': 'Solo marca',
+  'latest_only': 'Solo novedades',
+};
+
+const visibilityDescriptions: Record<ProductVisibility, string> = {
+  'all': 'Se muestra en novedades, su sección y la página de marca',
+  'brand_only': 'Solo se muestra en la página de su marca',
+  'latest_only': 'Solo se muestra en la sección de novedades',
+};
+
+const categoryLabels: Record<ProductCategory, string> = {
+  'ropa': 'Novedades',
+  'bolsos': 'Bolsos',
+  'plumiferos': 'Plumíferos',
+  'camisetas': 'Camisetas',
+  'jeans': 'Espacio Jeans',
+};
+
+// --- Sortable Product Row ---
 interface SortableProductProps {
   product: Product;
   onToggleActive: (product: Product) => void;
@@ -37,24 +62,9 @@ interface SortableProductProps {
   onReplaceImage: (product: Product) => void;
   onChangeBrand: (product: Product, newBrand: Brand) => void;
   onChangeVisibility: (product: Product, visibility: ProductVisibility) => void;
-  onChangeCategory: (product: Product, category: ProductCategory) => void;
 }
 
-const visibilityLabels: Record<ProductVisibility, string> = {
-  'all': 'Toda la web',
-  'brand_only': 'Solo marca',
-  'latest_only': 'Solo novedades',
-};
-
-const categoryLabels: Record<ProductCategory, string> = {
-  'ropa': 'Ropa',
-  'bolsos': 'Bolsos',
-  'plumiferos': 'Plumíferos',
-  'camisetas': 'Camisetas',
-  'jeans': 'Espacio Jeans',
-};
-
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility, onChangeCategory }: SortableProductProps) => {
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility }: SortableProductProps) => {
   const {
     attributes,
     listeners,
@@ -70,15 +80,11 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const showBrand = product.category !== 'jeans';
+
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="bg-secondary/30 rounded-lg p-3"
-    >
-      {/* Mobile: Stack layout */}
+    <div ref={setNodeRef} style={style} className="bg-background/50 rounded-lg p-3">
       <div className="flex gap-3">
-        {/* Drag handle */}
         <button
           {...attributes}
           {...listeners}
@@ -88,7 +94,6 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
           <GripVertical className="w-5 h-5" />
         </button>
         
-        {/* Image with replace button */}
         <div className="relative shrink-0">
           <img
             src={product.imageUrl}
@@ -104,9 +109,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
           </button>
         </div>
         
-        {/* Content area */}
         <div className="flex-1 min-w-0">
-          {/* Top row: Date + Actions */}
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs text-muted-foreground">
               {product.createdAt.toLocaleDateString('es-ES')}
@@ -136,34 +139,22 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             </div>
           </div>
           
-          {/* Selectors row - grid for mobile */}
-          <div className="grid grid-cols-3 gap-1.5">
-            <Select 
-              value={product.brand} 
-              onValueChange={(v) => onChangeBrand(product, v as Brand)}
-            >
-              <SelectTrigger className="h-8 text-xs px-2">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {brands.map((brand) => (
-                  <SelectItem key={brand} value={brand} className="text-xs">{brand}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select 
-              value={product.category} 
-              onValueChange={(v) => onChangeCategory(product, v as ProductCategory)}
-            >
-              <SelectTrigger className="h-8 text-xs px-2">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
-                  <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className={`grid ${showBrand ? 'grid-cols-2' : 'grid-cols-1'} gap-1.5`}>
+            {showBrand && (
+              <Select 
+                value={product.brand} 
+                onValueChange={(v) => onChangeBrand(product, v as Brand)}
+              >
+                <SelectTrigger className="h-8 text-xs px-2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand} value={brand} className="text-xs">{brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <Select 
               value={product.visibility} 
               onValueChange={(v) => onChangeVisibility(product, v as ProductVisibility)}
@@ -184,14 +175,201 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
   );
 };
 
+// --- Upload Dialog ---
+interface UploadDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
+  const [step, setStep] = useState<'section' | 'details'>('section');
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
+  const [selectedVisibility, setSelectedVisibility] = useState<ProductVisibility>('all');
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const uploadImage = useUploadImage();
+  const createProduct = useCreateProduct();
+
+  const resetState = () => {
+    setStep('section');
+    setSelectedCategory(null);
+    setSelectedBrand('MOOR');
+    setSelectedVisibility('all');
+    setIsUploading(false);
+    setPreviewUrl(null);
+    setSelectedFile(null);
+  };
+
+  const handleClose = () => {
+    resetState();
+    onClose();
+  };
+
+  const handleSelectSection = (cat: ProductCategory) => {
+    setSelectedCategory(cat);
+    setStep('details');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !selectedCategory) return;
+
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadImage.mutateAsync(selectedFile);
+      await createProduct.mutateAsync({
+        brand: selectedCategory === 'jeans' ? 'MOOR' : selectedBrand,
+        imageUrl,
+        category: selectedCategory,
+        visibility: selectedVisibility,
+      });
+      toast.success('Prenda añadida correctamente');
+      handleClose();
+    } catch (error) {
+      toast.error('Error al subir la imagen');
+      console.error(error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const showBrand = selectedCategory !== 'jeans';
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="font-serif tracking-wide">
+            {step === 'section' ? 'Selecciona la sección' : `Nueva prenda — ${categoryLabels[selectedCategory!]}`}
+          </DialogTitle>
+        </DialogHeader>
+
+        {step === 'section' ? (
+          <div className="grid grid-cols-1 gap-3 py-2">
+            {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleSelectSection(cat)}
+                className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors text-left"
+              >
+                <span className="font-medium text-sm">{categoryLabels[cat]}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-5 py-2">
+            {/* Back button */}
+            <button
+              onClick={() => { setStep('section'); setSelectedFile(null); setPreviewUrl(null); }}
+              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              ← Cambiar sección
+            </button>
+
+            {/* Brand selector */}
+            {showBrand && (
+              <div className="space-y-2">
+                <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Marca</label>
+                <Select value={selectedBrand} onValueChange={(v) => setSelectedBrand(v as Brand)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.map((brand) => (
+                      <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Visibility selector */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                ¿Dónde se muestra?
+              </label>
+              <div className="space-y-2">
+                {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+                  <button
+                    key={vis}
+                    onClick={() => setSelectedVisibility(vis)}
+                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                      selectedVisibility === vis
+                        ? 'border-foreground bg-foreground/5'
+                        : 'border-border hover:border-foreground/30'
+                    }`}
+                  >
+                    <p className="text-sm font-medium">{visibilityLabels[vis]}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{visibilityDescriptions[vis]}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Image selection */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Imagen</label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {previewUrl ? (
+                <div className="relative inline-block">
+                  <img src={previewUrl} alt="Preview" className="w-32 h-40 object-cover rounded-lg" />
+                  <button
+                    onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
+                    className="absolute -top-2 -right-2 p-1 bg-destructive text-destructive-foreground rounded-full"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-24 border-dashed"
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  Seleccionar imagen
+                </Button>
+              )}
+            </div>
+
+            {/* Upload button */}
+            <Button
+              onClick={handleUpload}
+              disabled={!selectedFile || isUploading}
+              className="w-full bg-foreground text-background hover:bg-foreground/90"
+            >
+              {isUploading ? 'Subiendo...' : 'Subir prenda'}
+            </Button>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// --- Main Admin Page ---
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   
-  const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('ropa');
   const [collapsedSections, setCollapsedSections] = useState<Record<ProductCategory, boolean>>({
     ropa: false,
     bolsos: false,
@@ -199,33 +377,26 @@ const Admin = () => {
     camisetas: false,
     jeans: false,
   });
-  const [newCampaignName, setNewCampaignName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
   const [replacingProduct, setReplacingProduct] = useState<Product | null>(null);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
   
   const { data: products, isLoading: productsLoading } = useAllProducts();
-  const { data: campaigns } = useCampaigns();
-  const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
   const uploadImage = useUploadImage();
-  const createCampaign = useCreateCampaign();
-  const setActiveCampaign = useSetActiveCampaign();
   const updateProductOrder = useUpdateProductOrder();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
+      activationConstraint: { distance: 8 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  // Group products by category
   const productsByCategory = (category: ProductCategory) =>
     products?.filter(p => p.category === category) || [];
 
@@ -259,34 +430,6 @@ const Admin = () => {
     );
   }
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      const imageUrl = await uploadImage.mutateAsync(file);
-      const activeCampaign = campaigns?.find(c => c.isActive);
-      
-      await createProduct.mutateAsync({
-        brand: selectedBrand,
-        imageUrl,
-        campaignId: activeCampaign?.id,
-        category: selectedCategory,
-      });
-      
-      toast.success('Prenda añadida correctamente');
-    } catch (error) {
-      toast.error('Error al subir la imagen');
-      console.error(error);
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
-
   const handleReplaceImage = (product: Product) => {
     setReplacingProduct(product);
     replaceImageInputRef.current?.click();
@@ -299,29 +442,20 @@ const Admin = () => {
     setIsUploading(true);
     try {
       const imageUrl = await uploadImage.mutateAsync(file);
-      await updateProduct.mutateAsync({
-        id: replacingProduct.id,
-        imageUrl,
-      });
+      await updateProduct.mutateAsync({ id: replacingProduct.id, imageUrl });
       toast.success('Imagen reemplazada correctamente');
     } catch (error) {
       toast.error('Error al reemplazar la imagen');
-      console.error(error);
     } finally {
       setIsUploading(false);
       setReplacingProduct(null);
-      if (replaceImageInputRef.current) {
-        replaceImageInputRef.current.value = '';
-      }
+      if (replaceImageInputRef.current) replaceImageInputRef.current.value = '';
     }
   };
 
   const handleToggleActive = async (product: Product) => {
     try {
-      await updateProduct.mutateAsync({
-        id: product.id,
-        isActive: !product.isActive,
-      });
+      await updateProduct.mutateAsync({ id: product.id, isActive: !product.isActive });
       toast.success(product.isActive ? 'Prenda desactivada' : 'Prenda activada');
     } catch (error) {
       toast.error('Error al actualizar');
@@ -330,12 +464,8 @@ const Admin = () => {
 
   const handleChangeBrand = async (product: Product, newBrand: Brand) => {
     if (product.brand === newBrand) return;
-    
     try {
-      await updateProduct.mutateAsync({
-        id: product.id,
-        brand: newBrand,
-      });
+      await updateProduct.mutateAsync({ id: product.id, brand: newBrand });
       toast.success(`Marca cambiada a ${newBrand}`);
     } catch (error) {
       toast.error('Error al cambiar la marca');
@@ -344,61 +474,21 @@ const Admin = () => {
 
   const handleChangeVisibility = async (product: Product, visibility: ProductVisibility) => {
     if (product.visibility === visibility) return;
-    
     try {
-      await updateProduct.mutateAsync({
-        id: product.id,
-        visibility,
-      });
+      await updateProduct.mutateAsync({ id: product.id, visibility });
       toast.success(`Visibilidad cambiada a "${visibilityLabels[visibility]}"`);
     } catch (error) {
       toast.error('Error al cambiar la visibilidad');
     }
   };
 
-  const handleChangeCategory = async (product: Product, category: ProductCategory) => {
-    if (product.category === category) return;
-    
-    try {
-      await updateProduct.mutateAsync({
-        id: product.id,
-        category,
-      });
-      toast.success(`Categoría cambiada a "${categoryLabels[category]}"`);
-    } catch (error) {
-      toast.error('Error al cambiar la categoría');
-    }
-  };
-
   const handleDelete = async (id: string) => {
     if (!confirm('¿Estás seguro de que quieres eliminar esta prenda?')) return;
-    
     try {
       await deleteProduct.mutateAsync(id);
       toast.success('Prenda eliminada');
     } catch (error) {
       toast.error('Error al eliminar');
-    }
-  };
-
-  const handleCreateCampaign = async () => {
-    if (!newCampaignName.trim()) return;
-    
-    try {
-      await createCampaign.mutateAsync(newCampaignName);
-      setNewCampaignName('');
-      toast.success('Campaña creada');
-    } catch (error) {
-      toast.error('Error al crear campaña');
-    }
-  };
-
-  const handleSetActiveCampaign = async (campaignId: string) => {
-    try {
-      await setActiveCampaign.mutateAsync(campaignId);
-      toast.success('Campaña activada');
-    } catch (error) {
-      toast.error('Error al activar campaña');
     }
   };
 
@@ -414,7 +504,6 @@ const Admin = () => {
     if (over && active.id !== over.id && categoryProducts.length > 0) {
       const oldIndex = categoryProducts.findIndex((p) => p.id === active.id);
       const newIndex = categoryProducts.findIndex((p) => p.id === over.id);
-      
       const newOrder = arrayMove(categoryProducts, oldIndex, newIndex);
       
       const updates = newOrder.map((p, index) => ({
@@ -440,110 +529,32 @@ const Admin = () => {
             <h1 className="font-serif text-xl tracking-wide text-foreground">LA LOGGIA</h1>
             <p className="text-xs text-muted-foreground">Admin</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
-            <LogOut className="w-5 h-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setShowUploadDialog(true)}
+              className="bg-foreground text-background hover:bg-foreground/90"
+              size="sm"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Nueva prenda
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <LogOut className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
-      <main className="p-4 space-y-6">
-        {/* Upload Section */}
-        <section className="bg-secondary/30 rounded-lg p-4">
-          <h2 className="font-sans text-sm font-medium uppercase tracking-wider mb-4">
-            Subir Nueva Prenda
-          </h2>
-          
-          <div className="flex gap-3 mb-4">
-            <Select value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as ProductCategory)}>
-              <SelectTrigger className="w-36">
-                <SelectValue placeholder="Sección" />
-              </SelectTrigger>
-              <SelectContent>
-                {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
-                  <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {selectedCategory !== 'jeans' && (
-              <Select value={selectedBrand} onValueChange={(v) => setSelectedBrand(v as Brand)}>
-                <SelectTrigger className="flex-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {brands.map((brand) => (
-                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
+      {/* Hidden input for replacing images */}
+      <input
+        ref={replaceImageInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleReplaceImageSelect}
+        className="hidden"
+      />
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-          
-          <Button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
-            className="w-full bg-foreground text-background hover:bg-foreground/90"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            {isUploading ? 'Subiendo...' : 'Seleccionar Imagen'}
-          </Button>
-        </section>
-
-        {/* Hidden input for replacing images */}
-        <input
-          ref={replaceImageInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleReplaceImageSelect}
-          className="hidden"
-        />
-
-        {/* Campaigns Section */}
-        <section className="bg-secondary/30 rounded-lg p-4">
-          <h2 className="font-sans text-sm font-medium uppercase tracking-wider mb-4">
-            Campañas
-          </h2>
-          
-          <div className="flex gap-2 mb-4">
-            <Input
-              placeholder="Nueva campaña..."
-              value={newCampaignName}
-              onChange={(e) => setNewCampaignName(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleCreateCampaign} size="icon">
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            {campaigns?.map((campaign) => (
-              <div
-                key={campaign.id}
-                className={`flex items-center justify-between p-3 rounded-md ${
-                  campaign.isActive ? 'bg-foreground/10 border border-foreground/20' : 'bg-secondary'
-                }`}
-              >
-                <span className="text-sm">{campaign.name}</span>
-                <Button
-                  variant={campaign.isActive ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => handleSetActiveCampaign(campaign.id)}
-                >
-                  {campaign.isActive ? 'Activa' : 'Activar'}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </section>
-
+      <main className="p-4 space-y-4">
         {/* Products by Category Sections */}
         {productsLoading ? (
           <p className="text-muted-foreground text-center py-8">Cargando...</p>
@@ -600,7 +611,6 @@ const Admin = () => {
                                 onReplaceImage={handleReplaceImage}
                                 onChangeBrand={handleChangeBrand}
                                 onChangeVisibility={handleChangeVisibility}
-                                onChangeCategory={handleChangeCategory}
                               />
                             ))}
                           </div>
@@ -614,6 +624,9 @@ const Admin = () => {
           })
         )}
       </main>
+
+      {/* Upload Dialog */}
+      <UploadDialog open={showUploadDialog} onClose={() => setShowUploadDialog(false)} />
 
       {/* Product Image Manager Modal */}
       {managingProduct && (

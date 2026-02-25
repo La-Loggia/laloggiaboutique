@@ -135,7 +135,7 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ brand, imageUrl, campaignId, category }: { brand: Brand; imageUrl: string; campaignId?: string; category?: ProductCategory }) => {
+    mutationFn: async ({ brand, imageUrl, campaignId, category, visibility }: { brand: Brand; imageUrl: string; campaignId?: string; category?: ProductCategory; visibility?: ProductVisibility }) => {
       // First, increment display_order of all existing products to make room for the new one at position 0
       await supabase.rpc('increment_all_product_orders' as any);
       
@@ -148,6 +148,7 @@ export const useCreateProduct = () => {
           campaign_id: campaignId || null,
           display_order: 0,
           category: category || 'ropa',
+          visibility: visibility || 'all',
         })
         .select()
         .single();
