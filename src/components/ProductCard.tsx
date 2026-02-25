@@ -61,7 +61,9 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300 pointer-events-none" />
       </div>
       {!hideBrandName && (
-        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>{getBrandDisplayName(product.brand)}</p>
+        <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>
+          {product.category === 'jeans' ? 'ESPACIO JEANS' : getBrandDisplayName(product.brand)}
+        </p>
       )}
     </article>
   );
