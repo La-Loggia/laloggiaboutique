@@ -159,7 +159,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
+                {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
                   <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>
@@ -450,26 +450,28 @@ const Admin = () => {
           </h2>
           
           <div className="flex gap-3 mb-4">
-            <Select value={selectedBrand} onValueChange={(v) => setSelectedBrand(v as Brand)}>
-              <SelectTrigger className="flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {brands.map((brand) => (
-                  <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Select value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as ProductCategory)}>
-              <SelectTrigger className="w-28">
-                <SelectValue />
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Sección" />
               </SelectTrigger>
               <SelectContent>
-                {(['ropa', 'bolsos', 'plumiferos', 'camisetas'] as ProductCategory[]).map((cat) => (
+                {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
                   <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {selectedCategory !== 'jeans' && (
+              <Select value={selectedBrand} onValueChange={(v) => setSelectedBrand(v as Brand)}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <input
@@ -569,7 +571,7 @@ const Admin = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">Todas</SelectItem>
-                  {(['ropa', 'bolsos'] as ProductCategory[]).map((cat) => (
+                  {(['ropa', 'bolsos', 'plumiferos', 'camisetas', 'jeans'] as ProductCategory[]).map((cat) => (
                     <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
                   ))}
                 </SelectContent>
