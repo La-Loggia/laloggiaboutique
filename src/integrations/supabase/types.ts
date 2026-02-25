@@ -77,6 +77,9 @@ export type Database = {
           id: string
           image_url: string
           is_active: boolean
+          show_in_brand: boolean
+          show_in_latest: boolean
+          show_in_section: boolean
           visibility: Database["public"]["Enums"]["product_visibility"]
         }
         Insert: {
@@ -88,6 +91,9 @@ export type Database = {
           id?: string
           image_url: string
           is_active?: boolean
+          show_in_brand?: boolean
+          show_in_latest?: boolean
+          show_in_section?: boolean
           visibility?: Database["public"]["Enums"]["product_visibility"]
         }
         Update: {
@@ -99,6 +105,9 @@ export type Database = {
           id?: string
           image_url?: string
           is_active?: boolean
+          show_in_brand?: boolean
+          show_in_latest?: boolean
+          show_in_section?: boolean
           visibility?: Database["public"]["Enums"]["product_visibility"]
         }
         Relationships: [

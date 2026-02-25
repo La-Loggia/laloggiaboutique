@@ -9,7 +9,6 @@ export interface ProductImage {
   displayOrder: number;
 }
 
-export type ProductVisibility = 'all' | 'brand_only' | 'latest_only';
 export type ProductCategory = 'ropa' | 'bolsos' | 'plumiferos' | 'camisetas' | 'jeans';
 
 export interface Product {
@@ -20,20 +19,24 @@ export interface Product {
   campaignId: string | null;
   createdAt: Date;
   displayOrder: number;
-  visibility: ProductVisibility;
+  showInLatest: boolean;
+  showInSection: boolean;
+  showInBrand: boolean;
   category: ProductCategory;
   additionalImages?: ProductImage[];
 }
 
 interface RawProduct {
   id: string;
-  brand: 'MOOR' | 'SaintTropez' | 'DiLei' | 'Mela' | 'Pecatto';
+  brand: Brand;
   image_url: string;
   is_active: boolean;
   campaign_id: string | null;
   created_at: string;
   display_order: number;
-  visibility: ProductVisibility;
+  show_in_latest: boolean;
+  show_in_section: boolean;
+  show_in_brand: boolean;
   category: ProductCategory;
 }
 
@@ -45,7 +48,9 @@ const mapProduct = (raw: RawProduct): Product => ({
   campaignId: raw.campaign_id,
   createdAt: new Date(raw.created_at),
   displayOrder: raw.display_order,
-  visibility: raw.visibility,
+  showInLatest: raw.show_in_latest,
+  showInSection: raw.show_in_section,
+  showInBrand: raw.show_in_brand,
   category: raw.category,
 });
 
@@ -81,7 +86,7 @@ export const useLatestProducts = (limit?: number) => {
         .from('products')
         .select('*')
         .eq('is_active', true)
-        .in('visibility', ['all', 'latest_only'])
+        .eq('show_in_latest', true)
         .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
       
@@ -105,7 +110,26 @@ export const useProductsByBrand = (brand: Brand) => {
         .select('*')
         .eq('brand', brand)
         .eq('is_active', true)
-        .in('visibility', ['all', 'brand_only'])
+        .eq('show_in_brand', true)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
+export const useProductsByCategory = (category: ProductCategory) => {
+  return useQuery({
+    queryKey: ['products', 'category', category],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .eq('category', category)
+        .eq('show_in_section', true)
         .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
       
@@ -135,11 +159,17 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ brand, imageUrl, campaignId, category, visibility }: { brand: Brand; imageUrl: string; campaignId?: string; category?: ProductCategory; visibility?: ProductVisibility }) => {
-      // First, increment display_order of all existing products to make room for the new one at position 0
+    mutationFn: async ({ brand, imageUrl, campaignId, category, showInLatest, showInSection, showInBrand }: { 
+      brand: Brand; 
+      imageUrl: string; 
+      campaignId?: string; 
+      category?: ProductCategory; 
+      showInLatest?: boolean;
+      showInSection?: boolean;
+      showInBrand?: boolean;
+    }) => {
       await supabase.rpc('increment_all_product_orders' as any);
       
-      // Then insert the new product with display_order = 0 (first position)
       const { data, error } = await supabase
         .from('products')
         .insert({
@@ -148,7 +178,9 @@ export const useCreateProduct = () => {
           campaign_id: campaignId || null,
           display_order: 0,
           category: category || 'ropa',
-          visibility: visibility || 'all',
+          show_in_latest: showInLatest ?? true,
+          show_in_section: showInSection ?? true,
+          show_in_brand: showInBrand ?? true,
         })
         .select()
         .single();
@@ -166,14 +198,26 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, visibility, category }: { id: string; isActive?: boolean; brand?: Brand; campaignId?: string | null; imageUrl?: string; visibility?: ProductVisibility; category?: ProductCategory }) => {
+    mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, category, showInLatest, showInSection, showInBrand }: { 
+      id: string; 
+      isActive?: boolean; 
+      brand?: Brand; 
+      campaignId?: string | null; 
+      imageUrl?: string; 
+      category?: ProductCategory;
+      showInLatest?: boolean;
+      showInSection?: boolean;
+      showInBrand?: boolean;
+    }) => {
       const updates: Record<string, unknown> = {};
       if (isActive !== undefined) updates.is_active = isActive;
       if (brand !== undefined) updates.brand = brand;
       if (campaignId !== undefined) updates.campaign_id = campaignId;
       if (imageUrl !== undefined) updates.image_url = imageUrl;
-      if (visibility !== undefined) updates.visibility = visibility;
       if (category !== undefined) updates.category = category;
+      if (showInLatest !== undefined) updates.show_in_latest = showInLatest;
+      if (showInSection !== undefined) updates.show_in_section = showInSection;
+      if (showInBrand !== undefined) updates.show_in_brand = showInBrand;
       
       const { error } = await supabase
         .from('products')

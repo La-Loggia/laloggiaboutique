@@ -1,14 +1,14 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductVisibility, ProductCategory } from '@/hooks/useProducts';
+import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductCategory } from '@/hooks/useProducts';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
 import {
   DndContext,
@@ -28,21 +28,35 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-// --- Visibility system ---
-// 'all' = Aparece en todas partes (novedades + sección + marca)
-// 'brand_only' = Solo en la página de su marca
-// 'latest_only' = Solo en novedades
+// --- Visibility Presets ---
+interface VisibilityState {
+  showInLatest: boolean;
+  showInSection: boolean;
+  showInBrand: boolean;
+}
 
-const visibilityLabels: Record<ProductVisibility, string> = {
-  'all': 'Toda la web',
-  'brand_only': 'Solo marca',
-  'latest_only': 'Solo novedades',
-};
+interface VisibilityPreset {
+  label: string;
+  description: string;
+  state: VisibilityState;
+}
 
-const visibilityDescriptions: Record<ProductVisibility, string> = {
-  'all': 'Se muestra en novedades, su sección y la página de marca',
-  'brand_only': 'Solo se muestra en la página de su marca',
-  'latest_only': 'Solo se muestra en la sección de novedades',
+const visibilityPresets: VisibilityPreset[] = [
+  { label: 'Toda la web', description: 'Novedades + Sección + Marca', state: { showInLatest: true, showInSection: true, showInBrand: true } },
+  { label: 'Sección + Marca', description: 'Solo en su sección y marca', state: { showInLatest: false, showInSection: true, showInBrand: true } },
+  { label: 'Sección + Novedades', description: 'Sin página de marca', state: { showInLatest: true, showInSection: true, showInBrand: false } },
+  { label: 'Solo sección', description: 'Solo en su categoría', state: { showInLatest: false, showInSection: true, showInBrand: false } },
+  { label: 'Solo marca', description: 'Solo en la página de marca', state: { showInLatest: false, showInSection: false, showInBrand: true } },
+  { label: 'Solo novedades', description: 'Solo en novedades', state: { showInLatest: true, showInSection: false, showInBrand: false } },
+];
+
+const getMatchingPreset = (state: VisibilityState): string | null => {
+  const match = visibilityPresets.find(
+    p => p.state.showInLatest === state.showInLatest && 
+         p.state.showInSection === state.showInSection && 
+         p.state.showInBrand === state.showInBrand
+  );
+  return match?.label ?? null;
 };
 
 const categoryLabels: Record<ProductCategory, string> = {
@@ -53,6 +67,39 @@ const categoryLabels: Record<ProductCategory, string> = {
   'jeans': 'Espacio Jeans',
 };
 
+// --- Visibility Toggle Component ---
+const VisibilityToggles = ({ 
+  showInLatest, showInSection, showInBrand, showBrandToggle,
+  onChange 
+}: VisibilityState & { showBrandToggle: boolean; onChange: (state: Partial<VisibilityState>) => void }) => {
+  const toggles = [
+    { key: 'showInLatest' as const, label: 'Novedades', icon: '📰' },
+    { key: 'showInSection' as const, label: 'Sección', icon: '📂' },
+    ...(showBrandToggle ? [{ key: 'showInBrand' as const, label: 'Marca', icon: '🏷️' }] : []),
+  ];
+  const state = { showInLatest, showInSection, showInBrand };
+
+  return (
+    <div className="flex gap-1.5">
+      {toggles.map(t => (
+        <button
+          key={t.key}
+          onClick={() => onChange({ [t.key]: !state[t.key] })}
+          className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-colors ${
+            state[t.key]
+              ? 'bg-foreground text-background'
+              : 'bg-secondary text-muted-foreground'
+          }`}
+          title={`${state[t.key] ? 'Ocultar de' : 'Mostrar en'} ${t.label}`}
+        >
+          <span>{t.icon}</span>
+          <span className="hidden sm:inline">{t.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+};
+
 // --- Sortable Product Row ---
 interface SortableProductProps {
   product: Product;
@@ -61,7 +108,7 @@ interface SortableProductProps {
   onManageImages: (product: Product) => void;
   onReplaceImage: (product: Product) => void;
   onChangeBrand: (product: Product, newBrand: Brand) => void;
-  onChangeVisibility: (product: Product, visibility: ProductVisibility) => void;
+  onChangeVisibility: (product: Product, state: Partial<VisibilityState>) => void;
 }
 
 const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility }: SortableProductProps) => {
@@ -139,8 +186,8 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             </div>
           </div>
           
-          <div className={`grid ${showBrand ? 'grid-cols-2' : 'grid-cols-1'} gap-1.5`}>
-            {showBrand && (
+          {showBrand && (
+            <div className="mb-2">
               <Select 
                 value={product.brand} 
                 onValueChange={(v) => onChangeBrand(product, v as Brand)}
@@ -154,21 +201,16 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
                   ))}
                 </SelectContent>
               </Select>
-            )}
-            <Select 
-              value={product.visibility} 
-              onValueChange={(v) => onChangeVisibility(product, v as ProductVisibility)}
-            >
-              <SelectTrigger className="h-8 text-xs px-2">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
-                  <SelectItem key={vis} value={vis} className="text-xs">{visibilityLabels[vis]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+            </div>
+          )}
+
+          <VisibilityToggles
+            showInLatest={product.showInLatest}
+            showInSection={product.showInSection}
+            showInBrand={product.showInBrand}
+            showBrandToggle={showBrand}
+            onChange={(state) => onChangeVisibility(product, state)}
+          />
         </div>
       </div>
     </div>
@@ -185,7 +227,7 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
   const [step, setStep] = useState<'section' | 'details'>('section');
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<Brand>('MOOR');
-  const [selectedVisibility, setSelectedVisibility] = useState<ProductVisibility>('all');
+  const [visibility, setVisibility] = useState<VisibilityState>({ showInLatest: true, showInSection: true, showInBrand: true });
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -198,7 +240,7 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
     setStep('section');
     setSelectedCategory(null);
     setSelectedBrand('MOOR');
-    setSelectedVisibility('all');
+    setVisibility({ showInLatest: true, showInSection: true, showInBrand: true });
     setIsUploading(false);
     setPreviewUrl(null);
     setSelectedFile(null);
@@ -211,6 +253,9 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
 
   const handleSelectSection = (cat: ProductCategory) => {
     setSelectedCategory(cat);
+    if (cat === 'jeans') {
+      setVisibility({ showInLatest: true, showInSection: true, showInBrand: false });
+    }
     setStep('details');
   };
 
@@ -231,7 +276,9 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
         brand: selectedCategory === 'jeans' ? 'MOOR' : selectedBrand,
         imageUrl,
         category: selectedCategory,
-        visibility: selectedVisibility,
+        showInLatest: visibility.showInLatest,
+        showInSection: visibility.showInSection,
+        showInBrand: selectedCategory === 'jeans' ? false : visibility.showInBrand,
       });
       toast.success('Prenda añadida correctamente');
       handleClose();
@@ -244,6 +291,7 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
   };
 
   const showBrand = selectedCategory !== 'jeans';
+  const matchingPreset = getMatchingPreset(visibility);
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
@@ -269,7 +317,6 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
           </div>
         ) : (
           <div className="space-y-5 py-2">
-            {/* Back button */}
             <button
               onClick={() => { setStep('section'); setSelectedFile(null); setPreviewUrl(null); }}
               className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
@@ -294,26 +341,49 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
               </div>
             )}
 
-            {/* Visibility selector */}
-            <div className="space-y-2">
-              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {/* Visibility - Presets */}
+            <div className="space-y-3">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Eye className="w-3.5 h-3.5" />
                 ¿Dónde se muestra?
               </label>
-              <div className="space-y-2">
-                {(['all', 'brand_only', 'latest_only'] as ProductVisibility[]).map((vis) => (
+              
+              {/* Preset buttons */}
+              <div className="grid grid-cols-2 gap-2">
+                {visibilityPresets
+                  .filter(p => showBrand || !p.state.showInBrand) // Hide brand presets for jeans
+                  .map((preset) => (
                   <button
-                    key={vis}
-                    onClick={() => setSelectedVisibility(vis)}
-                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                      selectedVisibility === vis
+                    key={preset.label}
+                    onClick={() => setVisibility(preset.state)}
+                    className={`text-left p-2.5 rounded-lg border transition-colors ${
+                      matchingPreset === preset.label
                         ? 'border-foreground bg-foreground/5'
                         : 'border-border hover:border-foreground/30'
                     }`}
                   >
-                    <p className="text-sm font-medium">{visibilityLabels[vis]}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{visibilityDescriptions[vis]}</p>
+                    <p className="text-xs font-medium">{preset.label}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{preset.description}</p>
                   </button>
                 ))}
+              </div>
+
+              {/* Individual toggles */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                <label className="flex items-center gap-2 text-xs">
+                  <Switch checked={visibility.showInLatest} onCheckedChange={(v) => setVisibility(s => ({ ...s, showInLatest: v }))} />
+                  📰 Novedades
+                </label>
+                <label className="flex items-center gap-2 text-xs">
+                  <Switch checked={visibility.showInSection} onCheckedChange={(v) => setVisibility(s => ({ ...s, showInSection: v }))} />
+                  📂 Sección
+                </label>
+                {showBrand && (
+                  <label className="flex items-center gap-2 text-xs">
+                    <Switch checked={visibility.showInBrand} onCheckedChange={(v) => setVisibility(s => ({ ...s, showInBrand: v }))} />
+                    🏷️ Marca
+                  </label>
+                )}
               </div>
             </div>
 
@@ -349,7 +419,6 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
               )}
             </div>
 
-            {/* Upload button */}
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || isUploading}
@@ -472,11 +541,10 @@ const Admin = () => {
     }
   };
 
-  const handleChangeVisibility = async (product: Product, visibility: ProductVisibility) => {
-    if (product.visibility === visibility) return;
+  const handleChangeVisibility = async (product: Product, state: Partial<VisibilityState>) => {
     try {
-      await updateProduct.mutateAsync({ id: product.id, visibility });
-      toast.success(`Visibilidad cambiada a "${visibilityLabels[visibility]}"`);
+      await updateProduct.mutateAsync({ id: product.id, ...state });
+      toast.success('Visibilidad actualizada');
     } catch (error) {
       toast.error('Error al cambiar la visibilidad');
     }
@@ -522,7 +590,6 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="flex items-center justify-between px-4 py-3">
           <div>
@@ -545,7 +612,6 @@ const Admin = () => {
         </div>
       </header>
 
-      {/* Hidden input for replacing images */}
       <input
         ref={replaceImageInputRef}
         type="file"
@@ -555,7 +621,6 @@ const Admin = () => {
       />
 
       <main className="p-4 space-y-4">
-        {/* Products by Category Sections */}
         {productsLoading ? (
           <p className="text-muted-foreground text-center py-8">Cargando...</p>
         ) : (
@@ -625,10 +690,8 @@ const Admin = () => {
         )}
       </main>
 
-      {/* Upload Dialog */}
       <UploadDialog open={showUploadDialog} onClose={() => setShowUploadDialog(false)} />
 
-      {/* Product Image Manager Modal */}
       {managingProduct && (
         <ProductImageManager
           product={managingProduct}
