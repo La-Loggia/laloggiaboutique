@@ -360,7 +360,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                     />
                   </div>
                   <p className="brand-name text-center">
-                    {relatedProduct.brand ? getBrandDisplayName(relatedProduct.brand) : 'ESPACIO JEANS'}
+                    {relatedProduct.category === 'jeans' || !relatedProduct.brand ? 'ESPACIO JEANS' : getBrandDisplayName(relatedProduct.brand)}
                   </p>
                 </button>
               ))}
