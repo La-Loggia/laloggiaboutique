@@ -273,7 +273,7 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
     try {
       const imageUrl = await uploadImage.mutateAsync(selectedFile);
       await createProduct.mutateAsync({
-        brand: selectedCategory === 'jeans' ? 'MOOR' : selectedBrand,
+        brand: selectedCategory === 'jeans' ? null : selectedBrand,
         imageUrl,
         category: selectedCategory,
         showInLatest: visibility.showInLatest,

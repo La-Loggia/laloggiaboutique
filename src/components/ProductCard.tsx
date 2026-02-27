@@ -63,7 +63,7 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
       </div>
       {!hideBrandName && (
         <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>
-          {product.category === 'jeans' ? 'ESPACIO JEANS' : getBrandDisplayName(product.brand)}
+          {product.category === 'jeans' || !product.brand ? 'ESPACIO JEANS' : getBrandDisplayName(product.brand)}
         </p>
       )}
     </article>
