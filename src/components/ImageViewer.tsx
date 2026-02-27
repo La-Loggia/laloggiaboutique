@@ -70,21 +70,18 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   // Smart recommendations: exclude current + viewed, then shuffle with session seed
   const viewedIds = getViewedIds();
-  const alsoLikeProducts = seededShuffle(
-    latestProducts.filter(p => p.id !== product.id && !viewedIds.has(p.id)),
-    sessionSeed
-  ).slice(0, 6);
-
+  const unseenProducts = latestProducts.filter(p => p && p.id !== product.id && !viewedIds.has(p.id));
+  const seenProducts = latestProducts.filter(p => p && p.id !== product.id && viewedIds.has(p.id));
+  
+  const shuffledUnseen = seededShuffle(unseenProducts, sessionSeed).slice(0, 6);
+  
   // Fallback: if too few unseen products, fill with seen ones (still shuffled)
-  const finalAlsoLike = alsoLikeProducts.length >= 3
-    ? alsoLikeProducts
+  const finalAlsoLike = shuffledUnseen.length >= 3
+    ? shuffledUnseen
     : [
-        ...alsoLikeProducts,
-        ...seededShuffle(
-          latestProducts.filter(p => p.id !== product.id && viewedIds.has(p.id)),
-          sessionSeed
-        ).slice(0, 6 - alsoLikeProducts.length),
-      ];
+        ...shuffledUnseen,
+        ...seededShuffle(seenProducts, sessionSeed).slice(0, 6 - shuffledUnseen.length),
+      ].filter(Boolean);
 
   // Check scroll availability for brand section
   const checkBrandScroll = useCallback(() => {
