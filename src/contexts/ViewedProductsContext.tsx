@@ -10,7 +10,7 @@ const ViewedProductsContext = createContext<ViewedProductsContextType | null>(nu
 
 export const ViewedProductsProvider = ({ children }: { children: ReactNode }) => {
   const [viewedIds] = useState(() => new Set<string>());
-  const sessionSeed = useRef(Math.random()).current;
+  const sessionSeed = useRef(Math.floor(Math.random() * 2147483646) + 1).current;
 
   const markAsViewed = useCallback((productId: string) => {
     viewedIds.add(productId);
