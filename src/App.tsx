@@ -44,6 +44,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+        </ViewedProductsProvider>
       </AdminProvider>
     </AuthProvider>
   </QueryClientProvider>
