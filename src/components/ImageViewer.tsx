@@ -68,10 +68,23 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ? []
     : brandProducts.filter(p => p.id !== product.id).slice(0, 10);
 
-  // Filter out current product from latest products
-  const alsoLikeProducts = latestProducts
-    .filter(p => p.id !== product.id)
-    .slice(0, 6);
+  // Smart recommendations: exclude current + viewed, then shuffle with session seed
+  const viewedIds = getViewedIds();
+  const alsoLikeProducts = seededShuffle(
+    latestProducts.filter(p => p.id !== product.id && !viewedIds.has(p.id)),
+    sessionSeed
+  ).slice(0, 6);
+
+  // Fallback: if too few unseen products, fill with seen ones (still shuffled)
+  const finalAlsoLike = alsoLikeProducts.length >= 3
+    ? alsoLikeProducts
+    : [
+        ...alsoLikeProducts,
+        ...seededShuffle(
+          latestProducts.filter(p => p.id !== product.id && viewedIds.has(p.id)),
+          sessionSeed
+        ).slice(0, 6 - alsoLikeProducts.length),
+      ];
 
   // Check scroll availability for brand section
   const checkBrandScroll = useCallback(() => {
