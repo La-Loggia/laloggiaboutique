@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
-import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
+import { Product, useProductImages, useProductsByBrand, useLatestProducts, useProductsByCategory } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
 import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 import WhatsAppButton from './WhatsAppButton';
