@@ -313,7 +313,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                   >
                     <img
                       src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 200, quality: 70 })}
-                      alt={`Prenda de ${relatedProduct.brand}`}
+                      alt={`Prenda de ${relatedProduct.brand ? getBrandDisplayName(relatedProduct.brand) : 'Espacio Jeans'}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
