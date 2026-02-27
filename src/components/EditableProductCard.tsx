@@ -209,7 +209,7 @@ const EditableProductCard = ({
             
             <div className="flex gap-3 mb-4">
               <div className="relative">
-                <img src={product.imageUrl} alt={product.brand} className="w-16 h-20 object-cover rounded" />
+                <img src={product.imageUrl} alt={product.brand || 'Sin marca'} className="w-16 h-20 object-cover rounded" />
                 <Button variant="secondary" size="icon" className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full shadow" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
                   {isUploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <ImagePlus className="w-3 h-3" />}
                 </Button>
