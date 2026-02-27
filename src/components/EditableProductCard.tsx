@@ -56,8 +56,8 @@ const EditableProductCard = ({
   const deleteProduct = useDeleteProduct();
   const uploadImage = useUploadImage();
 
-  const category = brandCategories[product.brand] || 'exclusivo';
-  const displayBrandName = getBrandDisplayName(product.brand);
+  const category = product.brand ? (brandCategories[product.brand] || 'exclusivo') : 'exclusivo';
+  const displayBrandName = product.brand ? getBrandDisplayName(product.brand) : 'ESPACIO JEANS';
   const altText = `Prenda ${category} de ${displayBrandName} para mujer - La Loggia boutique Alicante`;
 
   const handleToggleActive = async (e: React.MouseEvent) => {
