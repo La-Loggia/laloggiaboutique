@@ -173,7 +173,7 @@ export const useCreateProduct = () => {
       const { data, error } = await supabase
         .from('products')
         .insert({
-          brand,
+          brand: brand ?? null,
           image_url: imageUrl,
           campaign_id: campaignId || null,
           display_order: 0,
@@ -181,7 +181,7 @@ export const useCreateProduct = () => {
           show_in_latest: showInLatest ?? true,
           show_in_section: showInSection ?? true,
           show_in_brand: showInBrand ?? true,
-        })
+        } as any)
         .select()
         .single();
       
