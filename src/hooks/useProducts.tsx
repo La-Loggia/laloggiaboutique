@@ -28,7 +28,7 @@ export interface Product {
 
 interface RawProduct {
   id: string;
-  brand: Brand;
+  brand: Brand | null;
   image_url: string;
   is_active: boolean;
   campaign_id: string | null;
