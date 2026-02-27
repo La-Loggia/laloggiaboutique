@@ -354,7 +354,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                   <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
                     <img
                       src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 400, quality: 75 })}
-                      alt={`Prenda de ${relatedProduct.brand}`}
+                      alt={`Prenda de ${relatedProduct.brand ? getBrandDisplayName(relatedProduct.brand) : 'Espacio Jeans'}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
