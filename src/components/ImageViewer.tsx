@@ -52,6 +52,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   const { data: additionalImages = [] } = useProductImages(product.id);
   const { data: brandProducts = [] } = useProductsByBrand(product.brand);
+  const { data: categoryProducts = [] } = useProductsByCategory(product.category === 'jeans' ? 'jeans' : 'ropa');
   const { data: latestProducts = [] } = useLatestProducts(6);
   
   const allImages = [
@@ -59,8 +60,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ...additionalImages.map(img => img.imageUrl)
   ];
 
-  // Filter out current product and get more from same brand
-  const moreBrandProducts = brandProducts
+  // For jeans category, show other jeans products; otherwise show brand products
+  const moreBrandProducts = (product.category === 'jeans' ? categoryProducts : brandProducts)
     .filter(p => p.id !== product.id)
     .slice(0, 10);
 
