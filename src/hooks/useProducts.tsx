@@ -160,7 +160,7 @@ export const useCreateProduct = () => {
   
   return useMutation({
     mutationFn: async ({ brand, imageUrl, campaignId, category, showInLatest, showInSection, showInBrand }: { 
-      brand: Brand; 
+      brand?: Brand | null; 
       imageUrl: string; 
       campaignId?: string; 
       category?: ProductCategory; 
