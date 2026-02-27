@@ -69,7 +69,7 @@ export type Database = {
       }
       products: {
         Row: {
-          brand: Database["public"]["Enums"]["brand_type"]
+          brand: Database["public"]["Enums"]["brand_type"] | null
           campaign_id: string | null
           category: Database["public"]["Enums"]["product_category"]
           created_at: string
@@ -83,7 +83,7 @@ export type Database = {
           visibility: Database["public"]["Enums"]["product_visibility"]
         }
         Insert: {
-          brand: Database["public"]["Enums"]["brand_type"]
+          brand?: Database["public"]["Enums"]["brand_type"] | null
           campaign_id?: string | null
           category?: Database["public"]["Enums"]["product_category"]
           created_at?: string
@@ -97,7 +97,7 @@ export type Database = {
           visibility?: Database["public"]["Enums"]["product_visibility"]
         }
         Update: {
-          brand?: Database["public"]["Enums"]["brand_type"]
+          brand?: Database["public"]["Enums"]["brand_type"] | null
           campaign_id?: string | null
           category?: Database["public"]["Enums"]["product_category"]
           created_at?: string

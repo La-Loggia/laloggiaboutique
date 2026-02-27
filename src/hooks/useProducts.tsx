@@ -13,7 +13,7 @@ export type ProductCategory = 'ropa' | 'bolsos' | 'plumiferos' | 'camisetas' | '
 
 export interface Product {
   id: string;
-  brand: Brand;
+  brand: Brand | null;
   imageUrl: string;
   isActive: boolean;
   campaignId: string | null;
@@ -28,7 +28,7 @@ export interface Product {
 
 interface RawProduct {
   id: string;
-  brand: Brand;
+  brand: Brand | null;
   image_url: string;
   is_active: boolean;
   campaign_id: string | null;
@@ -160,7 +160,7 @@ export const useCreateProduct = () => {
   
   return useMutation({
     mutationFn: async ({ brand, imageUrl, campaignId, category, showInLatest, showInSection, showInBrand }: { 
-      brand: Brand; 
+      brand?: Brand | null; 
       imageUrl: string; 
       campaignId?: string; 
       category?: ProductCategory; 
@@ -173,7 +173,7 @@ export const useCreateProduct = () => {
       const { data, error } = await supabase
         .from('products')
         .insert({
-          brand,
+          brand: brand ?? null,
           image_url: imageUrl,
           campaign_id: campaignId || null,
           display_order: 0,
@@ -181,7 +181,7 @@ export const useCreateProduct = () => {
           show_in_latest: showInLatest ?? true,
           show_in_section: showInSection ?? true,
           show_in_brand: showInBrand ?? true,
-        })
+        } as any)
         .select()
         .single();
       
@@ -201,7 +201,7 @@ export const useUpdateProduct = () => {
     mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, category, showInLatest, showInSection, showInBrand }: { 
       id: string; 
       isActive?: boolean; 
-      brand?: Brand; 
+      brand?: Brand | null; 
       campaignId?: string | null; 
       imageUrl?: string; 
       category?: ProductCategory;

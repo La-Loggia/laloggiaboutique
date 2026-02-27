@@ -127,7 +127,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const showBrand = product.category !== 'jeans';
+  const showBrand = product.category !== 'jeans' && product.brand !== null;
 
   return (
     <div ref={setNodeRef} style={style} className="bg-background/50 rounded-lg p-3">
@@ -144,7 +144,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
         <div className="relative shrink-0">
           <img
             src={product.imageUrl}
-            alt={product.brand}
+            alt={product.brand || 'Sin marca'}
             className="w-16 h-20 md:w-20 md:h-24 object-cover rounded"
           />
           <button
@@ -186,7 +186,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             </div>
           </div>
           
-          {showBrand && (
+          {showBrand && product.brand && (
             <div className="mb-2">
               <Select 
                 value={product.brand} 
@@ -273,7 +273,7 @@ const UploadDialog = ({ open, onClose }: UploadDialogProps) => {
     try {
       const imageUrl = await uploadImage.mutateAsync(selectedFile);
       await createProduct.mutateAsync({
-        brand: selectedCategory === 'jeans' ? 'MOOR' : selectedBrand,
+        brand: selectedCategory === 'jeans' ? null : selectedBrand,
         imageUrl,
         category: selectedCategory,
         showInLatest: visibility.showInLatest,

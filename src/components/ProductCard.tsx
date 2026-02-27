@@ -26,10 +26,11 @@ const brandCategories: Record<string, string> = {
 };
 
 const ProductCard = ({ product, onClick, index, featured = false, hideBrandName = false }: ProductCardProps) => {
-  const category = brandCategories[product.brand] || 'exclusivo';
+  const category = product.brand ? (brandCategories[product.brand] || 'exclusivo') : 'exclusivo';
   
   // Generate descriptive, SEO-friendly alt text
-  const altText = `Prenda ${category} de ${getBrandDisplayName(product.brand)} para mujer - La Loggia boutique Alicante`;
+  const brandName = product.brand ? getBrandDisplayName(product.brand) : 'Espacio Jeans';
+  const altText = `Prenda ${category} de ${brandName} para mujer - La Loggia boutique Alicante`;
   
   // First 4 products are above the fold and should load with priority
   const isPriority = index < 4;
@@ -62,7 +63,7 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
       </div>
       {!hideBrandName && (
         <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>
-          {product.category === 'jeans' ? 'ESPACIO JEANS' : getBrandDisplayName(product.brand)}
+          {product.category === 'jeans' || !product.brand ? 'ESPACIO JEANS' : getBrandDisplayName(product.brand)}
         </p>
       )}
     </article>

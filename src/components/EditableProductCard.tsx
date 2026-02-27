@@ -56,8 +56,8 @@ const EditableProductCard = ({
   const deleteProduct = useDeleteProduct();
   const uploadImage = useUploadImage();
 
-  const category = brandCategories[product.brand] || 'exclusivo';
-  const displayBrandName = getBrandDisplayName(product.brand);
+  const category = product.brand ? (brandCategories[product.brand] || 'exclusivo') : 'exclusivo';
+  const displayBrandName = product.brand ? getBrandDisplayName(product.brand) : 'ESPACIO JEANS';
   const altText = `Prenda ${category} de ${displayBrandName} para mujer - La Loggia boutique Alicante`;
 
   const handleToggleActive = async (e: React.MouseEvent) => {
@@ -192,7 +192,7 @@ const EditableProductCard = ({
       
       {!hideBrandName && (
         <p className={`brand-name text-center ${featured ? 'text-sm mt-2' : ''}`}>
-          {product.category === 'jeans' ? 'ESPACIO JEANS' : displayBrandName}
+          {product.category === 'jeans' || !product.brand ? 'ESPACIO JEANS' : displayBrandName}
         </p>
       )}
       
@@ -209,7 +209,7 @@ const EditableProductCard = ({
             
             <div className="flex gap-3 mb-4">
               <div className="relative">
-                <img src={product.imageUrl} alt={product.brand} className="w-16 h-20 object-cover rounded" />
+                <img src={product.imageUrl} alt={product.brand || 'Sin marca'} className="w-16 h-20 object-cover rounded" />
                 <Button variant="secondary" size="icon" className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full shadow" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
                   {isUploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <ImagePlus className="w-3 h-3" />}
                 </Button>
@@ -224,14 +224,16 @@ const EditableProductCard = ({
             </div>
             
             <div className="space-y-2">
-              <Select value={product.brand} onValueChange={(v) => handleChangeBrand(v as Brand)}>
-                <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {brands.map((brand) => (
-                    <SelectItem key={brand} value={brand}>{getBrandDisplayName(brand)}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {product.brand && (
+                <Select value={product.brand} onValueChange={(v) => handleChangeBrand(v as Brand)}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {brands.map((brand) => (
+                      <SelectItem key={brand} value={brand}>{getBrandDisplayName(brand)}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               
               <Select value={product.category} onValueChange={(v) => handleChangeCategory(v as ProductCategory)}>
                 <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>

@@ -51,7 +51,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   }, [isFullscreen]);
 
   const { data: additionalImages = [] } = useProductImages(product.id);
-  const { data: brandProducts = [] } = useProductsByBrand(product.brand);
+  const { data: brandProducts = [] } = useProductsByBrand(product.brand || 'MOOR');
   const { data: categoryProducts = [] } = useProductsByCategory(product.category === 'jeans' ? 'jeans' : 'ropa');
   const { data: latestProducts = [] } = useLatestProducts(6);
   
@@ -60,8 +60,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ...additionalImages.map(img => img.imageUrl)
   ];
 
-  // For jeans category, show other jeans products; otherwise show brand products
-  const moreBrandProducts = (product.category === 'jeans' ? categoryProducts : brandProducts)
+  // For jeans/no-brand products, show other jeans; otherwise show brand products
+  const moreBrandProducts = (product.category === 'jeans' || !product.brand ? categoryProducts : brandProducts)
     .filter(p => p.id !== product.id)
     .slice(0, 10);
 
@@ -272,7 +272,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             >
               <img
                 src={getOptimizedImageUrl(allImages[currentIndex], { width: 800, quality: 85 })}
-                alt={`Prenda de ${product.brand}`}
+                alt={`Prenda de ${product.brand ? getBrandDisplayName(product.brand) : 'Espacio Jeans'}`}
                 className="w-auto max-w-[65vw] md:max-w-lg h-full object-contain rounded cursor-pointer"
                 onClick={() => setIsFullscreen(true)}
               />
@@ -287,7 +287,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-              {product.category === 'jeans' ? 'Más novedades' : `Más de ${getBrandDisplayName(product.brand)}`}
+              {product.category === 'jeans' || !product.brand ? 'Más novedades' : `Más de ${getBrandDisplayName(product.brand)}`}
             </p>
             <div className="relative flex items-center">
               {/* Left arrow - appears when can scroll left */}
@@ -313,7 +313,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                   >
                     <img
                       src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 200, quality: 70 })}
-                      alt={`Prenda de ${relatedProduct.brand}`}
+                      alt={`Prenda de ${relatedProduct.brand ? getBrandDisplayName(relatedProduct.brand) : 'Espacio Jeans'}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -354,13 +354,13 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
                   <div className="aspect-[9/16] overflow-hidden rounded bg-secondary">
                     <img
                       src={getOptimizedImageUrl(relatedProduct.imageUrl, { width: 400, quality: 75 })}
-                      alt={`Prenda de ${relatedProduct.brand}`}
+                      alt={`Prenda de ${relatedProduct.brand ? getBrandDisplayName(relatedProduct.brand) : 'Espacio Jeans'}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
                   <p className="brand-name text-center">
-                    {getBrandDisplayName(relatedProduct.brand)}
+                    {relatedProduct.brand ? getBrandDisplayName(relatedProduct.brand) : 'ESPACIO JEANS'}
                   </p>
                 </button>
               ))}
@@ -399,7 +399,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
           >
             <img
               src={getOptimizedImageUrl(allImages[currentIndex], { width: 1200, quality: 90 })}
-              alt={`Prenda de ${product.brand}`}
+              alt={`Prenda de ${product.brand ? getBrandDisplayName(product.brand) : 'Espacio Jeans'}`}
               className="w-full h-full object-contain select-none"
               style={{
                 transform: `scale(${zoomScale}) translate(${zoomPosition.x / zoomScale}px, ${zoomPosition.y / zoomScale}px)`,
