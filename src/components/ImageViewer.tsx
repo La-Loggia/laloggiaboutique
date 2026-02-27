@@ -4,6 +4,7 @@ import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts, useProductsByCategory } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
 import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
+import { useViewedProducts, seededShuffle } from '@/contexts/ViewedProductsContext';
 import WhatsAppButton from './WhatsAppButton';
 
 interface ImageViewerProps {
