@@ -60,10 +60,10 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ...additionalImages.map(img => img.imageUrl)
   ];
 
-  // For jeans/no-brand products, show other jeans; otherwise show brand products
-  const moreBrandProducts = (product.category === 'jeans' || !product.brand ? categoryProducts : brandProducts)
-    .filter(p => p.id !== product.id)
-    .slice(0, 10);
+  // For jeans/no-brand products, hide the "more from brand" section entirely
+  const moreBrandProducts = (product.category === 'jeans' || !product.brand)
+    ? []
+    : brandProducts.filter(p => p.id !== product.id).slice(0, 10);
 
   // Filter out current product from latest products
   const alsoLikeProducts = latestProducts
