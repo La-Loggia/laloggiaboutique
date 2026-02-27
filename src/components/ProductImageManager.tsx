@@ -177,7 +177,7 @@ const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => 
           </Button>
           <div className="flex-1 min-w-0">
             <h1 className="font-serif text-lg truncate">Imágenes Adicionales</h1>
-            <p className="text-xs text-muted-foreground">{product.brand}</p>
+            <p className="text-xs text-muted-foreground">{product.brand || 'Sin marca'}</p>
           </div>
         </div>
       </header>
