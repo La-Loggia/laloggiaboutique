@@ -13,7 +13,7 @@ export type ProductCategory = 'ropa' | 'bolsos' | 'plumiferos' | 'camisetas' | '
 
 export interface Product {
   id: string;
-  brand: Brand;
+  brand: Brand | null;
   imageUrl: string;
   isActive: boolean;
   campaignId: string | null;
