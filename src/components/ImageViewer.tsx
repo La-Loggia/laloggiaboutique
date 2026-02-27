@@ -272,7 +272,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
             >
               <img
                 src={getOptimizedImageUrl(allImages[currentIndex], { width: 800, quality: 85 })}
-                alt={`Prenda de ${product.brand}`}
+                alt={`Prenda de ${product.brand ? getBrandDisplayName(product.brand) : 'Espacio Jeans'}`}
                 className="w-auto max-w-[65vw] md:max-w-lg h-full object-contain rounded cursor-pointer"
                 onClick={() => setIsFullscreen(true)}
               />
