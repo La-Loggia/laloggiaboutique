@@ -355,7 +355,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         <div className="w-full h-px bg-border my-3 md:my-4" />
 
         {/* Also like section */}
-        {alsoLikeProducts.length > 0 && (
+        {finalAlsoLike.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-3 md:mb-4">
               También te puede interesar
