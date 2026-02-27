@@ -361,7 +361,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
               También te puede interesar
             </p>
             <div className="grid grid-cols-2 gap-2 md:gap-3">
-              {alsoLikeProducts.map((relatedProduct) => (
+              {finalAlsoLike.map((relatedProduct) => (
                 <button
                   key={relatedProduct.id}
                   onClick={() => handleRelatedProductClick(relatedProduct)}
