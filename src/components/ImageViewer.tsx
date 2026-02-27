@@ -56,7 +56,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const { data: additionalImages = [] } = useProductImages(product.id);
   const { data: brandProducts = [] } = useProductsByBrand(product.brand || 'MOOR');
   const { data: categoryProducts = [] } = useProductsByCategory(product.category === 'jeans' ? 'jeans' : 'ropa');
-  const { data: latestProducts = [] } = useLatestProducts(6);
+  const { data: latestProducts = [] } = useLatestProducts(20);
   
   const allImages = [
     product.imageUrl,
