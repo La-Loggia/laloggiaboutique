@@ -4,6 +4,7 @@ import { whatsappNumber, whatsappMessage } from '@/data/products';
 import { Product, useProductImages, useProductsByBrand, useLatestProducts, useProductsByCategory } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
 import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
+import { useViewedProducts, seededShuffle } from '@/contexts/ViewedProductsContext';
 import WhatsAppButton from './WhatsAppButton';
 
 interface ImageViewerProps {
@@ -13,6 +14,7 @@ interface ImageViewerProps {
 }
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
+  const { markAsViewed, getViewedIds, sessionSeed } = useViewedProducts();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
@@ -33,14 +35,15 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     return () => clearTimeout(timer);
   }, []);
 
-  // Reset index and zoom when product changes
+  // Reset index and zoom when product changes + mark as viewed
   useEffect(() => {
     setCurrentIndex(0);
     setIsFullscreen(false);
     setZoomScale(1);
     setZoomPosition({ x: 0, y: 0 });
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [product.id]);
+    markAsViewed(product.id);
+  }, [product.id, markAsViewed]);
 
   // Reset zoom when closing fullscreen
   useEffect(() => {
@@ -53,7 +56,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   const { data: additionalImages = [] } = useProductImages(product.id);
   const { data: brandProducts = [] } = useProductsByBrand(product.brand || 'MOOR');
   const { data: categoryProducts = [] } = useProductsByCategory(product.category === 'jeans' ? 'jeans' : 'ropa');
-  const { data: latestProducts = [] } = useLatestProducts(6);
+  const { data: latestProducts = [] } = useLatestProducts(20);
   
   const allImages = [
     product.imageUrl,
@@ -65,10 +68,23 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ? []
     : brandProducts.filter(p => p.id !== product.id).slice(0, 10);
 
-  // Filter out current product from latest products
-  const alsoLikeProducts = latestProducts
-    .filter(p => p.id !== product.id)
-    .slice(0, 6);
+  // Smart recommendations: exclude current + viewed, then shuffle with session seed
+  const viewedIds = getViewedIds();
+  const alsoLikeProducts = seededShuffle(
+    latestProducts.filter(p => p.id !== product.id && !viewedIds.has(p.id)),
+    sessionSeed
+  ).slice(0, 6);
+
+  // Fallback: if too few unseen products, fill with seen ones (still shuffled)
+  const finalAlsoLike = alsoLikeProducts.length >= 3
+    ? alsoLikeProducts
+    : [
+        ...alsoLikeProducts,
+        ...seededShuffle(
+          latestProducts.filter(p => p.id !== product.id && viewedIds.has(p.id)),
+          sessionSeed
+        ).slice(0, 6 - alsoLikeProducts.length),
+      ];
 
   // Check scroll availability for brand section
   const checkBrandScroll = useCallback(() => {
@@ -339,13 +355,13 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         <div className="w-full h-px bg-border my-3 md:my-4" />
 
         {/* Also like section */}
-        {alsoLikeProducts.length > 0 && (
+        {finalAlsoLike.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-3 md:mb-4">
               También te puede interesar
             </p>
             <div className="grid grid-cols-2 gap-2 md:gap-3">
-              {alsoLikeProducts.map((relatedProduct) => (
+              {finalAlsoLike.map((relatedProduct) => (
                 <button
                   key={relatedProduct.id}
                   onClick={() => handleRelatedProductClick(relatedProduct)}
