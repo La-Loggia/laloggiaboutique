@@ -35,14 +35,15 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     return () => clearTimeout(timer);
   }, []);
 
-  // Reset index and zoom when product changes
+  // Reset index and zoom when product changes + mark as viewed
   useEffect(() => {
     setCurrentIndex(0);
     setIsFullscreen(false);
     setZoomScale(1);
     setZoomPosition({ x: 0, y: 0 });
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [product.id]);
+    markAsViewed(product.id);
+  }, [product.id, markAsViewed]);
 
   // Reset zoom when closing fullscreen
   useEffect(() => {
