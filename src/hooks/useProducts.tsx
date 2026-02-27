@@ -201,7 +201,7 @@ export const useUpdateProduct = () => {
     mutationFn: async ({ id, isActive, brand, campaignId, imageUrl, category, showInLatest, showInSection, showInBrand }: { 
       id: string; 
       isActive?: boolean; 
-      brand?: Brand; 
+      brand?: Brand | null; 
       campaignId?: string | null; 
       imageUrl?: string; 
       category?: ProductCategory;
