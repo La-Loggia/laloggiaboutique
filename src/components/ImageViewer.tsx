@@ -399,7 +399,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
           >
             <img
               src={getOptimizedImageUrl(allImages[currentIndex], { width: 1200, quality: 90 })}
-              alt={`Prenda de ${product.brand}`}
+              alt={`Prenda de ${product.brand ? getBrandDisplayName(product.brand) : 'Espacio Jeans'}`}
               className="w-full h-full object-contain select-none"
               style={{
                 transform: `scale(${zoomScale}) translate(${zoomPosition.x / zoomScale}px, ${zoomPosition.y / zoomScale}px)`,

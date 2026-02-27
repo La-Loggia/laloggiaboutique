@@ -191,7 +191,7 @@ const ProductImageManager = ({ product, onClose }: ProductImageManagerProps) => 
           <div className="aspect-[9/16] w-32 rounded-lg overflow-hidden bg-secondary">
             <img
               src={product.imageUrl}
-              alt={product.brand}
+              alt={product.brand || 'Sin marca'}
               className="w-full h-full object-cover"
             />
           </div>
