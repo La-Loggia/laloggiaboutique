@@ -51,7 +51,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
   }, [isFullscreen]);
 
   const { data: additionalImages = [] } = useProductImages(product.id);
-  const { data: brandProducts = [] } = useProductsByBrand(product.brand);
+  const { data: brandProducts = [] } = useProductsByBrand(product.brand || 'MOOR');
   const { data: categoryProducts = [] } = useProductsByCategory(product.category === 'jeans' ? 'jeans' : 'ropa');
   const { data: latestProducts = [] } = useLatestProducts(6);
   
