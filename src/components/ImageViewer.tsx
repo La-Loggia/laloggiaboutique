@@ -14,6 +14,7 @@ interface ImageViewerProps {
 }
 
 const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => {
+  const { markAsViewed, getViewedIds, sessionSeed } = useViewedProducts();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
