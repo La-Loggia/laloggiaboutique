@@ -144,7 +144,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
         <div className="relative shrink-0">
           <img
             src={product.imageUrl}
-            alt={product.brand}
+            alt={product.brand || 'Sin marca'}
             className="w-16 h-20 md:w-20 md:h-24 object-cover rounded"
           />
           <button
