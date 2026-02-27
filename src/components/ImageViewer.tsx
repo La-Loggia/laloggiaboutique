@@ -287,7 +287,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-              {product.category === 'jeans' ? 'Más novedades' : `Más de ${getBrandDisplayName(product.brand)}`}
+              {product.category === 'jeans' || !product.brand ? 'Más novedades' : `Más de ${getBrandDisplayName(product.brand)}`}
             </p>
             <div className="relative flex items-center">
               {/* Left arrow - appears when can scroll left */}
