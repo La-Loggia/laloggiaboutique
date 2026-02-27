@@ -186,7 +186,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             </div>
           </div>
           
-          {showBrand && (
+          {showBrand && product.brand && (
             <div className="mb-2">
               <Select 
                 value={product.brand} 
