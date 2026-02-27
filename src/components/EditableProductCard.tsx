@@ -224,14 +224,16 @@ const EditableProductCard = ({
             </div>
             
             <div className="space-y-2">
-              <Select value={product.brand} onValueChange={(v) => handleChangeBrand(v as Brand)}>
-                <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {brands.map((brand) => (
-                    <SelectItem key={brand} value={brand}>{getBrandDisplayName(brand)}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {product.brand && (
+                <Select value={product.brand} onValueChange={(v) => handleChangeBrand(v as Brand)}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {brands.map((brand) => (
+                      <SelectItem key={brand} value={brand}>{getBrandDisplayName(brand)}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               
               <Select value={product.category} onValueChange={(v) => handleChangeCategory(v as ProductCategory)}>
                 <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
