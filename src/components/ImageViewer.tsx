@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { whatsappNumber, whatsappMessage } from '@/data/products';
-import { Product, useProductImages, useProductsByBrand, useLatestProducts } from '@/hooks/useProducts';
+import { Product, useProductImages, useProductsByBrand, useLatestProducts, useProductsByCategory } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
 import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 import WhatsAppButton from './WhatsAppButton';
@@ -52,6 +52,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
   const { data: additionalImages = [] } = useProductImages(product.id);
   const { data: brandProducts = [] } = useProductsByBrand(product.brand);
+  const { data: categoryProducts = [] } = useProductsByCategory(product.category === 'jeans' ? 'jeans' : 'ropa');
   const { data: latestProducts = [] } = useLatestProducts(6);
   
   const allImages = [
@@ -59,8 +60,8 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
     ...additionalImages.map(img => img.imageUrl)
   ];
 
-  // Filter out current product and get more from same brand
-  const moreBrandProducts = brandProducts
+  // For jeans category, show other jeans products; otherwise show brand products
+  const moreBrandProducts = (product.category === 'jeans' ? categoryProducts : brandProducts)
     .filter(p => p.id !== product.id)
     .slice(0, 10);
 
@@ -286,7 +287,7 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
         {moreBrandProducts.length > 0 && (
           <div className="px-3 md:px-8 max-w-6xl mx-auto">
             <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-              Más de {getBrandDisplayName(product.brand)}
+              {product.category === 'jeans' ? 'Más novedades' : `Más de ${getBrandDisplayName(product.brand)}`}
             </p>
             <div className="relative flex items-center">
               {/* Left arrow - appears when can scroll left */}
