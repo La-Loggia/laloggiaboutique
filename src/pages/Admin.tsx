@@ -573,10 +573,16 @@ const Admin = () => {
       const oldIndex = categoryProducts.findIndex((p) => p.id === active.id);
       const newIndex = categoryProducts.findIndex((p) => p.id === over.id);
       const newOrder = arrayMove(categoryProducts, oldIndex, newIndex);
-      
+
+      // Preserve existing display_order slots of this subset so we don't
+      // collide with products from other categories.
+      const slots = categoryProducts
+        .map(p => p.displayOrder)
+        .sort((a, b) => a - b);
+
       const updates = newOrder.map((p, index) => ({
         id: p.id,
-        displayOrder: index + 1,
+        displayOrder: slots[index],
       }));
       
       try {
