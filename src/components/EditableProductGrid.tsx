@@ -86,9 +86,15 @@ const EditableProductGrid = ({ products, onProductClick }: EditableProductGridPr
       return;
     }
 
+    // Preserve the existing display_order slots of this subset to avoid
+    // colliding with products from other categories/sections.
+    const slots = products
+      .map(p => p.displayOrder)
+      .sort((a, b) => a - b);
+
     const updates = newOrder.map((p, index) => ({
       id: p.id,
-      displayOrder: index + 1,
+      displayOrder: slots[index],
     }));
 
     try {
