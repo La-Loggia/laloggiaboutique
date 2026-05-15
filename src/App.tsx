@@ -42,6 +42,8 @@ const App = () => (
               <Route path="/espacio-jeans" element={<EspacioJeans />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/subidas" element={<AdminSubmissions />} />
+              <Route path="/subirprenda" element={<UploadOutfit />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
