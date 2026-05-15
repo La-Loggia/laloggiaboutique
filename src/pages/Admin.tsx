@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye, Inbox } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
 import {
   DndContext,
@@ -603,6 +603,15 @@ const Admin = () => {
             <p className="text-xs text-muted-foreground">Admin</p>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/admin/subidas')}
+              title="Outfits subidos por los dueños"
+            >
+              <Inbox className="w-4 h-4 mr-1" />
+              Subidas
+            </Button>
             <Button
               onClick={() => setShowUploadDialog(true)}
               className="bg-foreground text-background hover:bg-foreground/90"

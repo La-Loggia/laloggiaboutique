@@ -16,6 +16,8 @@ import Camisetas from "./pages/Camisetas";
 import EspacioJeans from "./pages/EspacioJeans";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import AdminSubmissions from "./pages/AdminSubmissions";
+import UploadOutfit from "./pages/UploadOutfit";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +42,8 @@ const App = () => (
               <Route path="/espacio-jeans" element={<EspacioJeans />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/subidas" element={<AdminSubmissions />} />
+              <Route path="/subirprenda" element={<UploadOutfit />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
