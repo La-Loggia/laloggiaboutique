@@ -123,26 +123,35 @@ const AdminSubmissions = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: 'Arriba', url: item.top_image_url },
-                  { label: 'Abajo', url: item.bottom_image_url },
-                ].map((img) => (
-                  <a
-                    key={img.label}
-                    href={img.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="relative block aspect-[3/4] overflow-hidden rounded-md bg-background"
-                  >
-                    <img src={img.url} alt={img.label} className="h-full w-full object-cover" />
-                    <span className="absolute bottom-1 left-1 rounded bg-background/90 px-2 py-0.5 text-xs">
-                      {img.label}
-                    </span>
-                    <ExternalLink className="absolute top-1 right-1 w-4 h-4 text-background mix-blend-difference" />
-                  </a>
-                ))}
-              </div>
+              {(() => {
+                const groups: { label: string; urls: string[] }[] = [
+                  { label: 'Arriba', urls: collectUrls(item.top_image_urls, item.top_image_url) },
+                  { label: 'Abajo', urls: collectUrls(item.bottom_image_urls, item.bottom_image_url) },
+                  { label: 'Outfit', urls: collectUrls(item.full_outfit_image_urls, null) },
+                ].filter((g) => g.urls.length > 0);
+
+                return groups.map((g) => (
+                  <div key={g.label} className="space-y-1">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {g.label} ({g.urls.length})
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {g.urls.map((url, idx) => (
+                        <a
+                          key={`${g.label}-${idx}`}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="relative block aspect-[3/4] overflow-hidden rounded-md bg-background"
+                        >
+                          <img src={url} alt={`${g.label} ${idx + 1}`} className="h-full w-full object-cover" />
+                          <ExternalLink className="absolute top-1 right-1 w-3.5 h-3.5 text-background mix-blend-difference" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ));
+              })()}
 
               <div className="space-y-1 text-sm">
                 <p>
