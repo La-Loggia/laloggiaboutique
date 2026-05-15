@@ -15,6 +15,7 @@ interface Submission {
   top_image_urls: string[] | null;
   bottom_image_urls: string[] | null;
   full_outfit_image_urls: string[] | null;
+  source_url: string | null;
   brand: Brand | null;
   notes: string | null;
   reviewed: boolean;
