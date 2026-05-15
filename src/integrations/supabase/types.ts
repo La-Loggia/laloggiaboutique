@@ -37,31 +37,40 @@ export type Database = {
       }
       outfit_submissions: {
         Row: {
-          bottom_image_url: string
+          bottom_image_url: string | null
+          bottom_image_urls: string[]
           brand: Database["public"]["Enums"]["brand_type"] | null
           created_at: string
+          full_outfit_image_urls: string[]
           id: string
           notes: string | null
           reviewed: boolean
-          top_image_url: string
+          top_image_url: string | null
+          top_image_urls: string[]
         }
         Insert: {
-          bottom_image_url: string
+          bottom_image_url?: string | null
+          bottom_image_urls?: string[]
           brand?: Database["public"]["Enums"]["brand_type"] | null
           created_at?: string
+          full_outfit_image_urls?: string[]
           id?: string
           notes?: string | null
           reviewed?: boolean
-          top_image_url: string
+          top_image_url?: string | null
+          top_image_urls?: string[]
         }
         Update: {
-          bottom_image_url?: string
+          bottom_image_url?: string | null
+          bottom_image_urls?: string[]
           brand?: Database["public"]["Enums"]["brand_type"] | null
           created_at?: string
+          full_outfit_image_urls?: string[]
           id?: string
           notes?: string | null
           reviewed?: boolean
-          top_image_url?: string
+          top_image_url?: string | null
+          top_image_urls?: string[]
         }
         Relationships: []
       }
