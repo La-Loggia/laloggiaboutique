@@ -16,6 +16,8 @@ import Camisetas from "./pages/Camisetas";
 import EspacioJeans from "./pages/EspacioJeans";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import AdminSubmissions from "./pages/AdminSubmissions";
+import UploadOutfit from "./pages/UploadOutfit";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
