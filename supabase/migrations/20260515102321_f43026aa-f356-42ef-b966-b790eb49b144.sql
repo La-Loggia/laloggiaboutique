@@ -1,0 +1,1 @@
+ALTER TABLE public.outfit_submissions ADD COLUMN IF NOT EXISTS source_url text;
