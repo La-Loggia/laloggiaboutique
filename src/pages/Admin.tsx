@@ -469,7 +469,7 @@ const Admin = () => {
         )}
       </main>
 
-      <UploadDialog open={showUploadDialog} onClose={() => setShowUploadDialog(false)} />
+      <UploadProductDialog open={showUploadDialog} onClose={() => setShowUploadDialog(false)} />
 
       {managingProduct && (
         <ProductImageManager
