@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { toast } from 'sonner';
 import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye, Inbox } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
+import UploadProductDialog from '@/components/UploadProductDialog';
 import {
   DndContext,
   closestCenter,
