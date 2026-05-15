@@ -35,29 +35,6 @@ interface VisibilityState {
   showInBrand: boolean;
 }
 
-interface VisibilityPreset {
-  label: string;
-  description: string;
-  state: VisibilityState;
-}
-
-const visibilityPresets: VisibilityPreset[] = [
-  { label: 'Toda la web', description: 'Novedades + Sección + Marca', state: { showInLatest: true, showInSection: true, showInBrand: true } },
-  { label: 'Sección + Marca', description: 'Solo en su sección y marca', state: { showInLatest: false, showInSection: true, showInBrand: true } },
-  { label: 'Sección + Novedades', description: 'Sin página de marca', state: { showInLatest: true, showInSection: true, showInBrand: false } },
-  { label: 'Solo sección', description: 'Solo en su categoría', state: { showInLatest: false, showInSection: true, showInBrand: false } },
-  { label: 'Solo marca', description: 'Solo en la página de marca', state: { showInLatest: false, showInSection: false, showInBrand: true } },
-  { label: 'Solo novedades', description: 'Solo en novedades', state: { showInLatest: true, showInSection: false, showInBrand: false } },
-];
-
-const getMatchingPreset = (state: VisibilityState): string | null => {
-  const match = visibilityPresets.find(
-    p => p.state.showInLatest === state.showInLatest && 
-         p.state.showInSection === state.showInSection && 
-         p.state.showInBrand === state.showInBrand
-  );
-  return match?.label ?? null;
-};
 
 const categoryLabels: Record<ProductCategory, string> = {
   'ropa': 'Novedades',
