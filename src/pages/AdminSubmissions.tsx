@@ -10,13 +10,22 @@ import { toast } from 'sonner';
 
 interface Submission {
   id: string;
-  top_image_url: string;
-  bottom_image_url: string;
+  top_image_url: string | null;
+  bottom_image_url: string | null;
+  top_image_urls: string[] | null;
+  bottom_image_urls: string[] | null;
+  full_outfit_image_urls: string[] | null;
   brand: Brand | null;
   notes: string | null;
   reviewed: boolean;
   created_at: string;
 }
+
+const collectUrls = (arr: string[] | null, legacy: string | null): string[] => {
+  const list = Array.isArray(arr) ? [...arr] : [];
+  if (legacy && !list.includes(legacy)) list.unshift(legacy);
+  return list;
+};
 
 const AdminSubmissions = () => {
   const { user, isAdmin, loading } = useAuth();
