@@ -604,6 +604,15 @@ const Admin = () => {
           </div>
           <div className="flex items-center gap-2">
             <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/admin/subidas')}
+              title="Outfits subidos por los dueños"
+            >
+              <Inbox className="w-4 h-4 mr-1" />
+              Subidas
+            </Button>
+            <Button
               onClick={() => setShowUploadDialog(true)}
               className="bg-foreground text-background hover:bg-foreground/90"
               size="sm"
