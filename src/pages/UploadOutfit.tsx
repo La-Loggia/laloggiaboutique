@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { brands, Brand } from '@/data/products';
 import { brandDisplayNames } from '@/lib/brandUtils';
-import { Camera, Check, Loader2, X, Plus, Image as ImageIcon } from 'lucide-react';
+import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 
 type Slot = 'top' | 'bottom' | 'full';
+type Mode = null | 'outfit' | 'link';
 
 const SLOT_LABELS: Record<Slot, string> = {
   top: 'Parte de arriba',
@@ -27,11 +29,15 @@ const PhotoSlot = ({
   files,
   onAdd,
   onRemove,
+  allowCamera = true,
+  label,
 }: {
   slot: Slot;
   files: File[];
   onAdd: (f: File) => void;
   onRemove: (idx: number) => void;
+  allowCamera?: boolean;
+  label?: string;
 }) => {
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
@@ -42,24 +48,31 @@ const PhotoSlot = ({
     Array.from(fileList).forEach((f) => onAdd(f));
   };
 
+  const openPicker = () => {
+    if (allowCamera) setPickerOpen(true);
+    else galleryRef.current?.click();
+  };
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium uppercase tracking-wider text-foreground">
-        {SLOT_LABELS[slot]}
+        {label ?? SLOT_LABELS[slot]}
         <span className="ml-2 normal-case text-xs text-muted-foreground">(opcional)</span>
       </label>
 
-      <input
-        ref={cameraRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        className="hidden"
-        onChange={(e) => {
-          handleFiles(e.target.files);
-          e.target.value = '';
-        }}
-      />
+      {allowCamera && (
+        <input
+          ref={cameraRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            handleFiles(e.target.files);
+            e.target.value = '';
+          }}
+        />
+      )}
       <input
         ref={galleryRef}
         type="file"
@@ -75,12 +88,12 @@ const PhotoSlot = ({
       {files.length === 0 ? (
         <button
           type="button"
-          onClick={() => setPickerOpen(true)}
+          onClick={openPicker}
           className="flex aspect-[3/4] w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition-colors hover:bg-secondary/50"
         >
-          <Camera className="h-8 w-8" />
+          {allowCamera ? <Camera className="h-8 w-8" /> : <ImageIcon className="h-8 w-8" />}
           <span className="text-sm">Tocar para añadir foto</span>
-          <span className="text-xs">Cámara o galería</span>
+          <span className="text-xs">{allowCamera ? 'Cámara o galería' : 'Desde galería'}</span>
         </button>
       ) : (
         <div className="grid grid-cols-2 gap-2">
@@ -91,7 +104,7 @@ const PhotoSlot = ({
                 key={idx}
                 className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary"
               >
-                <img src={url} alt={`${SLOT_LABELS[slot]} ${idx + 1}`} className="h-full w-full object-cover" />
+                <img src={url} alt={`foto ${idx + 1}`} className="h-full w-full object-cover" />
                 <button
                   type="button"
                   onClick={() => onRemove(idx)}
@@ -105,7 +118,7 @@ const PhotoSlot = ({
           })}
           <button
             type="button"
-            onClick={() => setPickerOpen(true)}
+            onClick={openPicker}
             className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition-colors hover:bg-secondary/50"
           >
             <Plus className="h-6 w-6" />
@@ -148,17 +161,20 @@ const PhotoSlot = ({
 };
 
 const UploadOutfit = () => {
+  const [mode, setMode] = useState<Mode>(null);
   const [topFiles, setTopFiles] = useState<File[]>([]);
   const [bottomFiles, setBottomFiles] = useState<File[]>([]);
   const [fullFiles, setFullFiles] = useState<File[]>([]);
+  const [linkFiles, setLinkFiles] = useState<File[]>([]);
+  const [sourceUrl, setSourceUrl] = useState('');
   const [brand, setBrand] = useState<Brand | ''>('');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  const totalPhotos = topFiles.length + bottomFiles.length + fullFiles.length;
+  const totalOutfitPhotos = topFiles.length + bottomFiles.length + fullFiles.length;
 
-  const uploadFile = async (file: File, slot: Slot): Promise<string> => {
+  const uploadFile = async (file: File, slot: string): Promise<string> => {
     const ext = file.name.split('.').pop() || 'jpg';
     const path = `${Date.now()}-${slot}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const { error } = await supabase.storage
@@ -169,18 +185,24 @@ const UploadOutfit = () => {
     return data.publicUrl;
   };
 
-  const uploadAll = async (files: File[], slot: Slot) =>
+  const uploadAll = async (files: File[], slot: string) =>
     Promise.all(files.map((f) => uploadFile(f, slot)));
 
-  const handleSubmit = async () => {
-    if (totalPhotos === 0) {
-      toast.error('Añade al menos una foto.');
-      return;
-    }
-    if (!brand) {
-      toast.error('Selecciona la marca principal.');
-      return;
-    }
+  const reset = () => {
+    setMode(null);
+    setTopFiles([]);
+    setBottomFiles([]);
+    setFullFiles([]);
+    setLinkFiles([]);
+    setSourceUrl('');
+    setBrand('');
+    setNotes('');
+    setDone(false);
+  };
+
+  const handleSubmitOutfit = async () => {
+    if (totalOutfitPhotos === 0) return toast.error('Añade al menos una foto.');
+    if (!brand) return toast.error('Selecciona la marca principal.');
     setSubmitting(true);
     try {
       const [topUrls, bottomUrls, fullUrls] = await Promise.all([
@@ -192,7 +214,6 @@ const UploadOutfit = () => {
         top_image_urls: topUrls,
         bottom_image_urls: bottomUrls,
         full_outfit_image_urls: fullUrls,
-        // legacy compat: keep first photo in old single fields when present
         top_image_url: topUrls[0] ?? null,
         bottom_image_url: bottomUrls[0] ?? fullUrls[0] ?? topUrls[0] ?? '',
         brand,
@@ -208,13 +229,35 @@ const UploadOutfit = () => {
     }
   };
 
-  const reset = () => {
-    setTopFiles([]);
-    setBottomFiles([]);
-    setFullFiles([]);
-    setBrand('');
-    setNotes('');
-    setDone(false);
+  const handleSubmitLink = async () => {
+    const url = sourceUrl.trim();
+    if (!url) return toast.error('Pega un enlace.');
+    try {
+      new URL(url);
+    } catch {
+      return toast.error('El enlace no es válido.');
+    }
+    if (!brand) return toast.error('Selecciona la marca.');
+    setSubmitting(true);
+    try {
+      const fullUrls = await uploadAll(linkFiles, 'link');
+      const { error } = await supabase.from('outfit_submissions').insert({
+        source_url: url,
+        full_outfit_image_urls: fullUrls,
+        top_image_urls: [],
+        bottom_image_urls: [],
+        bottom_image_url: fullUrls[0] ?? '',
+        brand,
+        notes: notes.trim() || null,
+      });
+      if (error) throw error;
+      setDone(true);
+    } catch (err) {
+      console.error(err);
+      toast.error('Error al enviar. Inténtalo de nuevo.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (done) {
@@ -226,9 +269,9 @@ const UploadOutfit = () => {
           </div>
           <div>
             <h1 className="font-serif text-2xl mb-2">¡Enviado!</h1>
-            <p className="text-muted-foreground text-sm">Carlos ya puede ver el outfit.</p>
+            <p className="text-muted-foreground text-sm">Carlos ya puede verlo.</p>
           </div>
-          <Button onClick={reset} className="w-full">Subir otro outfit</Button>
+          <Button onClick={reset} className="w-full">Subir otro</Button>
         </div>
       </div>
     );
@@ -239,48 +282,108 @@ const UploadOutfit = () => {
   const removeFrom = (setter: React.Dispatch<React.SetStateAction<File[]>>) => (idx: number) =>
     setter((prev) => prev.filter((_, i) => i !== idx));
 
+  // Mode picker
+  if (mode === null) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b">
+          <div className="px-4 py-4">
+            <h1 className="font-serif text-xl tracking-wide">LA LOGGIA</h1>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">¿Qué quieres enviar?</p>
+          </div>
+        </header>
+        <main className="p-6 max-w-md mx-auto space-y-4 pt-10">
+          <button
+            type="button"
+            onClick={() => setMode('outfit')}
+            className="w-full rounded-xl border-2 border-border bg-secondary/30 p-6 text-left transition-colors hover:bg-secondary/60"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background">
+                <Shirt className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="font-serif text-lg">Subir outfit</p>
+                <p className="text-sm text-muted-foreground">Fotos de prendas en percha (arriba, abajo, conjunto)</p>
+              </div>
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('link')}
+            className="w-full rounded-xl border-2 border-border bg-secondary/30 p-6 text-left transition-colors hover:bg-secondary/60"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background">
+                <Link2 className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="font-serif text-lg">Subir link de otra web</p>
+                <p className="text-sm text-muted-foreground">Pega un enlace (bolso, conjunto…) y opcionalmente añade fotos</p>
+              </div>
+            </div>
+          </button>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b">
-        <div className="px-4 py-4">
-          <h1 className="font-serif text-xl tracking-wide">LA LOGGIA</h1>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Subir outfit</p>
+        <div className="flex items-center gap-2 px-4 py-3">
+          <Button variant="ghost" size="icon" onClick={reset} aria-label="Volver">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="font-serif text-xl tracking-wide">LA LOGGIA</h1>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+              {mode === 'outfit' ? 'Subir outfit' : 'Subir link'}
+            </p>
+          </div>
         </div>
       </header>
 
       <main className="px-4 py-6 space-y-6 max-w-md mx-auto pb-32">
-        <PhotoSlot
-          slot="top"
-          files={topFiles}
-          onAdd={addTo(setTopFiles)}
-          onRemove={removeFrom(setTopFiles)}
-        />
-        <PhotoSlot
-          slot="bottom"
-          files={bottomFiles}
-          onAdd={addTo(setBottomFiles)}
-          onRemove={removeFrom(setBottomFiles)}
-        />
-        <PhotoSlot
-          slot="full"
-          files={fullFiles}
-          onAdd={addTo(setFullFiles)}
-          onRemove={removeFrom(setFullFiles)}
-        />
+        {mode === 'outfit' ? (
+          <>
+            <PhotoSlot slot="top" files={topFiles} onAdd={addTo(setTopFiles)} onRemove={removeFrom(setTopFiles)} />
+            <PhotoSlot slot="bottom" files={bottomFiles} onAdd={addTo(setBottomFiles)} onRemove={removeFrom(setBottomFiles)} />
+            <PhotoSlot slot="full" files={fullFiles} onAdd={addTo(setFullFiles)} onRemove={removeFrom(setFullFiles)} />
+          </>
+        ) : (
+          <>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium uppercase tracking-wider">Enlace</label>
+              <Input
+                type="url"
+                inputMode="url"
+                placeholder="https://…"
+                value={sourceUrl}
+                onChange={(e) => setSourceUrl(e.target.value)}
+                className="h-12"
+              />
+            </div>
+            <PhotoSlot
+              slot="full"
+              label="Fotos adicionales"
+              files={linkFiles}
+              onAdd={addTo(setLinkFiles)}
+              onRemove={removeFrom(setLinkFiles)}
+              allowCamera={false}
+            />
+          </>
+        )}
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium uppercase tracking-wider">
-            Marca principal
-          </label>
+          <label className="block text-sm font-medium uppercase tracking-wider">Marca principal</label>
           <Select value={brand} onValueChange={(v) => setBrand(v as Brand)}>
             <SelectTrigger className="h-12">
               <SelectValue placeholder="Selecciona una marca" />
             </SelectTrigger>
             <SelectContent>
               {brands.map((b) => (
-                <SelectItem key={b} value={b}>
-                  {brandDisplayNames[b] || b}
-                </SelectItem>
+                <SelectItem key={b} value={b}>{brandDisplayNames[b] || b}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -302,16 +405,20 @@ const UploadOutfit = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t p-4">
         <div className="max-w-md mx-auto">
           <Button
-            onClick={handleSubmit}
-            disabled={submitting || totalPhotos === 0 || !brand}
+            onClick={mode === 'outfit' ? handleSubmitOutfit : handleSubmitLink}
+            disabled={
+              submitting ||
+              !brand ||
+              (mode === 'outfit' ? totalOutfitPhotos === 0 : !sourceUrl.trim())
+            }
             className="w-full h-12 bg-foreground text-background hover:bg-foreground/90"
           >
             {submitting ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Enviando…
-              </>
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Enviando…</>
             ) : (
-              `Enviar outfit${totalPhotos ? ` (${totalPhotos} foto${totalPhotos > 1 ? 's' : ''})` : ''}`
+              mode === 'outfit'
+                ? `Enviar outfit${totalOutfitPhotos ? ` (${totalOutfitPhotos} foto${totalOutfitPhotos > 1 ? 's' : ''})` : ''}`
+                : 'Enviar link'
             )}
           </Button>
         </div>

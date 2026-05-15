@@ -45,6 +45,7 @@ export type Database = {
           id: string
           notes: string | null
           reviewed: boolean
+          source_url: string | null
           top_image_url: string | null
           top_image_urls: string[]
         }
@@ -57,6 +58,7 @@ export type Database = {
           id?: string
           notes?: string | null
           reviewed?: boolean
+          source_url?: string | null
           top_image_url?: string | null
           top_image_urls?: string[]
         }
@@ -69,6 +71,7 @@ export type Database = {
           id?: string
           notes?: string | null
           reviewed?: boolean
+          source_url?: string | null
           top_image_url?: string | null
           top_image_urls?: string[]
         }

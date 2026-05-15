@@ -15,6 +15,7 @@ interface Submission {
   top_image_urls: string[] | null;
   bottom_image_urls: string[] | null;
   full_outfit_image_urls: string[] | null;
+  source_url: string | null;
   brand: Brand | null;
   notes: string | null;
   reviewed: boolean;
@@ -154,6 +155,14 @@ const AdminSubmissions = () => {
               })()}
 
               <div className="space-y-1 text-sm">
+                {item.source_url && (
+                  <p className="bg-background/50 rounded p-2 text-sm break-all">
+                    <span className="text-muted-foreground">Enlace: </span>
+                    <a href={item.source_url} target="_blank" rel="noreferrer" className="underline">
+                      {item.source_url}
+                    </a>
+                  </p>
+                )}
                 <p>
                   <span className="text-muted-foreground">Marca:</span>{' '}
                   <span className="font-medium">
