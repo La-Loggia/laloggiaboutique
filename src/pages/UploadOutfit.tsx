@@ -196,6 +196,8 @@ const decodeWithImageElement = async (blob: Blob) => {
   }
 };
 
+const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
 // Convert mobile photos (including HEIC/HEIF from Samsung) to a smaller JPEG before upload.
 const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
   const maxDim = 1600;
@@ -261,12 +263,20 @@ const UploadOutfit = () => {
   const uploadFile = async (file: File, slot: string, index: number): Promise<string> => {
     const { blob, ext, contentType } = await processImage(file);
     const path = `${Date.now()}-${slot}-${index}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-    const { error } = await supabase.storage
-      .from('outfit-submissions')
-      .upload(path, blob, { contentType, upsert: false });
-    if (error) throw new Error(`${slot}: ${error.message}`);
-    const { data } = supabase.storage.from('outfit-submissions').getPublicUrl(path);
-    return data.publicUrl;
+    let lastError: unknown = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const { error } = await supabase.storage
+        .from('outfit-submissions')
+        .upload(path, blob, { contentType, cacheControl: '31536000', upsert: false });
+      if (!error) {
+        const { data } = supabase.storage.from('outfit-submissions').getPublicUrl(path);
+        return data.publicUrl;
+      }
+      lastError = error;
+      if (attempt < 3) await wait(700 * attempt);
+    }
+    const message = lastError instanceof Error ? lastError.message : 'falló la subida';
+    throw new Error(`${SLOT_LABELS[slot as Slot] ?? slot}: ${message}`);
   };
 
   // Sequential to avoid mobile network overload and clearer error reporting
