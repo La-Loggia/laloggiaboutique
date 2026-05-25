@@ -9,6 +9,7 @@ import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
 import UploadProductDialog from '@/components/UploadProductDialog';
 import { toast } from 'sonner';
+import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 
 interface Submission {
   id: string;
