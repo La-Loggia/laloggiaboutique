@@ -277,6 +277,43 @@ const AdminSubmissions = () => {
         initialBrand={publishing?.brand ?? null}
         onPublished={handlePublished}
       />
+
+      <Dialog open={!!viewer} onOpenChange={(v) => !v && setViewer(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-serif tracking-wide">Todas las fotos</DialogTitle>
+          </DialogHeader>
+          {viewer && (
+            <div className="space-y-5 pt-2">
+              {viewer.groups.map((g) => (
+                <div key={g.label} className="space-y-2">
+                  <h3 className="text-xs uppercase tracking-wider text-muted-foreground">{g.label} · {g.urls.length}</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {g.urls.map((url, idx) => (
+                      <a
+                        key={idx}
+                        href={getOptimizedImageUrl(url, { width: 1600, quality: 85 })}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="relative block aspect-[3/4] overflow-hidden rounded-md bg-muted"
+                      >
+                        <img
+                          src={getThumbnailUrl(url, 500)}
+                          alt={`${g.label} ${idx + 1}`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover hover:scale-105 transition-transform"
+                        />
+                        <ExternalLink className="absolute top-1 right-1 w-3.5 h-3.5 text-white/90 drop-shadow" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
