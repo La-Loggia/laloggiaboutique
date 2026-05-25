@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
+import heic2any from 'heic2any';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,10 +28,18 @@ const SLOT_LABELS: Record<Slot, string> = {
 // Memoized preview that keeps the same blob URL across re-renders
 const FilePreview = ({ file, onRemove, alt }: { file: File; onRemove: () => void; alt: string }) => {
   const url = useMemo(() => URL.createObjectURL(file), [file]);
+  const [previewError, setPreviewError] = useState(false);
   useEffect(() => () => URL.revokeObjectURL(url), [url]);
   return (
     <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
-      <img src={url} alt={alt} className="h-full w-full object-cover" />
+      {previewError ? (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center text-muted-foreground">
+          <ImageIcon className="h-7 w-7" />
+          <span className="text-xs">Foto añadida</span>
+        </div>
+      ) : (
+        <img src={url} alt={alt} className="h-full w-full object-cover" onError={() => setPreviewError(true)} />
+      )}
       <button
         type="button"
         onClick={onRemove}
@@ -168,13 +177,37 @@ const PhotoSlot = ({
   );
 };
 
-// Convert any browser-decodable image (HEIC en iOS Safari, JPG, PNG…) to a compressed JPEG.
-// If the browser can't decode it (e.g. HEIC en Chrome desktop), we upload the original.
-const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
-  const maxDim = 2000;
-  const quality = 0.85;
+const isHeicFile = (file: File) =>
+  /hei[cf]/i.test(file.type) || /\.(hei[cf])$/i.test(file.name);
+
+const decodeWithImageElement = async (blob: Blob) => {
+  const url = URL.createObjectURL(blob);
   try {
-    const bitmap = await createImageBitmap(file);
+    const image = new Image();
+    image.decoding = 'async';
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error('image-decode'));
+      image.src = url;
+    });
+    return image;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+};
+
+// Convert mobile photos (including HEIC/HEIF from Samsung) to a smaller JPEG before upload.
+const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
+  const maxDim = 1600;
+  const quality = 0.78;
+  const inputBlob = isHeicFile(file)
+    ? (Array.isArray(await heic2any({ blob: file, toType: 'image/jpeg', quality }))
+      ? (await heic2any({ blob: file, toType: 'image/jpeg', quality }) as Blob[])[0]
+      : (await heic2any({ blob: file, toType: 'image/jpeg', quality }) as Blob))
+    : file;
+
+  try {
+    const bitmap = await createImageBitmap(inputBlob);
     const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
     const w = Math.round(bitmap.width * scale);
     const h = Math.round(bitmap.height * scale);
@@ -194,8 +227,20 @@ const processImage = async (file: File): Promise<{ blob: Blob; ext: string; cont
     });
     return { blob, ext: 'jpg', contentType: 'image/jpeg' };
   } catch {
-    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-    return { blob: file, ext, contentType: file.type || 'application/octet-stream' };
+    const image = await decodeWithImageElement(inputBlob);
+    const scale = Math.min(1, maxDim / Math.max(image.naturalWidth, image.naturalHeight));
+    const w = Math.round(image.naturalWidth * scale);
+    const h = Math.round(image.naturalHeight * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('canvas');
+    ctx.drawImage(image, 0, 0, w, h);
+    const blob: Blob = await new Promise((resolve, reject) => {
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob'))), 'image/jpeg', quality);
+    });
+    return { blob, ext: 'jpg', contentType: 'image/jpeg' };
   }
 };
 
