@@ -51,6 +51,7 @@ const AdminSubmissions = () => {
   const [filter, setFilter] = useState<'pending' | 'all'>('pending');
   const [loadingItems, setLoadingItems] = useState(true);
   const [publishing, setPublishing] = useState<Submission | null>(null);
+  const [viewer, setViewer] = useState<{ groups: { label: string; urls: string[] }[] } | null>(null);
 
   const load = async () => {
     setLoadingItems(true);
