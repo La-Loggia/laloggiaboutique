@@ -9,6 +9,7 @@ import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
 import UploadProductDialog from '@/components/UploadProductDialog';
 import { toast } from 'sonner';
+import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 
 interface Submission {
   id: string;
@@ -182,12 +183,18 @@ const AdminSubmissions = () => {
                         {groups.flatMap((g) => g.urls).slice(0, 6).map((url, idx) => (
                           <a
                             key={idx}
-                            href={url}
+                            href={getOptimizedImageUrl(url, { width: 1000, quality: 80 })}
                             target="_blank"
                             rel="noreferrer"
                             className="relative block aspect-[3/4] overflow-hidden rounded-md bg-muted"
                           >
-                            <img src={url} alt={`Foto ${idx + 1}`} className="h-full w-full object-cover hover:scale-105 transition-transform" />
+                            <img
+                              src={getThumbnailUrl(url, 300)}
+                              alt={`Foto ${idx + 1}`}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-full object-cover hover:scale-105 transition-transform"
+                            />
                             <ExternalLink className="absolute top-1 right-1 w-3 h-3 text-white/80 drop-shadow" />
                           </a>
                         ))}
