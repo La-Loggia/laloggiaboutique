@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,25 @@ const SLOT_LABELS: Record<Slot, string> = {
   top: 'Parte de arriba',
   bottom: 'Parte de abajo',
   full: 'Outfit completo',
+};
+
+// Memoized preview that keeps the same blob URL across re-renders
+const FilePreview = ({ file, onRemove, alt }: { file: File; onRemove: () => void; alt: string }) => {
+  const url = useMemo(() => URL.createObjectURL(file), [file]);
+  useEffect(() => () => URL.revokeObjectURL(url), [url]);
+  return (
+    <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
+      <img src={url} alt={alt} className="h-full w-full object-cover" />
+      <button
+        type="button"
+        onClick={onRemove}
+        className="absolute top-1.5 right-1.5 rounded-full bg-background/90 p-1.5 shadow-md"
+        aria-label="Quitar foto"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
 };
 
 const PhotoSlot = ({
@@ -97,25 +116,14 @@ const PhotoSlot = ({
         </button>
       ) : (
         <div className="grid grid-cols-2 gap-2">
-          {files.map((file, idx) => {
-            const url = URL.createObjectURL(file);
-            return (
-              <div
-                key={idx}
-                className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary"
-              >
-                <img src={url} alt={`foto ${idx + 1}`} className="h-full w-full object-cover" />
-                <button
-                  type="button"
-                  onClick={() => onRemove(idx)}
-                  className="absolute top-1.5 right-1.5 rounded-full bg-background/90 p-1.5 shadow-md"
-                  aria-label="Quitar foto"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            );
-          })}
+          {files.map((file, idx) => (
+            <FilePreview
+              key={`${file.name}-${file.lastModified}-${file.size}-${idx}`}
+              file={file}
+              alt={`foto ${idx + 1}`}
+              onRemove={() => onRemove(idx)}
+            />
+          ))}
           <button
             type="button"
             onClick={openPicker}
@@ -160,6 +168,37 @@ const PhotoSlot = ({
   );
 };
 
+// Convert any browser-decodable image (HEIC en iOS Safari, JPG, PNG…) to a compressed JPEG.
+// If the browser can't decode it (e.g. HEIC en Chrome desktop), we upload the original.
+const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
+  const maxDim = 2000;
+  const quality = 0.85;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('canvas');
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close?.();
+    const blob: Blob = await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error('toBlob'))),
+        'image/jpeg',
+        quality,
+      );
+    });
+    return { blob, ext: 'jpg', contentType: 'image/jpeg' };
+  } catch {
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    return { blob: file, ext, contentType: file.type || 'application/octet-stream' };
+  }
+};
+
 const UploadOutfit = () => {
   const [mode, setMode] = useState<Mode>(null);
   const [topFiles, setTopFiles] = useState<File[]>([]);
@@ -174,19 +213,25 @@ const UploadOutfit = () => {
 
   const totalOutfitPhotos = topFiles.length + bottomFiles.length + fullFiles.length;
 
-  const uploadFile = async (file: File, slot: string): Promise<string> => {
-    const ext = file.name.split('.').pop() || 'jpg';
-    const path = `${Date.now()}-${slot}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const uploadFile = async (file: File, slot: string, index: number): Promise<string> => {
+    const { blob, ext, contentType } = await processImage(file);
+    const path = `${Date.now()}-${slot}-${index}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
     const { error } = await supabase.storage
       .from('outfit-submissions')
-      .upload(path, file, { contentType: file.type, upsert: false });
-    if (error) throw error;
+      .upload(path, blob, { contentType, upsert: false });
+    if (error) throw new Error(`${slot}: ${error.message}`);
     const { data } = supabase.storage.from('outfit-submissions').getPublicUrl(path);
     return data.publicUrl;
   };
 
-  const uploadAll = async (files: File[], slot: string) =>
-    Promise.all(files.map((f) => uploadFile(f, slot)));
+  // Sequential to avoid mobile network overload and clearer error reporting
+  const uploadAll = async (files: File[], slot: string) => {
+    const out: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      out.push(await uploadFile(files[i], slot, i));
+    }
+    return out;
+  };
 
   const reset = () => {
     setMode(null);
@@ -205,11 +250,9 @@ const UploadOutfit = () => {
     if (!brand) return toast.error('Selecciona la marca principal.');
     setSubmitting(true);
     try {
-      const [topUrls, bottomUrls, fullUrls] = await Promise.all([
-        uploadAll(topFiles, 'top'),
-        uploadAll(bottomFiles, 'bottom'),
-        uploadAll(fullFiles, 'full'),
-      ]);
+      const topUrls = await uploadAll(topFiles, 'top');
+      const bottomUrls = await uploadAll(bottomFiles, 'bottom');
+      const fullUrls = await uploadAll(fullFiles, 'full');
       const { error } = await supabase.from('outfit_submissions').insert({
         top_image_urls: topUrls,
         bottom_image_urls: bottomUrls,
@@ -221,9 +264,9 @@ const UploadOutfit = () => {
       });
       if (error) throw error;
       setDone(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast.error('Error al enviar. Inténtalo de nuevo.');
+      toast.error(err?.message ? `Error: ${err.message}` : 'Error al enviar. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }
@@ -252,9 +295,9 @@ const UploadOutfit = () => {
       });
       if (error) throw error;
       setDone(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast.error('Error al enviar. Inténtalo de nuevo.');
+      toast.error(err?.message ? `Error: ${err.message}` : 'Error al enviar. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }
