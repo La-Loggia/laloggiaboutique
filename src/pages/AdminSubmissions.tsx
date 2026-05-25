@@ -200,9 +200,13 @@ const AdminSubmissions = () => {
                           </a>
                         ))}
                         {totalImages > 6 && (
-                          <div className="flex items-center justify-center aspect-[3/4] rounded-md bg-muted text-xs text-muted-foreground font-medium">
+                          <button
+                            type="button"
+                            onClick={() => setViewer({ groups })}
+                            className="flex items-center justify-center aspect-[3/4] rounded-md bg-muted text-xs text-muted-foreground font-medium hover:bg-muted/80 transition-colors"
+                          >
                             +{totalImages - 6}
-                          </div>
+                          </button>
                         )}
                       </div>
                     )}
