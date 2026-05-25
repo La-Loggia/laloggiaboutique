@@ -198,6 +198,9 @@ const decodeWithImageElement = async (blob: Blob) => {
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : null;
+
 // Convert mobile photos (including HEIC/HEIF from Samsung) to a smaller JPEG before upload.
 const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
   const maxDim = 1600;
@@ -319,9 +322,10 @@ const UploadOutfit = () => {
       });
       if (error) throw error;
       setDone(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message ? `Error: ${err.message}` : 'Error al enviar. Inténtalo de nuevo.');
+      const message = getErrorMessage(err);
+      toast.error(message ? `Error: ${message}` : 'Error al enviar. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }
@@ -350,9 +354,10 @@ const UploadOutfit = () => {
       });
       if (error) throw error;
       setDone(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message ? `Error: ${err.message}` : 'Error al enviar. Inténtalo de nuevo.');
+      const message = getErrorMessage(err);
+      toast.error(message ? `Error: ${message}` : 'Error al enviar. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }
