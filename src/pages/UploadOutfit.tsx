@@ -191,6 +191,15 @@ const PhotoSlot = ({
 const isHeicFile = (file: File) =>
   /hei[cf]/i.test(file.type) || /\.(hei[cf])$/i.test(file.name);
 
+const normalizeSelectedFile = async (file: File): Promise<File> => {
+  if (!isHeicFile(file)) return file;
+  const { default: heic2any } = await import('heic2any');
+  const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+  const blob = Array.isArray(converted) ? converted[0] : converted;
+  const name = file.name.replace(/\.hei[cf]$/i, '.jpg') || `foto-${Date.now()}.jpg`;
+  return new File([blob], name, { type: 'image/jpeg', lastModified: Date.now() });
+};
+
 const decodeWithImageElement = async (blob: Blob) => {
   const url = URL.createObjectURL(blob);
   try {
