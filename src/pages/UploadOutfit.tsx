@@ -27,10 +27,18 @@ const SLOT_LABELS: Record<Slot, string> = {
 // Memoized preview that keeps the same blob URL across re-renders
 const FilePreview = ({ file, onRemove, alt }: { file: File; onRemove: () => void; alt: string }) => {
   const url = useMemo(() => URL.createObjectURL(file), [file]);
+  const [previewError, setPreviewError] = useState(false);
   useEffect(() => () => URL.revokeObjectURL(url), [url]);
   return (
     <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
-      <img src={url} alt={alt} className="h-full w-full object-cover" />
+      {previewError ? (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center text-muted-foreground">
+          <ImageIcon className="h-7 w-7" />
+          <span className="text-xs">Foto añadida</span>
+        </div>
+      ) : (
+        <img src={url} alt={alt} className="h-full w-full object-cover" onError={() => setPreviewError(true)} />
+      )}
       <button
         type="button"
         onClick={onRemove}
@@ -61,10 +69,20 @@ const PhotoSlot = ({
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [addingFiles, setAddingFiles] = useState(false);
 
-  const handleFiles = (fileList: FileList | null) => {
+  const handleFiles = async (fileList: FileList | null) => {
     if (!fileList) return;
-    Array.from(fileList).forEach((f) => onAdd(f));
+    setAddingFiles(true);
+    try {
+      for (const file of Array.from(fileList)) {
+        onAdd(await normalizeSelectedFile(file));
+      }
+    } catch {
+      toast.error('No se pudo preparar una foto. Prueba con JPG o desactiva HEIC en la cámara.');
+    } finally {
+      setAddingFiles(false);
+    }
   };
 
   const openPicker = () => {
@@ -108,10 +126,11 @@ const PhotoSlot = ({
         <button
           type="button"
           onClick={openPicker}
+          disabled={addingFiles}
           className="flex aspect-[3/4] w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition-colors hover:bg-secondary/50"
         >
-          {allowCamera ? <Camera className="h-8 w-8" /> : <ImageIcon className="h-8 w-8" />}
-          <span className="text-sm">Tocar para añadir foto</span>
+          {addingFiles ? <Loader2 className="h-8 w-8 animate-spin" /> : allowCamera ? <Camera className="h-8 w-8" /> : <ImageIcon className="h-8 w-8" />}
+          <span className="text-sm">{addingFiles ? 'Preparando foto…' : 'Tocar para añadir foto'}</span>
           <span className="text-xs">{allowCamera ? 'Cámara o galería' : 'Desde galería'}</span>
         </button>
       ) : (
@@ -127,10 +146,11 @@ const PhotoSlot = ({
           <button
             type="button"
             onClick={openPicker}
+            disabled={addingFiles}
             className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition-colors hover:bg-secondary/50"
           >
-            <Plus className="h-6 w-6" />
-            <span className="text-xs">Añadir más</span>
+            {addingFiles ? <Loader2 className="h-6 w-6 animate-spin" /> : <Plus className="h-6 w-6" />}
+            <span className="text-xs">{addingFiles ? 'Preparando…' : 'Añadir más'}</span>
           </button>
         </div>
       )}
@@ -168,13 +188,52 @@ const PhotoSlot = ({
   );
 };
 
-// Convert any browser-decodable image (HEIC en iOS Safari, JPG, PNG…) to a compressed JPEG.
-// If the browser can't decode it (e.g. HEIC en Chrome desktop), we upload the original.
-const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
-  const maxDim = 2000;
-  const quality = 0.85;
+const isHeicFile = (file: File) =>
+  /hei[cf]/i.test(file.type) || /\.(hei[cf])$/i.test(file.name);
+
+const normalizeSelectedFile = async (file: File): Promise<File> => {
+  if (!isHeicFile(file)) return file;
+  const { default: heic2any } = await import('heic2any');
+  const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+  const blob = Array.isArray(converted) ? converted[0] : converted;
+  const name = file.name.replace(/\.hei[cf]$/i, '.jpg') || `foto-${Date.now()}.jpg`;
+  return new File([blob], name, { type: 'image/jpeg', lastModified: Date.now() });
+};
+
+const decodeWithImageElement = async (blob: Blob) => {
+  const url = URL.createObjectURL(blob);
   try {
-    const bitmap = await createImageBitmap(file);
+    const image = new Image();
+    image.decoding = 'async';
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error('image-decode'));
+      image.src = url;
+    });
+    return image;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+};
+
+const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : null;
+
+// Convert mobile photos (including HEIC/HEIF from Samsung) to a smaller JPEG before upload.
+const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
+  const maxDim = 1600;
+  const quality = 0.78;
+  let inputBlob: Blob = file;
+  if (isHeicFile(file)) {
+    const { default: heic2any } = await import('heic2any');
+    const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality });
+    inputBlob = Array.isArray(converted) ? converted[0] : converted;
+  }
+
+  try {
+    const bitmap = await createImageBitmap(inputBlob);
     const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
     const w = Math.round(bitmap.width * scale);
     const h = Math.round(bitmap.height * scale);
@@ -194,8 +253,20 @@ const processImage = async (file: File): Promise<{ blob: Blob; ext: string; cont
     });
     return { blob, ext: 'jpg', contentType: 'image/jpeg' };
   } catch {
-    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-    return { blob: file, ext, contentType: file.type || 'application/octet-stream' };
+    const image = await decodeWithImageElement(inputBlob);
+    const scale = Math.min(1, maxDim / Math.max(image.naturalWidth, image.naturalHeight));
+    const w = Math.round(image.naturalWidth * scale);
+    const h = Math.round(image.naturalHeight * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('canvas');
+    ctx.drawImage(image, 0, 0, w, h);
+    const blob: Blob = await new Promise((resolve, reject) => {
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob'))), 'image/jpeg', quality);
+    });
+    return { blob, ext: 'jpg', contentType: 'image/jpeg' };
   }
 };
 
@@ -216,12 +287,20 @@ const UploadOutfit = () => {
   const uploadFile = async (file: File, slot: string, index: number): Promise<string> => {
     const { blob, ext, contentType } = await processImage(file);
     const path = `${Date.now()}-${slot}-${index}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-    const { error } = await supabase.storage
-      .from('outfit-submissions')
-      .upload(path, blob, { contentType, upsert: false });
-    if (error) throw new Error(`${slot}: ${error.message}`);
-    const { data } = supabase.storage.from('outfit-submissions').getPublicUrl(path);
-    return data.publicUrl;
+    let lastError: unknown = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const { error } = await supabase.storage
+        .from('outfit-submissions')
+        .upload(path, blob, { contentType, cacheControl: '31536000', upsert: false });
+      if (!error) {
+        const { data } = supabase.storage.from('outfit-submissions').getPublicUrl(path);
+        return data.publicUrl;
+      }
+      lastError = error;
+      if (attempt < 3) await wait(700 * attempt);
+    }
+    const message = lastError instanceof Error ? lastError.message : 'falló la subida';
+    throw new Error(`${SLOT_LABELS[slot as Slot] ?? slot}: ${message}`);
   };
 
   // Sequential to avoid mobile network overload and clearer error reporting
@@ -264,9 +343,10 @@ const UploadOutfit = () => {
       });
       if (error) throw error;
       setDone(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message ? `Error: ${err.message}` : 'Error al enviar. Inténtalo de nuevo.');
+      const message = getErrorMessage(err);
+      toast.error(message ? `Error: ${message}` : 'Error al enviar. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }
@@ -295,9 +375,10 @@ const UploadOutfit = () => {
       });
       if (error) throw error;
       setDone(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message ? `Error: ${err.message}` : 'Error al enviar. Inténtalo de nuevo.');
+      const message = getErrorMessage(err);
+      toast.error(message ? `Error: ${message}` : 'Error al enviar. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }

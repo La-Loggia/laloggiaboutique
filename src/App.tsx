@@ -44,6 +44,7 @@ const App = () => (
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/subidas" element={<AdminSubmissions />} />
               <Route path="/subirprenda" element={<UploadOutfit />} />
+              <Route path="/subirprendas" element={<UploadOutfit />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
