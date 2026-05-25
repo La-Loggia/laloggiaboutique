@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ArrowLeft, Check, Trash2, ExternalLink, Send, Image } from 'lucide-react';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
