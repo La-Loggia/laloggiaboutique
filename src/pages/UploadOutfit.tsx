@@ -69,10 +69,20 @@ const PhotoSlot = ({
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [addingFiles, setAddingFiles] = useState(false);
 
-  const handleFiles = (fileList: FileList | null) => {
+  const handleFiles = async (fileList: FileList | null) => {
     if (!fileList) return;
-    Array.from(fileList).forEach((f) => onAdd(f));
+    setAddingFiles(true);
+    try {
+      for (const file of Array.from(fileList)) {
+        onAdd(await normalizeSelectedFile(file));
+      }
+    } catch {
+      toast.error('No se pudo preparar una foto. Prueba con JPG o desactiva HEIC en la cámara.');
+    } finally {
+      setAddingFiles(false);
+    }
   };
 
   const openPicker = () => {
@@ -116,10 +126,11 @@ const PhotoSlot = ({
         <button
           type="button"
           onClick={openPicker}
+          disabled={addingFiles}
           className="flex aspect-[3/4] w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition-colors hover:bg-secondary/50"
         >
-          {allowCamera ? <Camera className="h-8 w-8" /> : <ImageIcon className="h-8 w-8" />}
-          <span className="text-sm">Tocar para añadir foto</span>
+          {addingFiles ? <Loader2 className="h-8 w-8 animate-spin" /> : allowCamera ? <Camera className="h-8 w-8" /> : <ImageIcon className="h-8 w-8" />}
+          <span className="text-sm">{addingFiles ? 'Preparando foto…' : 'Tocar para añadir foto'}</span>
           <span className="text-xs">{allowCamera ? 'Cámara o galería' : 'Desde galería'}</span>
         </button>
       ) : (
@@ -135,10 +146,11 @@ const PhotoSlot = ({
           <button
             type="button"
             onClick={openPicker}
+            disabled={addingFiles}
             className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition-colors hover:bg-secondary/50"
           >
-            <Plus className="h-6 w-6" />
-            <span className="text-xs">Añadir más</span>
+            {addingFiles ? <Loader2 className="h-6 w-6 animate-spin" /> : <Plus className="h-6 w-6" />}
+            <span className="text-xs">{addingFiles ? 'Preparando…' : 'Añadir más'}</span>
           </button>
         </div>
       )}
