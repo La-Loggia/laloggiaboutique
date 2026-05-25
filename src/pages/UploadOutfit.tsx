@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import heic2any from 'heic2any';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -207,6 +206,7 @@ const processImage = async (file: File): Promise<{ blob: Blob; ext: string; cont
   const quality = 0.78;
   let inputBlob: Blob = file;
   if (isHeicFile(file)) {
+    const { default: heic2any } = await import('heic2any');
     const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality });
     inputBlob = Array.isArray(converted) ? converted[0] : converted;
   }
