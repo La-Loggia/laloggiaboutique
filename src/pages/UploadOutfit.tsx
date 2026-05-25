@@ -200,11 +200,11 @@ const decodeWithImageElement = async (blob: Blob) => {
 const processImage = async (file: File): Promise<{ blob: Blob; ext: string; contentType: string }> => {
   const maxDim = 1600;
   const quality = 0.78;
-  const inputBlob = isHeicFile(file)
-    ? (Array.isArray(await heic2any({ blob: file, toType: 'image/jpeg', quality }))
-      ? (await heic2any({ blob: file, toType: 'image/jpeg', quality }) as Blob[])[0]
-      : (await heic2any({ blob: file, toType: 'image/jpeg', quality }) as Blob))
-    : file;
+  let inputBlob: Blob = file;
+  if (isHeicFile(file)) {
+    const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality });
+    inputBlob = Array.isArray(converted) ? converted[0] : converted;
+  }
 
   try {
     const bitmap = await createImageBitmap(inputBlob);
