@@ -15,7 +15,7 @@ import {
 import bannerReplay from '@/assets/banner-replay.png';
 import bannerRueMadam from '@/assets/banner-ruemadam.png';
 import bannerLolaCasademunt from '@/assets/banner-lolacasademunt.png';
-import bannerRiveGauche from '@/assets/logo-rivegauche.png';
+import bannerRiveGauche from '@/assets/banner-rivegauche.png';
 
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
