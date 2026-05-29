@@ -4,7 +4,7 @@ import { BolsoBrand } from '@/hooks/useBolsos';
 import bannerReplay from '@/assets/banner-replay.png';
 import bannerRueMadam from '@/assets/banner-ruemadam.png';
 import bannerLolaCasademunt from '@/assets/banner-lolacasademunt.png';
-import bannerRiveGauche from '@/assets/logo-rivegauche.png';
+import bannerRiveGauche from '@/assets/banner-rivegauche.png';
 
 interface BolsosBrandInfo {
   brand: BolsoBrand;
