@@ -86,6 +86,13 @@ const MobileMenu = () => {
                 >
                   Replay
                 </Link>
+                <Link 
+                  to="/bolsos/rive-gauche" 
+                  onClick={handleLinkClick}
+                  className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Rive Gauche
+                </Link>
               </div>
             )}
           </div>
