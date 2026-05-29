@@ -15,10 +15,12 @@ import {
 import bannerReplay from '@/assets/banner-replay.png';
 import bannerRueMadam from '@/assets/banner-ruemadam.png';
 import bannerLolaCasademunt from '@/assets/banner-lolacasademunt.png';
+import bannerRiveGauche from '@/assets/logo-rivegauche.png';
 
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
 import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
+import logoRiveGauche from '@/assets/logo-rivegauche.png';
 
 import dixieLogo from '@/assets/logo-dixie.png';
 import saintTropezLogo from '@/assets/logo-sainttropez.png';
@@ -55,10 +57,16 @@ const bolsosBrands: BolsosBrandInfo[] = [
     banner: bannerLolaCasademunt,
     displayName: 'Lola Casademunt',
   },
+  {
+    brand: 'RiveGauche',
+    slug: 'rive-gauche',
+    banner: bannerRiveGauche,
+    displayName: 'Rive Gauche',
+  },
 ];
 
 // Brands to show in "Ver más novedades" dropdown (exclude bolsos brands)
-const bolsoBrandNames: Brand[] = ['Replay', 'RueMadam', 'LolaCasademunt'];
+const bolsoBrandNames: Brand[] = ['Replay', 'RueMadam', 'LolaCasademunt', 'RiveGauche'];
 const novedadesBrands = brands.filter(brand => !bolsoBrandNames.includes(brand));
 
 const brandLogos: Record<Brand, string> = {
@@ -73,6 +81,7 @@ const brandLogos: Record<Brand, string> = {
   'JOTT': jottLogo,
   'LolaCasademunt': logoLolaCasademunt,
   'Vicolo': vicoloLogo,
+  'RiveGauche': logoRiveGauche,
 };
 
 const getBrandSlug = (brand: Brand): string => {

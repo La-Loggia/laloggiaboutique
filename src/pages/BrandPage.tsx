@@ -20,6 +20,7 @@ import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
 import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 import vicoloLogo from '@/assets/logo-vicolo.png';
+import riveGaucheLogo from '@/assets/logo-rivegauche.png';
 
 const brandLogos: Record<Brand, { src: string; height: string }> = {
   'MOOR': { src: moorLogo, height: 'h-[72px]' },
@@ -33,6 +34,7 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'JOTT': { src: jottLogo, height: 'h-[72px]' },
   'LolaCasademunt': { src: lolaCasademuntLogo, height: 'h-[72px]' },
   'Vicolo': { src: vicoloLogo, height: 'h-[72px]' },
+  'RiveGauche': { src: riveGaucheLogo, height: 'h-[60px]' },
 };
 
 // SEO-optimized brand metadata
@@ -119,6 +121,13 @@ const brandSEO: Record<Brand, {
     h1: 'VICOLO – Moda femenina italiana para mujer en La Loggia',
     origin: 'Italia',
     style: 'Vicolo es una marca italiana de moda femenina reconocida por su estilo contemporáneo, urbano y actual. Nacida en Italia, Vicolo destaca por sus colecciones pensadas para mujeres que buscan moda italiana con carácter, tendencia y personalidad. Las prendas Vicolo para mujer combinan diseños modernos con siluetas cuidadas, ofreciendo una amplia variedad de vestidos, conjuntos, blazers, pantalones, tops y prendas versátiles para el día a día. Su estética refleja el equilibrio entre moda urbana y elegancia italiana, convirtiendo cada colección en una referencia dentro del prêt-à-porter femenino italiano. En La Loggia seleccionamos moda Vicolo para mujer siguiendo la esencia de la marca: prendas actuales, femeninas y con un marcado estilo italiano. Apostamos por Vicolo como una de nuestras firmas italianas más reconocidas, ideal para mujeres que buscan moda italiana moderna y con identidad propia.'
+  },
+  'RiveGauche': {
+    title: 'Rive Gauche | Bolsos para Mujer en La Loggia Alicante',
+    description: 'Bolsos Rive Gauche en La Loggia. Diseño francés con espíritu parisino para mujer. Bolsos en Altea, San Juan y Campello.',
+    h1: 'Rive Gauche – Bolsos para mujer en La Loggia',
+    origin: 'París, Francia',
+    style: 'Rive Gauche evoca el espíritu de la orilla izquierda parisina: elegancia desenfadada, refinamiento atemporal y un estilo de vida cosmopolita. En La Loggia seleccionamos bolsos Rive Gauche para mujer que combinan diseño francés, materiales cuidados y una estética sofisticada y minimalista. Cada bolso refleja una mezcla de tradición artesanal y modernidad, pensada para mujeres que buscan un complemento distintivo, elegante y versátil, capaz de elevar tanto un look diario como una ocasión especial.'
   },
 };
 
