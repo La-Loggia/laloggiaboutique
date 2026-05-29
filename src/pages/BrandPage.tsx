@@ -149,6 +149,8 @@ const BrandPage = () => {
     'jott': 'JOTT',
     'lolacasademunt': 'LolaCasademunt',
     'vicolo': 'Vicolo',
+    'rivegauche': 'RiveGauche',
+    'rive-gauche': 'RiveGauche',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
