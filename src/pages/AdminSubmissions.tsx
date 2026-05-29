@@ -3,14 +3,15 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowLeft, Check, Trash2, ExternalLink, Send, Image } from 'lucide-react';
+import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon } from 'lucide-react';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
 import UploadProductDialog from '@/components/UploadProductDialog';
+import SubmissionImageViewer from '@/components/SubmissionImageViewer';
 import { toast } from 'sonner';
-import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
+import { getThumbnailUrl } from '@/lib/imageOptimization';
 
 interface Submission {
   id: string;
@@ -52,7 +53,8 @@ const AdminSubmissions = () => {
   const [filter, setFilter] = useState<'pending' | 'all'>('pending');
   const [loadingItems, setLoadingItems] = useState(true);
   const [publishing, setPublishing] = useState<Submission | null>(null);
-  const [viewer, setViewer] = useState<{ groups: { label: string; urls: string[] }[] } | null>(null);
+  const [detail, setDetail] = useState<Submission | null>(null);
+  const [viewer, setViewer] = useState<{ urls: string[]; startIndex: number } | null>(null);
 
   const load = async () => {
     setLoadingItems(true);
@@ -100,6 +102,7 @@ const AdminSubmissions = () => {
     try {
       await cleanupSubmission(item);
       setItems((prev) => prev.filter((i) => i.id !== item.id));
+      if (detail?.id === item.id) setDetail(null);
       toast.success('Eliminada');
     } catch {
       toast.error('Error al eliminar');
@@ -111,6 +114,7 @@ const AdminSubmissions = () => {
     try {
       await cleanupSubmission(publishing);
       setItems((prev) => prev.filter((i) => i.id !== publishing.id));
+      if (detail?.id === publishing.id) setDetail(null);
     } catch (err) {
       console.error('No se pudieron limpiar las fotos originales', err);
     }
@@ -154,122 +158,160 @@ const AdminSubmissions = () => {
         ) : visible.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No hay outfits {filter === 'pending' ? 'pendientes' : ''}.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {visible.map((item) => {
               const groups = allGroups(item);
-              const totalImages = groups.reduce((sum, g) => sum + g.urls.length, 0);
+              const allUrls = groups.flatMap((g) => g.urls);
+              const cover = allUrls[0];
+              const totalImages = allUrls.length;
 
               return (
-                <Card key={item.id} className="flex flex-col overflow-hidden">
-                  <CardHeader className="pb-2 space-y-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(item.created_at).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      {item.reviewed ? (
-                        <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                          <Check className="w-3 h-3" /> Revisado
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Pendiente
-                        </span>
-                      )}
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="flex-1 space-y-3">
-                    {/* Thumbnail grid */}
-                    {totalImages > 0 && (
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {groups.flatMap((g) => g.urls).slice(0, 6).map((url, idx) => (
-                          <a
-                            key={idx}
-                            href={getOptimizedImageUrl(url, { width: 1000, quality: 80 })}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="relative block aspect-[3/4] overflow-hidden rounded-md bg-muted"
-                          >
-                            <img
-                              src={getThumbnailUrl(url, 300)}
-                              alt={`Foto ${idx + 1}`}
-                              loading="lazy"
-                              decoding="async"
-                              className="h-full w-full object-cover hover:scale-105 transition-transform"
-                            />
-                            <ExternalLink className="absolute top-1 right-1 w-3 h-3 text-white/80 drop-shadow" />
-                          </a>
-                        ))}
-                        {totalImages > 6 && (
-                          <button
-                            type="button"
-                            onClick={() => setViewer({ groups })}
-                            className="flex items-center justify-center aspect-[3/4] rounded-md bg-muted text-xs text-muted-foreground font-medium hover:bg-muted/80 transition-colors"
-                          >
-                            +{totalImages - 6}
-                          </button>
-                        )}
+                <Card
+                  key={item.id}
+                  onClick={() => setDetail(item)}
+                  className="group cursor-pointer overflow-hidden border-0 rounded-lg shadow-sm hover:shadow-lg transition-shadow"
+                >
+                  <div className="relative aspect-[3/4] bg-muted">
+                    {cover ? (
+                      <img
+                        src={getThumbnailUrl(cover, 500)}
+                        alt={item.brand ? brandDisplayNames[item.brand] || item.brand : 'Outfit'}
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-muted-foreground">
+                        <ImageIcon className="w-8 h-8" />
                       </div>
                     )}
 
-                    {/* Group tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {groups.map((g) => (
-                        <span key={g.label} className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider bg-secondary px-2 py-0.5 rounded">
-                          <Image className="w-3 h-3" />
-                          {g.label} {g.urls.length}
+                    {/* Status pill */}
+                    <div className="absolute top-2 left-2">
+                      {item.reviewed ? (
+                        <span className="flex items-center gap-1 text-[10px] text-white bg-green-600/90 backdrop-blur px-2 py-0.5 rounded-full">
+                          <Check className="w-3 h-3" /> Revisado
                         </span>
-                      ))}
+                      ) : (
+                        <span className="flex items-center gap-1 text-[10px] text-white bg-amber-500/90 backdrop-blur px-2 py-0.5 rounded-full">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white" /> Pendiente
+                        </span>
+                      )}
                     </div>
 
-                    {/* Meta */}
-                    <div className="space-y-1.5 text-sm">
-                      <p className="flex items-center gap-1.5">
-                        <span className="text-muted-foreground text-xs uppercase tracking-wider">Marca</span>
-                        <span className="font-medium">{item.brand ? brandDisplayNames[item.brand] || item.brand : '—'}</span>
+                    {/* Photo count */}
+                    {totalImages > 1 && (
+                      <span className="absolute top-2 right-2 text-[10px] text-white bg-black/60 backdrop-blur px-2 py-0.5 rounded-full">
+                        {totalImages} fotos
+                      </span>
+                    )}
+
+                    {/* Brand label */}
+                    <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                      <p className="text-xs font-medium text-white truncate">
+                        {item.brand ? brandDisplayNames[item.brand] || item.brand : 'Sin marca'}
                       </p>
-
-                      {item.source_url && (
-                        <a
-                          href={item.source_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="block truncate text-xs underline text-muted-foreground hover:text-foreground"
-                          title={item.source_url}
-                        >
-                          {item.source_url}
-                        </a>
-                      )}
-
-                      {item.notes && (
-                        <p className="text-xs bg-muted/50 rounded p-2 whitespace-pre-wrap line-clamp-4">{item.notes}</p>
-                      )}
                     </div>
-                  </CardContent>
-
-                  <CardFooter className="flex flex-wrap gap-2 pt-0">
-                    <Button size="sm" onClick={() => setPublishing(item)} className="flex-1 min-w-[120px]">
-                      <Send className="w-3.5 h-3.5 mr-1" /> Publicar
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={item.reviewed ? 'outline' : 'secondary'}
-                      onClick={() => toggleReviewed(item)}
-                      className="flex-1"
-                    >
-                      <Check className="w-3.5 h-3.5 mr-1" />
-                      {item.reviewed ? 'Pendiente' : 'Revisado'}
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => remove(item)} className="shrink-0">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                  </CardFooter>
+                  </div>
                 </Card>
               );
             })}
           </div>
         )}
       </main>
+
+      {/* Detail dialog */}
+      <Dialog open={!!detail} onOpenChange={(v) => !v && setDetail(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-serif tracking-wide">
+              {detail?.brand ? brandDisplayNames[detail.brand] || detail.brand : 'Outfit subido'}
+            </DialogTitle>
+          </DialogHeader>
+          {detail && (() => {
+            const groups = allGroups(detail);
+            const allUrls = groups.flatMap((g) => g.urls);
+            let runningIdx = 0;
+            return (
+              <div className="space-y-5 pt-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{new Date(detail.created_at).toLocaleString('es-ES')}</span>
+                  {detail.reviewed ? (
+                    <span className="flex items-center gap-1 text-green-600">
+                      <Check className="w-3 h-3" /> Revisado
+                    </span>
+                  ) : (
+                    <span className="text-amber-600">Pendiente</span>
+                  )}
+                </div>
+
+                {groups.map((g) => (
+                  <div key={g.label} className="space-y-2">
+                    <h3 className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {g.label} · {g.urls.length}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                      {g.urls.map((url) => {
+                        const idx = runningIdx++;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setViewer({ urls: allUrls, startIndex: idx })}
+                            className="relative block aspect-[3/4] overflow-hidden rounded-md bg-muted group"
+                          >
+                            <img
+                              src={getThumbnailUrl(url, 500)}
+                              alt={`${g.label} ${idx + 1}`}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+
+                {detail.source_url && (
+                  <a
+                    href={detail.source_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block truncate text-xs underline text-muted-foreground hover:text-foreground"
+                    title={detail.source_url}
+                  >
+                    {detail.source_url}
+                  </a>
+                )}
+
+                {detail.notes && (
+                  <p className="text-xs bg-muted/50 rounded p-2 whitespace-pre-wrap">{detail.notes}</p>
+                )}
+
+                <div className="flex flex-wrap gap-2 pt-2 border-t">
+                  <Button size="sm" onClick={() => setPublishing(detail)} className="flex-1 min-w-[120px]">
+                    <Send className="w-3.5 h-3.5 mr-1" /> Publicar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={detail.reviewed ? 'outline' : 'secondary'}
+                    onClick={() => toggleReviewed(detail)}
+                    className="flex-1"
+                  >
+                    <Check className="w-3.5 h-3.5 mr-1" />
+                    {detail.reviewed ? 'Marcar pendiente' : 'Revisado'}
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => remove(detail)} className="shrink-0">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              </div>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
 
       <UploadProductDialog
         open={!!publishing}
@@ -278,42 +320,12 @@ const AdminSubmissions = () => {
         onPublished={handlePublished}
       />
 
-      <Dialog open={!!viewer} onOpenChange={(v) => !v && setViewer(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="font-serif tracking-wide">Todas las fotos</DialogTitle>
-          </DialogHeader>
-          {viewer && (
-            <div className="space-y-5 pt-2">
-              {viewer.groups.map((g) => (
-                <div key={g.label} className="space-y-2">
-                  <h3 className="text-xs uppercase tracking-wider text-muted-foreground">{g.label} · {g.urls.length}</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                    {g.urls.map((url, idx) => (
-                      <a
-                        key={idx}
-                        href={getOptimizedImageUrl(url, { width: 1600, quality: 85 })}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="relative block aspect-[3/4] overflow-hidden rounded-md bg-muted"
-                      >
-                        <img
-                          src={getThumbnailUrl(url, 500)}
-                          alt={`${g.label} ${idx + 1}`}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-full object-cover hover:scale-105 transition-transform"
-                        />
-                        <ExternalLink className="absolute top-1 right-1 w-3.5 h-3.5 text-white/90 drop-shadow" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <SubmissionImageViewer
+        open={!!viewer}
+        urls={viewer?.urls ?? []}
+        startIndex={viewer?.startIndex ?? 0}
+        onClose={() => setViewer(null)}
+      />
     </div>
   );
 };
