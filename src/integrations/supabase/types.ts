@@ -208,6 +208,7 @@ export type Database = {
         | "JOTT"
         | "LolaCasademunt"
         | "Vicolo"
+        | "RiveGauche"
       product_category: "ropa" | "bolsos" | "plumiferos" | "camisetas" | "jeans"
       product_visibility: "all" | "brand_only" | "latest_only"
     }
@@ -350,6 +351,7 @@ export const Constants = {
         "JOTT",
         "LolaCasademunt",
         "Vicolo",
+        "RiveGauche",
       ],
       product_category: ["ropa", "bolsos", "plumiferos", "camisetas", "jeans"],
       product_visibility: ["all", "brand_only", "latest_only"],

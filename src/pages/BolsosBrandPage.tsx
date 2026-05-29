@@ -11,11 +11,13 @@ import { useBolsosByBrand, BolsoBrand } from '@/hooks/useBolsos';
 import replayLogo from '@/assets/logo-replay.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
+import riveGaucheLogo from '@/assets/logo-rivegauche.png';
 
 const brandLogos: Record<BolsoBrand, { src: string; height: string }> = {
   'Replay': { src: replayLogo, height: 'h-[74px]' },
   'RueMadam': { src: rueMadamLogo, height: 'h-[75px]' },
   'LolaCasademunt': { src: lolaCasademuntLogo, height: 'h-[72px]' },
+  'RiveGauche': { src: riveGaucheLogo, height: 'h-[60px]' },
 };
 
 const brandSEO: Record<BolsoBrand, { 
@@ -42,6 +44,12 @@ const brandSEO: Record<BolsoBrand, {
     h1: 'Bolsos Lola Casademunt – Estilo español',
     displayName: 'Lola Casademunt',
   },
+  'RiveGauche': {
+    title: 'Bolsos Rive Gauche | Estilo Parisino en La Loggia Alicante',
+    description: 'Bolsos Rive Gauche en La Loggia. Diseño francés con espíritu parisino. Bolsos para mujer en Altea, San Juan y Campello.',
+    h1: 'Bolsos Rive Gauche – Espíritu parisino',
+    displayName: 'Rive Gauche',
+  },
 };
 
 const BolsosBrandPage = () => {
@@ -54,6 +62,7 @@ const BolsosBrandPage = () => {
     'replay': 'Replay',
     'rue-madam': 'RueMadam',
     'lola-casademunt': 'LolaCasademunt',
+    'rive-gauche': 'RiveGauche',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;

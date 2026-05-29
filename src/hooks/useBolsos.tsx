@@ -31,9 +31,9 @@ const mapProduct = (raw: RawProduct): Product => ({
   category: raw.category,
 });
 
-export type BolsoBrand = 'Replay' | 'RueMadam' | 'LolaCasademunt';
+export type BolsoBrand = 'Replay' | 'RueMadam' | 'LolaCasademunt' | 'RiveGauche';
 
-export const bolsoBrands: BolsoBrand[] = ['Replay', 'RueMadam', 'LolaCasademunt'];
+export const bolsoBrands: BolsoBrand[] = ['Replay', 'RueMadam', 'LolaCasademunt', 'RiveGauche'];
 
 export const useBolsosByBrand = (brand: BolsoBrand) => {
   return useQuery({

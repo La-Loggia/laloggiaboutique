@@ -13,6 +13,7 @@ import logoRueMadam from '@/assets/logo-ruemadam.png';
 import logoJott from '@/assets/logo-jott.png';
 import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 import logoVicolo from '@/assets/logo-vicolo.png';
+import logoRiveGauche from '@/assets/logo-rivegauche.png';
 
 // Logos with responsive heights (smaller on mobile, larger on desktop)
 const brandLogos: Record<Brand, { src: string; heightMobile: string; heightDesktop: string }> = {
@@ -27,6 +28,7 @@ const brandLogos: Record<Brand, { src: string; heightMobile: string; heightDeskt
   JOTT: { src: logoJott, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   LolaCasademunt: { src: logoLolaCasademunt, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   Vicolo: { src: logoVicolo, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
+  RiveGauche: { src: logoRiveGauche, heightMobile: 'h-[55px]', heightDesktop: 'md:h-[80px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
@@ -45,7 +47,7 @@ const HomeBrandsBlock = () => {
       </div>
 
       <div className="grid grid-cols-3 md:grid-cols-5 gap-2 md:gap-3 px-4 max-w-4xl mx-auto">
-        {brands.filter((brand) => brand !== 'Replay').map((brand) => (
+        {brands.filter((brand) => brand !== 'Replay' && brand !== 'RueMadam' && brand !== 'LolaCasademunt' && brand !== 'RiveGauche').map((brand) => (
           <Link
             key={brand}
             to={`/marca/${getBrandSlug(brand)}`}

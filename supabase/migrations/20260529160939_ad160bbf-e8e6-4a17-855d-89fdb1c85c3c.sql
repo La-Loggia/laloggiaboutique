@@ -1,0 +1,1 @@
+ALTER TYPE public.brand_type ADD VALUE IF NOT EXISTS 'RiveGauche';
