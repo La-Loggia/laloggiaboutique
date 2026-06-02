@@ -69,8 +69,10 @@ const PhotoSlot = ({
 }) => {
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+  const filesRef = useRef<HTMLInputElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [addingFiles, setAddingFiles] = useState(false);
+
 
   const handleFiles = async (fileList: FileList | null) => {
     if (!fileList) return;
