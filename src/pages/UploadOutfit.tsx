@@ -282,6 +282,7 @@ const UploadOutfit = () => {
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const totalOutfitPhotos = topFiles.length + bottomFiles.length + fullFiles.length;
 
