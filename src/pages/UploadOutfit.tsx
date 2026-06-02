@@ -196,6 +196,20 @@ const PhotoSlot = ({
             >
               <ImageIcon className="h-5 w-5 mr-3" /> Elegir de la galería
             </Button>
+            <Button
+              variant="outline"
+              className="h-14 justify-start"
+              onClick={() => {
+                setPickerOpen(false);
+                filesRef.current?.click();
+              }}
+            >
+              <Plus className="h-5 w-5 mr-3" /> Elegir desde Archivos
+            </Button>
+            <p className="text-[11px] text-muted-foreground text-center px-2 pt-1">
+              Si "Galería" te abre Google Fotos, usa "Archivos" para entrar a las carpetas del móvil (DCIM, Pictures…).
+            </p>
+
           </div>
         </DialogContent>
       </Dialog>
