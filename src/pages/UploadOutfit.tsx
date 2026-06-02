@@ -69,8 +69,10 @@ const PhotoSlot = ({
 }) => {
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+  const filesRef = useRef<HTMLInputElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [addingFiles, setAddingFiles] = useState(false);
+
 
   const handleFiles = async (fileList: FileList | null) => {
     if (!fileList) return;
@@ -122,6 +124,18 @@ const PhotoSlot = ({
           e.target.value = '';
         }}
       />
+      {/* No accept attribute → fuerza el explorador de Archivos de Android (no Google Fotos) */}
+      <input
+        ref={filesRef}
+        type="file"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = '';
+        }}
+      />
+
 
       {files.length === 0 ? (
         <button
@@ -182,6 +196,20 @@ const PhotoSlot = ({
             >
               <ImageIcon className="h-5 w-5 mr-3" /> Elegir de la galería
             </Button>
+            <Button
+              variant="outline"
+              className="h-14 justify-start"
+              onClick={() => {
+                setPickerOpen(false);
+                filesRef.current?.click();
+              }}
+            >
+              <Plus className="h-5 w-5 mr-3" /> Elegir desde Archivos
+            </Button>
+            <p className="text-[11px] text-muted-foreground text-center px-2 pt-1">
+              Si "Galería" te abre Google Fotos, usa "Archivos" para entrar a las carpetas del móvil (DCIM, Pictures…).
+            </p>
+
           </div>
         </DialogContent>
       </Dialog>
