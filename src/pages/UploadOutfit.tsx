@@ -124,6 +124,18 @@ const PhotoSlot = ({
           e.target.value = '';
         }}
       />
+      {/* No accept attribute → fuerza el explorador de Archivos de Android (no Google Fotos) */}
+      <input
+        ref={filesRef}
+        type="file"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = '';
+        }}
+      />
+
 
       {files.length === 0 ? (
         <button
