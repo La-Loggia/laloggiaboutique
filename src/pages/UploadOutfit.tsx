@@ -6,7 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { brands, Brand } from '@/data/products';
 import { brandDisplayNames } from '@/lib/brandUtils';
-import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft } from 'lucide-react';
+import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft, History } from 'lucide-react';
+import SubmissionsHistory from '@/components/SubmissionsHistory';
 import { toast } from 'sonner';
 import {
   Dialog,
