@@ -449,7 +449,24 @@ const UploadOutfit = () => {
               </div>
             </div>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setHistoryOpen(true)}
+            className="w-full rounded-xl border border-border bg-background p-4 text-left transition-colors hover:bg-secondary/40"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground">
+                <History className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Mi historial</p>
+                <p className="text-xs text-muted-foreground">Ver todas las prendas ya subidas y no repetir envíos</p>
+              </div>
+            </div>
+          </button>
         </main>
+        <SubmissionsHistory open={historyOpen} onClose={() => setHistoryOpen(false)} />
       </div>
     );
   }
