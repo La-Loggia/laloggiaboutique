@@ -484,8 +484,12 @@ const UploadOutfit = () => {
               {mode === 'outfit' ? 'Subir outfit' : 'Subir link'}
             </p>
           </div>
+          <Button variant="ghost" size="sm" className="ml-auto" onClick={() => setHistoryOpen(true)}>
+            <History className="h-4 w-4 mr-1.5" /> Historial
+          </Button>
         </div>
       </header>
+      <SubmissionsHistory open={historyOpen} onClose={() => setHistoryOpen(false)} />
 
       <main className="px-4 py-6 space-y-6 max-w-md mx-auto pb-32">
         {mode === 'outfit' ? (
