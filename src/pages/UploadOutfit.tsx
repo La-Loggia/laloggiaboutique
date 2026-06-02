@@ -6,7 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { brands, Brand } from '@/data/products';
 import { brandDisplayNames } from '@/lib/brandUtils';
-import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft } from 'lucide-react';
+import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft, History } from 'lucide-react';
+import SubmissionsHistory from '@/components/SubmissionsHistory';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -281,6 +282,7 @@ const UploadOutfit = () => {
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const totalOutfitPhotos = topFiles.length + bottomFiles.length + fullFiles.length;
 
@@ -447,7 +449,24 @@ const UploadOutfit = () => {
               </div>
             </div>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setHistoryOpen(true)}
+            className="w-full rounded-xl border border-border bg-background p-4 text-left transition-colors hover:bg-secondary/40"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground">
+                <History className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Mi historial</p>
+                <p className="text-xs text-muted-foreground">Ver todas las prendas ya subidas y no repetir envíos</p>
+              </div>
+            </div>
+          </button>
         </main>
+        <SubmissionsHistory open={historyOpen} onClose={() => setHistoryOpen(false)} />
       </div>
     );
   }
@@ -465,8 +484,12 @@ const UploadOutfit = () => {
               {mode === 'outfit' ? 'Subir outfit' : 'Subir link'}
             </p>
           </div>
+          <Button variant="ghost" size="sm" className="ml-auto" onClick={() => setHistoryOpen(true)}>
+            <History className="h-4 w-4 mr-1.5" /> Historial
+          </Button>
         </div>
       </header>
+      <SubmissionsHistory open={historyOpen} onClose={() => setHistoryOpen(false)} />
 
       <main className="px-4 py-6 space-y-6 max-w-md mx-auto pb-32">
         {mode === 'outfit' ? (
