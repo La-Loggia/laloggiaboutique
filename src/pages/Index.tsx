@@ -50,8 +50,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="La Loggia · Boutique de moda mujer en Altea, San Juan y Campello"
-        description="La Loggia es una boutique de moda femenina con tiendas en Altea, San Juan y Campello. Marcas italianas exclusivas como MOOR, Saint Tropez y DiLei."
+        title="Moda italiana de mujer en Alicante · La Loggia | Altea, San Juan, Campello"
+        description="La Loggia, boutique de moda italiana de mujer en Alicante. Firmas exclusivas como MOOR, Saint Tropez y DiLei en nuestras tiendas de Altea, San Juan y Campello."
         canonicalPath="/"
       />
       
@@ -62,11 +62,17 @@ const Index = () => {
         {/* H1 único para SEO - visualmente integrado */}
         <header className="text-center py-8 px-4">
           <h1 className="font-serif text-xl md:text-2xl font-light text-foreground tracking-wide">
-            Boutique de moda femenina en Alicante
+            Moda italiana de mujer en Alicante
           </h1>
           <p className="font-sans text-xs text-muted-foreground mt-2 max-w-md mx-auto">
-            Moda italiana exclusiva en Altea, San Juan y Campello
+            Boutique La Loggia · Altea, San Juan y El Campello
           </p>
+          <Link
+            to="/moda-italiana-mujer-alicante"
+            className="inline-block mt-4 text-[11px] tracking-[0.2em] uppercase text-foreground/70 hover:text-foreground border-b border-foreground/30 hover:border-foreground transition-colors pb-0.5"
+          >
+            Descubrir la moda italiana
+          </Link>
         </header>
 
         <LocalSEOContent />
