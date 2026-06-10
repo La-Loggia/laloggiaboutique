@@ -19,6 +19,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminSubmissions from "./pages/AdminSubmissions";
 import UploadOutfit from "./pages/UploadOutfit";
 import NotFound from "./pages/NotFound";
+import ModaItalianaAlicante from "./pages/ModaItalianaAlicante";
 
 const queryClient = new QueryClient();
 
