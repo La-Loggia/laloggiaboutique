@@ -14,7 +14,8 @@ const SEOHead = ({
   description, 
   canonicalPath = '', 
   type = 'website',
-  breadcrumbs 
+  breadcrumbs,
+  structuredData,
 }: SEOHeadProps) => {
   useEffect(() => {
     // Update document title
