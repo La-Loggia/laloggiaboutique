@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api|_next|static|favicon\\.ico|robots\\.txt|sitemap\\.xml|placeholder.*\\.jpg|og-image\\.jpg).*)",
+      "source": "/((?!api|_next|static|favicon\\.ico|robots\\.txt|sitemap\\.xml|moda-italiana-mujer-alicante|placeholder.*\\.jpg|og-image\\.jpg).*)",
       "destination": "/index.html"
     }
   ]
