@@ -6,6 +6,7 @@ interface SEOHeadProps {
   canonicalPath?: string;
   type?: 'website' | 'article';
   breadcrumbs?: Array<{ name: string; url: string }>;
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const SEOHead = ({ 
@@ -13,7 +14,8 @@ const SEOHead = ({
   description, 
   canonicalPath = '', 
   type = 'website',
-  breadcrumbs 
+  breadcrumbs,
+  structuredData,
 }: SEOHeadProps) => {
   useEffect(() => {
     // Update document title
@@ -84,14 +86,27 @@ const SEOHead = ({
       }
     }
 
-    // Cleanup breadcrumb schema on unmount
+    // Handle custom structured data (FAQPage, WebPage, etc.)
+    const existingCustom = document.getElementById('custom-structured-data');
+    if (existingCustom) existingCustom.remove();
+    if (structuredData) {
+      const script = document.createElement('script');
+      script.id = 'custom-structured-data';
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
+
+    // Cleanup on unmount
     return () => {
       const breadcrumbScript = document.getElementById('breadcrumb-schema');
       if (breadcrumbScript) {
         breadcrumbScript.remove();
       }
+      const customScript = document.getElementById('custom-structured-data');
+      if (customScript) customScript.remove();
     };
-  }, [title, description, canonicalPath, type, breadcrumbs]);
+  }, [title, description, canonicalPath, type, breadcrumbs, structuredData]);
 
   return null;
 };

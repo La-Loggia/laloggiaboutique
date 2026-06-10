@@ -19,6 +19,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminSubmissions from "./pages/AdminSubmissions";
 import UploadOutfit from "./pages/UploadOutfit";
 import NotFound from "./pages/NotFound";
+import ModaItalianaAlicante from "./pages/ModaItalianaAlicante";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/moda-italiana-mujer-alicante" element={<ModaItalianaAlicante />} />
               <Route path="/novedades" element={<LatestProducts />} />
               <Route path="/marca/:brandSlug" element={<BrandPage />} />
               <Route path="/bolsos" element={<Bolsos />} />
