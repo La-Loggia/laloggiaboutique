@@ -41,11 +41,20 @@ const MobileMenu = () => {
       <SheetContent side="right" className="w-[280px] p-0 bg-background">
         <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
         <nav className="flex flex-col py-6">
+          {/* Moda italiana en Alicante */}
+          <Link 
+            to="/moda-italiana-mujer-alicante" 
+            onClick={handleLinkClick}
+            className="px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
+          >
+            Moda italiana Alicante
+          </Link>
+
           {/* Novedades */}
           <Link 
             to="/novedades" 
             onClick={handleLinkClick}
-            className="px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors"
+            className="px-6 py-3 text-sm tracking-[0.15em] uppercase text-foreground hover:bg-muted/50 transition-colors border-t border-border/30"
           >
             Novedades marcas
           </Link>
