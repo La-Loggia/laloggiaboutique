@@ -6,6 +6,7 @@ interface SEOHeadProps {
   canonicalPath?: string;
   type?: 'website' | 'article';
   breadcrumbs?: Array<{ name: string; url: string }>;
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const SEOHead = ({ 
