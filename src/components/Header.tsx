@@ -9,13 +9,13 @@ const Header = () => {
         <div className="w-9 md:hidden" />
         
         {/* Logo centered */}
-        <Link to="/" className="flex-1 text-center">
-          <h1 className="font-serif text-xl tracking-[0.3em] font-medium text-foreground">
+        <Link to="/" className="flex-1 text-center" aria-label="La Loggia · Inicio">
+          <span className="block font-serif text-xl tracking-[0.3em] font-medium text-foreground">
             LA LOGGIA
-          </h1>
-          <p className="font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
+          </span>
+          <span className="block font-sans text-[10px] tracking-[0.2em] text-muted-foreground mt-0.5 uppercase">
             Altea · San Juan · Campello
-          </p>
+          </span>
         </Link>
         
         {/* Hamburger menu */}
