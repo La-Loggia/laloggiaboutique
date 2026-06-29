@@ -86,10 +86,11 @@ interface SortableProductProps {
   onManageImages: (product: Product) => void;
   onReplaceImage: (product: Product) => void;
   onChangeBrand: (product: Product, newBrand: Brand) => void;
+  onChangeCategory: (product: Product, newCategory: ProductCategory) => void;
   onChangeVisibility: (product: Product, state: Partial<VisibilityState>) => void;
 }
 
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeVisibility }: SortableProductProps) => {
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeCategory, onChangeVisibility }: SortableProductProps) => {
   const {
     attributes,
     listeners,
@@ -164,10 +165,10 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
             </div>
           </div>
           
-          {showBrand && product.brand && (
-            <div className="mb-2">
-              <Select 
-                value={product.brand} 
+          <div className="mb-2 grid grid-cols-2 gap-1.5">
+            {showBrand && product.brand && (
+              <Select
+                value={product.brand}
                 onValueChange={(v) => onChangeBrand(product, v as Brand)}
               >
                 <SelectTrigger className="h-8 text-xs px-2">
@@ -179,8 +180,21 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-          )}
+            )}
+            <Select
+              value={product.category}
+              onValueChange={(v) => onChangeCategory(product, v as ProductCategory)}
+            >
+              <SelectTrigger className="h-8 text-xs px-2">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(categoryLabels) as ProductCategory[]).map((cat) => (
+                  <SelectItem key={cat} value={cat} className="text-xs">{categoryLabels[cat]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <VisibilityToggles
             showInLatest={product.showInLatest}
@@ -302,6 +316,22 @@ const Admin = () => {
       toast.success(`Marca cambiada a ${newBrand}`);
     } catch (error) {
       toast.error('Error al cambiar la marca');
+    }
+  };
+
+  const handleChangeCategory = async (product: Product, newCategory: ProductCategory) => {
+    if (product.category === newCategory) return;
+    try {
+      const updates: Parameters<typeof updateProduct.mutateAsync>[0] = { id: product.id, category: newCategory };
+      // Switching to/from "jeans" affects brand semantics: jeans products have no brand.
+      if (newCategory === 'jeans') {
+        updates.brand = null;
+        updates.showInBrand = false;
+      }
+      await updateProduct.mutateAsync(updates);
+      toast.success(`Categoría cambiada a ${categoryLabels[newCategory]}`);
+    } catch (error) {
+      toast.error('Error al cambiar la categoría');
     }
   };
 
@@ -454,6 +484,7 @@ const Admin = () => {
                                 onManageImages={setManagingProduct}
                                 onReplaceImage={handleReplaceImage}
                                 onChangeBrand={handleChangeBrand}
+                                onChangeCategory={handleChangeCategory}
                                 onChangeVisibility={handleChangeVisibility}
                               />
                             ))}
