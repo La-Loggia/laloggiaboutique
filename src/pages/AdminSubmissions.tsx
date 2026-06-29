@@ -5,11 +5,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon, X } from 'lucide-react';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
 import UploadProductDialog from '@/components/UploadProductDialog';
 import SubmissionImageViewer from '@/components/SubmissionImageViewer';
+import ProductImageManager from '@/components/ProductImageManager';
+import type { Product } from '@/hooks/useProducts';
 import { toast } from 'sonner';
 import { getThumbnailUrl } from '@/lib/imageOptimization';
 
@@ -55,6 +57,7 @@ const AdminSubmissions = () => {
   const [publishing, setPublishing] = useState<Submission | null>(null);
   const [detail, setDetail] = useState<Submission | null>(null);
   const [viewer, setViewer] = useState<{ urls: string[]; startIndex: number } | null>(null);
+  const [managingNewProduct, setManagingNewProduct] = useState<Product | null>(null);
 
   const load = async () => {
     setLoadingItems(true);
@@ -109,7 +112,7 @@ const AdminSubmissions = () => {
     }
   };
 
-  const handlePublished = async () => {
+  const handlePublished = async (newProduct: Product) => {
     if (!publishing) return;
     try {
       await cleanupSubmission(publishing);
@@ -117,6 +120,50 @@ const AdminSubmissions = () => {
       if (detail?.id === publishing.id) setDetail(null);
     } catch (err) {
       console.error('No se pudieron limpiar las fotos originales', err);
+    }
+    // Open image manager directly so admin can attach additional photos
+    setManagingNewProduct(newProduct);
+  };
+
+  const deletePhotoFromSubmission = async (item: Submission, url: string) => {
+    if (!confirm('¿Eliminar esta foto?')) return;
+    // Build updated arrays excluding this url; also clear legacy single fields if they match.
+    const updates: Record<string, unknown> = {};
+    const topArr = (item.top_image_urls || []).filter((u) => u !== url);
+    const botArr = (item.bottom_image_urls || []).filter((u) => u !== url);
+    const outArr = (item.full_outfit_image_urls || []).filter((u) => u !== url);
+    if ((item.top_image_urls || []).includes(url)) updates.top_image_urls = topArr;
+    if ((item.bottom_image_urls || []).includes(url)) updates.bottom_image_urls = botArr;
+    if ((item.full_outfit_image_urls || []).includes(url)) updates.full_outfit_image_urls = outArr;
+    if (item.top_image_url === url) updates.top_image_url = null;
+    if (item.bottom_image_url === url) updates.bottom_image_url = null;
+
+    if (Object.keys(updates).length === 0) return;
+
+    try {
+      const { error } = await supabase
+        .from('outfit_submissions')
+        .update(updates)
+        .eq('id', item.id);
+      if (error) throw error;
+
+      const path = extractSubmissionStoragePath(url);
+      if (path) await supabase.storage.from('outfit-submissions').remove([path]);
+
+      const updated: Submission = {
+        ...item,
+        top_image_urls: (updates.top_image_urls as string[] | undefined) ?? item.top_image_urls,
+        bottom_image_urls: (updates.bottom_image_urls as string[] | undefined) ?? item.bottom_image_urls,
+        full_outfit_image_urls: (updates.full_outfit_image_urls as string[] | undefined) ?? item.full_outfit_image_urls,
+        top_image_url: 'top_image_url' in updates ? null : item.top_image_url,
+        bottom_image_url: 'bottom_image_url' in updates ? null : item.bottom_image_url,
+      };
+      setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
+      setDetail((prev) => (prev && prev.id === item.id ? updated : prev));
+      toast.success('Foto eliminada');
+    } catch (err) {
+      console.error(err);
+      toast.error('Error al eliminar la foto');
     }
   };
 
