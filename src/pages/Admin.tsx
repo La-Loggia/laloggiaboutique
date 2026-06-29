@@ -484,6 +484,7 @@ const Admin = () => {
                                 onManageImages={setManagingProduct}
                                 onReplaceImage={handleReplaceImage}
                                 onChangeBrand={handleChangeBrand}
+                                onChangeCategory={handleChangeCategory}
                                 onChangeVisibility={handleChangeVisibility}
                               />
                             ))}
