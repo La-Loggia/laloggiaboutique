@@ -301,20 +301,32 @@ const AdminSubmissions = () => {
                       {g.urls.map((url) => {
                         const idx = runningIdx++;
                         return (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => setViewer({ urls: allUrls, startIndex: idx })}
-                            className="relative block aspect-[3/4] overflow-hidden rounded-md bg-muted group"
-                          >
-                            <img
-                              src={getThumbnailUrl(url, 500)}
-                              alt={`${g.label} ${idx + 1}`}
-                              loading="lazy"
-                              decoding="async"
-                              className="h-full w-full object-cover group-hover:scale-105 transition-transform"
-                            />
-                          </button>
+                          <div key={idx} className="relative aspect-[3/4] overflow-hidden rounded-md bg-muted group">
+                            <button
+                              type="button"
+                              onClick={() => setViewer({ urls: allUrls, startIndex: idx })}
+                              className="block w-full h-full"
+                            >
+                              <img
+                                src={getThumbnailUrl(url, 500)}
+                                alt={`${g.label} ${idx + 1}`}
+                                loading="lazy"
+                                decoding="async"
+                                className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                              />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deletePhotoFromSubmission(detail, url);
+                              }}
+                              className="absolute top-1.5 right-1.5 p-1 rounded-full bg-black/70 text-white opacity-90 hover:bg-destructive transition-colors"
+                              title="Eliminar esta foto"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         );
                       })}
                     </div>
@@ -373,6 +385,13 @@ const AdminSubmissions = () => {
         startIndex={viewer?.startIndex ?? 0}
         onClose={() => setViewer(null)}
       />
+
+      {managingNewProduct && (
+        <ProductImageManager
+          product={managingNewProduct}
+          onClose={() => setManagingNewProduct(null)}
+        />
+      )}
     </div>
   );
 };
