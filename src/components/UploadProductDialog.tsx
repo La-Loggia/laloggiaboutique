@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { toast } from 'sonner';
 import { Upload, X, Eye, ChevronRight } from 'lucide-react';
 import { brands, Brand } from '@/data/products';
-import { useUploadImage, useCreateProduct, ProductCategory } from '@/hooks/useProducts';
+import { useUploadImage, useCreateProduct, ProductCategory, Product } from '@/hooks/useProducts';
 
 export interface VisibilityState {
   showInLatest: boolean;
@@ -50,8 +50,8 @@ interface UploadProductDialogProps {
   open: boolean;
   onClose: () => void;
   initialBrand?: Brand | null;
-  /** Called after the product is created successfully. */
-  onPublished?: () => void | Promise<void>;
+  /** Called after the product is created successfully. Receives the new product. */
+  onPublished?: (product: Product) => void | Promise<void>;
 }
 
 const UploadProductDialog = ({ open, onClose, initialBrand, onPublished }: UploadProductDialogProps) => {
@@ -108,7 +108,7 @@ const UploadProductDialog = ({ open, onClose, initialBrand, onPublished }: Uploa
     setIsUploading(true);
     try {
       const imageUrl = await uploadImage.mutateAsync(selectedFile);
-      await createProduct.mutateAsync({
+      const created = await createProduct.mutateAsync({
         brand: selectedCategory === 'jeans' ? null : selectedBrand,
         imageUrl,
         category: selectedCategory,
@@ -116,7 +116,7 @@ const UploadProductDialog = ({ open, onClose, initialBrand, onPublished }: Uploa
         showInSection: visibility.showInSection,
         showInBrand: selectedCategory === 'jeans' ? false : visibility.showInBrand,
       });
-      if (onPublished) await onPublished();
+      if (onPublished) await onPublished(created);
       toast.success('Prenda añadida correctamente');
       resetState();
       onClose();
