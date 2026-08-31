@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+
 import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductCategory } from '@/hooks/useProducts';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
@@ -8,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye, Inbox } from 'lucide-react';
+import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye, Inbox, Undo2 } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
 import UploadProductDialog from '@/components/UploadProductDialog';
 import {
@@ -88,9 +90,11 @@ interface SortableProductProps {
   onChangeBrand: (product: Product, newBrand: Brand) => void;
   onChangeCategory: (product: Product, newCategory: ProductCategory) => void;
   onChangeVisibility: (product: Product, state: Partial<VisibilityState>) => void;
+  onReturnToSubmissions: (product: Product) => void;
 }
 
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeCategory, onChangeVisibility }: SortableProductProps) => {
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeCategory, onChangeVisibility, onReturnToSubmissions }: SortableProductProps) => {
+
   const {
     attributes,
     listeners,
@@ -150,6 +154,16 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
               >
                 <Images className="w-4 h-4" />
               </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onReturnToSubmissions(product)}
+                title="Devolver a subidas (recupera las fotos originales)"
+              >
+                <Undo2 className="w-4 h-4" />
+              </Button>
+
               <Switch
                 checked={product.isActive}
                 onCheckedChange={() => onToggleActive(product)}
@@ -354,6 +368,39 @@ const Admin = () => {
     }
   };
 
+  const handleReturnToSubmissions = async (product: Product) => {
+    const { data, error } = await supabase
+      .from('outfit_submissions')
+      .select('id')
+      .eq('published_product_id', product.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      toast.error('Error al buscar la subida original');
+      return;
+    }
+    if (!data) {
+      toast.error('Esta prenda no tiene fotos originales guardadas');
+      return;
+    }
+    if (!confirm('¿Devolver esta prenda a Subidas? Se borrará el producto publicado y sus fotos finales, recuperando las fotos originales del dueño.')) return;
+
+    try {
+      const { error: updateError } = await supabase
+        .from('outfit_submissions')
+        .update({ reviewed: false, published_product_id: null, published_at: null })
+        .eq('id', data.id);
+      if (updateError) throw updateError;
+
+      await deleteProduct.mutateAsync(product.id);
+      toast.success('Devuelta a Subidas con sus fotos originales');
+    } catch (err) {
+      console.error(err);
+      toast.error('No se pudo devolver a Subidas');
+    }
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate('/');
@@ -486,6 +533,7 @@ const Admin = () => {
                                 onChangeBrand={handleChangeBrand}
                                 onChangeCategory={handleChangeCategory}
                                 onChangeVisibility={handleChangeVisibility}
+                                onReturnToSubmissions={handleReturnToSubmissions}
                               />
                             ))}
                           </div>

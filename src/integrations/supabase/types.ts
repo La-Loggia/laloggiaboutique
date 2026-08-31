@@ -44,6 +44,8 @@ export type Database = {
           full_outfit_image_urls: string[]
           id: string
           notes: string | null
+          published_at: string | null
+          published_product_id: string | null
           reviewed: boolean
           source_url: string | null
           top_image_url: string | null
@@ -57,6 +59,8 @@ export type Database = {
           full_outfit_image_urls?: string[]
           id?: string
           notes?: string | null
+          published_at?: string | null
+          published_product_id?: string | null
           reviewed?: boolean
           source_url?: string | null
           top_image_url?: string | null
@@ -70,6 +74,8 @@ export type Database = {
           full_outfit_image_urls?: string[]
           id?: string
           notes?: string | null
+          published_at?: string | null
+          published_product_id?: string | null
           reviewed?: boolean
           source_url?: string | null
           top_image_url?: string | null

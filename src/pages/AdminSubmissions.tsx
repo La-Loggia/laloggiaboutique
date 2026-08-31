@@ -117,15 +117,30 @@ const AdminSubmissions = () => {
   const handlePublished = async (newProduct: Product) => {
     if (!publishing) return;
     try {
-      await cleanupSubmission(publishing);
-      setItems((prev) => prev.filter((i) => i.id !== publishing.id));
+      // Keep the original owner photos: archive the submission instead of deleting it,
+      // so the product can be sent back to "Subidas" later with its original images.
+      const { error } = await supabase
+        .from('outfit_submissions')
+        .update({
+          reviewed: true,
+          published_product_id: newProduct.id,
+          published_at: new Date().toISOString(),
+        })
+        .eq('id', publishing.id);
+      if (error) throw error;
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === publishing.id ? { ...i, reviewed: true } : i
+        )
+      );
       if (detail?.id === publishing.id) setDetail(null);
     } catch (err) {
-      console.error('No se pudieron limpiar las fotos originales', err);
+      console.error('No se pudo archivar la subida', err);
     }
     // Open image manager directly so admin can attach additional photos
     setManagingNewProduct(newProduct);
   };
+
 
   const deletePhotoFromSubmission = async (item: Submission, url: string) => {
     if (!confirm('¿Eliminar esta foto?')) return;
