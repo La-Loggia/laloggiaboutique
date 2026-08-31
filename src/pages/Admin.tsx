@@ -152,6 +152,16 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
               >
                 <Images className="w-4 h-4" />
               </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onReturnToSubmissions(product)}
+                title="Devolver a subidas (recupera las fotos originales)"
+              >
+                <Undo2 className="w-4 h-4" />
+              </Button>
+
               <Switch
                 checked={product.isActive}
                 onCheckedChange={() => onToggleActive(product)}
