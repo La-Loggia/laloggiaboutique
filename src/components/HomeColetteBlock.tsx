@@ -54,23 +54,21 @@ const HomeColetteBlock = () => {
           Colette Paris, nueva marca en La Loggia
         </h2>
 
-        <p className="mt-8 font-serif text-lg md:text-2xl font-light leading-relaxed text-background">
-          Elegancia parisina, ya disponible en La Loggia
-        </p>
-
-        <p className="mx-auto mt-4 max-w-xl font-sans text-xs md:text-sm leading-relaxed text-background/70">
-          Líneas depuradas, tejidos cuidados y ese aire francés atemporal.
-          Descubre la primera selección Colette Paris en nuestras boutiques de
-          Altea, San Juan y El Campello.
+        <p className="mt-10 font-serif text-2xl md:text-4xl font-light leading-tight text-background">
+          Acaba de llegar.<br className="hidden md:block" /> Aún no la has visto.
         </p>
 
         <Link
           to="/marca/colette"
-          className="group mt-9 inline-flex items-center gap-3 border border-background/50 px-7 py-3 text-[11px] tracking-[0.25em] uppercase text-background transition-colors duration-300 hover:bg-background hover:text-foreground"
+          className="group mt-10 inline-flex items-center gap-3 bg-background px-8 py-4 text-[11px] tracking-[0.25em] uppercase text-foreground transition-all duration-300 hover:bg-background/90"
         >
-          Ver Colette Paris
+          Descubrir ahora
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
+
+        <p className="mt-6 font-sans text-[10px] tracking-[0.2em] uppercase text-background/50">
+          Stock limitado · Solo en tienda y online
+        </p>
       </div>
     </section>
   );
