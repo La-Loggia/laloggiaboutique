@@ -5,6 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon, X } from 'lucide-react';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
