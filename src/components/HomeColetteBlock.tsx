@@ -44,7 +44,7 @@ const HomeColetteBlock = () => {
           <img
             src={coletteAsset.url}
             alt="Colette Paris, nueva marca de moda francesa en La Loggia"
-            className="h-[110px] md:h-[150px] w-auto object-contain"
+            className="h-[110px] md:h-[150px] w-auto object-contain rounded-2xl"
             loading="lazy"
             decoding="async"
           />
