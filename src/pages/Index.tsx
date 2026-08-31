@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import BrandMarquee from '@/components/BrandMarquee';
 import HomeLatestPreview from '@/components/HomeLatestPreview';
 import HomeBrandsBlock from '@/components/HomeBrandsBlock';
+import HomeColetteBlock from '@/components/HomeColetteBlock';
 import HomeBolsosBlock from '@/components/HomeBolsosBlock';
 import VisitSection from '@/components/VisitSection';
 import ImageViewer from '@/components/ImageViewer';
@@ -74,6 +75,8 @@ const Index = () => {
             Descubrir la moda italiana
           </Link>
         </header>
+
+        <HomeColetteBlock />
 
         <LocalSEOContent />
 
