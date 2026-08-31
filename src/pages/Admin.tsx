@@ -88,9 +88,11 @@ interface SortableProductProps {
   onChangeBrand: (product: Product, newBrand: Brand) => void;
   onChangeCategory: (product: Product, newCategory: ProductCategory) => void;
   onChangeVisibility: (product: Product, state: Partial<VisibilityState>) => void;
+  onReturnToSubmissions: (product: Product) => void;
 }
 
-const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeCategory, onChangeVisibility }: SortableProductProps) => {
+const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, onReplaceImage, onChangeBrand, onChangeCategory, onChangeVisibility, onReturnToSubmissions }: SortableProductProps) => {
+
   const {
     attributes,
     listeners,
