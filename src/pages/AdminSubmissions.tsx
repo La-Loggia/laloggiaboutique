@@ -5,6 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon, X } from 'lucide-react';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
@@ -167,7 +169,22 @@ const AdminSubmissions = () => {
     }
   };
 
+  const updateBrand = async (item: Submission, brand: Brand | null) => {
+    const { error } = await supabase
+      .from('outfit_submissions')
+      .update({ brand })
+      .eq('id', item.id);
+    if (error) {
+      console.error(error);
+      return toast.error('No se pudo cambiar la marca');
+    }
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, brand } : i)));
+    setDetail((prev) => (prev && prev.id === item.id ? { ...prev, brand } : prev));
+    toast.success('Marca actualizada');
+  };
+
   const visible = items.filter((i) => (filter === 'pending' ? !i.reviewed : true));
+
 
   const allGroups = (item: Submission) => [
     { label: 'Arriba', urls: collectUrls(item.top_image_urls, item.top_image_url) },
@@ -291,6 +308,28 @@ const AdminSubmissions = () => {
                     <span className="text-amber-600">Pendiente</span>
                   )}
                 </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-wider text-muted-foreground">Marca</label>
+                  <Select
+                    value={detail.brand ?? 'none'}
+                    onValueChange={(v) => updateBrand(detail, v === 'none' ? null : (v as Brand))}
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Sin marca" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[100] bg-background">
+                      <SelectItem value="none">Sin marca</SelectItem>
+                      {(Object.keys(brandDisplayNames) as Brand[]).map((b) => (
+                        <SelectItem key={b} value={b}>
+                          {brandDisplayNames[b]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+
 
                 {groups.map((g) => (
                   <div key={g.label} className="space-y-2">
