@@ -309,6 +309,28 @@ const AdminSubmissions = () => {
                   )}
                 </div>
 
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-wider text-muted-foreground">Marca</label>
+                  <Select
+                    value={detail.brand ?? 'none'}
+                    onValueChange={(v) => updateBrand(detail, v === 'none' ? null : (v as Brand))}
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Sin marca" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[100] bg-background">
+                      <SelectItem value="none">Sin marca</SelectItem>
+                      {(Object.keys(brandDisplayNames) as Brand[]).map((b) => (
+                        <SelectItem key={b} value={b}>
+                          {brandDisplayNames[b]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+
+
                 {groups.map((g) => (
                   <div key={g.label} className="space-y-2">
                     <h3 className="text-xs uppercase tracking-wider text-muted-foreground">
