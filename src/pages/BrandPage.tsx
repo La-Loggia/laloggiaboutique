@@ -21,6 +21,7 @@ import jottLogo from '@/assets/logo-jott.png';
 import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 import vicoloLogo from '@/assets/logo-vicolo.png';
 import riveGaucheLogo from '@/assets/logo-rivegauche.png';
+import coletteLogo from '@/assets/logo-colette.png';
 
 const brandLogos: Record<Brand, { src: string; height: string }> = {
   'MOOR': { src: moorLogo, height: 'h-[72px]' },
@@ -35,6 +36,14 @@ const brandLogos: Record<Brand, { src: string; height: string }> = {
   'LolaCasademunt': { src: lolaCasademuntLogo, height: 'h-[72px]' },
   'Vicolo': { src: vicoloLogo, height: 'h-[72px]' },
   'RiveGauche': { src: riveGaucheLogo, height: 'h-[60px]' },
+  'Colette': { src: coletteLogo, height: 'h-[60px]' },
+  'Colette': {
+    title: 'Colette Paris | Moda Femenina Francesa en La Loggia Alicante',
+    description: 'Colette Paris en La Loggia. Moda femenina francesa con estilo parisino, elegante y actual. Prendas Colette para mujer en Altea, San Juan y Campello.',
+    h1: 'Colette Paris \u2013 Moda femenina francesa en La Loggia',
+    origin: 'Par\u00eds, Francia',
+    style: 'Colette Paris es una firma francesa de moda femenina que refleja el esp\u00edritu parisino: elegancia natural, l\u00edneas depuradas y un estilo atemporal con un toque contempor\u00e1neo. Sus colecciones destacan por tejidos cuidados, siluetas favorecedoras y una paleta sobria que facilita combinar cada prenda en el d\u00eda a d\u00eda. En La Loggia seleccionamos moda Colette Paris para mujer pensando en clientas que buscan prendas vers\u00e1tiles, femeninas y con un acabado refinado, perfectas tanto para looks diarios como para ocasiones especiales. La marca combina la tradici\u00f3n del pr\u00eat-\u00e0-porter franc\u00e9s con una lectura actual de la elegancia, ofreciendo vestidos, blusas, punto y prendas exteriores con identidad propia.'
+  },
 };
 
 // SEO-optimized brand metadata
@@ -151,6 +160,7 @@ const BrandPage = () => {
     'vicolo': 'Vicolo',
     'rivegauche': 'RiveGauche',
     'rive-gauche': 'RiveGauche',
+    'colette': 'Colette',
   };
 
   const brand = brandSlug ? brandMap[brandSlug.toLowerCase()] : null;
