@@ -21,6 +21,7 @@ import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
 import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 import logoRiveGauche from '@/assets/logo-rivegauche.png';
+import coletteLogo from '@/assets/logo-colette.png';
 
 import dixieLogo from '@/assets/logo-dixie.png';
 import saintTropezLogo from '@/assets/logo-sainttropez.png';
@@ -82,6 +83,7 @@ const brandLogos: Record<Brand, string> = {
   'LolaCasademunt': logoLolaCasademunt,
   'Vicolo': vicoloLogo,
   'RiveGauche': logoRiveGauche,
+  'Colette': coletteLogo,
 };
 
 const getBrandSlug = (brand: Brand): string => {

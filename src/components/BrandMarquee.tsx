@@ -10,6 +10,7 @@ import jottLogo from '@/assets/logo-jott.png';
 import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 import vicoloLogo from '@/assets/logo-vicolo.png';
 import riveGaucheLogo from '@/assets/logo-rivegauche.png';
+import coletteLogo from '@/assets/logo-colette.png';
 
 // Logos with optical height adjustments for visual balance (~60px base)
 const brandLogos = [
@@ -25,6 +26,7 @@ const brandLogos = [
   { src: lolaCasademuntLogo, alt: 'Lola Casademunt', height: 'h-[50px]' },
   { src: vicoloLogo, alt: 'Vicolo', height: 'h-[50px]' },
   { src: riveGaucheLogo, alt: 'Rive Gauche', height: 'h-[50px]' },
+  { src: coletteLogo, alt: 'Colette Paris', height: 'h-[54px]' },
 ];
 
 const BrandMarquee = () => {

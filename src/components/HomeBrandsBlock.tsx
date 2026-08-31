@@ -14,6 +14,7 @@ import logoJott from '@/assets/logo-jott.png';
 import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 import logoVicolo from '@/assets/logo-vicolo.png';
 import logoRiveGauche from '@/assets/logo-rivegauche.png';
+import logoColette from '@/assets/logo-colette.png';
 
 // Logos with responsive heights (smaller on mobile, larger on desktop)
 const brandLogos: Record<Brand, { src: string; heightMobile: string; heightDesktop: string }> = {
@@ -29,6 +30,7 @@ const brandLogos: Record<Brand, { src: string; heightMobile: string; heightDeskt
   LolaCasademunt: { src: logoLolaCasademunt, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   Vicolo: { src: logoVicolo, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   RiveGauche: { src: logoRiveGauche, heightMobile: 'h-[55px]', heightDesktop: 'md:h-[80px]' },
+  Colette: { src: logoColette, heightMobile: 'h-[72px]', heightDesktop: 'md:h-[105px]' },
 };
 
 const getBrandSlug = (brand: Brand): string => {
