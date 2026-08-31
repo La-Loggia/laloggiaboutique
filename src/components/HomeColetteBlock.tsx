@@ -29,7 +29,7 @@ const HomeColetteBlock = () => {
         className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-background/10 blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-3xl px-6 py-14 md:py-20 text-center">
+      <div className="relative mx-auto max-w-3xl px-6 py-8 md:py-12 text-center">
         {/* Eyebrow */}
         <div className="flex items-center justify-center gap-3">
           <span className="h-px w-8 bg-background/40" />
@@ -40,11 +40,11 @@ const HomeColetteBlock = () => {
         </div>
 
         {/* Logo */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-4 flex justify-center">
           <img
             src={coletteAsset.url}
             alt="Colette Paris, nueva marca de moda francesa en La Loggia"
-            className="h-[110px] md:h-[150px] w-auto object-contain rounded-2xl"
+            className="h-[100px] md:h-[130px] w-auto object-contain rounded-2xl"
             loading="lazy"
             decoding="async"
           />
@@ -54,19 +54,19 @@ const HomeColetteBlock = () => {
           Colette Paris, nueva marca en La Loggia
         </h2>
 
-        <p className="mt-10 font-serif text-2xl md:text-4xl font-light leading-tight text-background">
+        <p className="mt-5 font-serif text-2xl md:text-4xl font-light leading-tight text-background">
           Solo si te atreves a ser unica
         </p>
 
         <Link
           to="/marca/colette"
-          className="group mt-10 inline-flex items-center gap-3 bg-background px-8 py-4 text-[11px] tracking-[0.25em] uppercase text-foreground transition-all duration-300 hover:bg-background/90"
+          className="group mt-5 inline-flex items-center gap-3 bg-background px-8 py-4 text-[11px] tracking-[0.25em] uppercase text-foreground transition-all duration-300 hover:bg-background/90"
         >
           Descubrir ahora
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
 
-        <p className="mt-6 font-sans text-[10px] tracking-[0.2em] uppercase text-background/50">
+        <p className="mt-3 font-sans text-[10px] tracking-[0.2em] uppercase text-background/50">
           solo en la loggia
         </p>
       </div>
