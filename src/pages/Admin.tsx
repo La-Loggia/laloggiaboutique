@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+
 import { useAllProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useUpdateProductOrder, Product, ProductCategory } from '@/hooks/useProducts';
 import { brands, Brand } from '@/data/products';
 import { Button } from '@/components/ui/button';
