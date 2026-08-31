@@ -167,7 +167,22 @@ const AdminSubmissions = () => {
     }
   };
 
+  const updateBrand = async (item: Submission, brand: Brand | null) => {
+    const { error } = await supabase
+      .from('outfit_submissions')
+      .update({ brand })
+      .eq('id', item.id);
+    if (error) {
+      console.error(error);
+      return toast.error('No se pudo cambiar la marca');
+    }
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, brand } : i)));
+    setDetail((prev) => (prev && prev.id === item.id ? { ...prev, brand } : prev));
+    toast.success('Marca actualizada');
+  };
+
   const visible = items.filter((i) => (filter === 'pending' ? !i.reviewed : true));
+
 
   const allGroups = (item: Submission) => [
     { label: 'Arriba', urls: collectUrls(item.top_image_urls, item.top_image_url) },
