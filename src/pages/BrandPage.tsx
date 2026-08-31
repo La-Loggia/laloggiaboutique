@@ -124,6 +124,13 @@ const brandSEO: Record<Brand, {
     origin: 'Italia',
     style: 'Vicolo es una marca italiana de moda femenina reconocida por su estilo contemporáneo, urbano y actual. Nacida en Italia, Vicolo destaca por sus colecciones pensadas para mujeres que buscan moda italiana con carácter, tendencia y personalidad. Las prendas Vicolo para mujer combinan diseños modernos con siluetas cuidadas, ofreciendo una amplia variedad de vestidos, conjuntos, blazers, pantalones, tops y prendas versátiles para el día a día. Su estética refleja el equilibrio entre moda urbana y elegancia italiana, convirtiendo cada colección en una referencia dentro del prêt-à-porter femenino italiano. En La Loggia seleccionamos moda Vicolo para mujer siguiendo la esencia de la marca: prendas actuales, femeninas y con un marcado estilo italiano. Apostamos por Vicolo como una de nuestras firmas italianas más reconocidas, ideal para mujeres que buscan moda italiana moderna y con identidad propia.'
   },
+  'Colette': {
+    title: 'Colette Paris | Moda Femenina Francesa en La Loggia Alicante',
+    description: 'Colette Paris en La Loggia. Moda femenina francesa con estilo parisino, elegante y actual. Prendas Colette para mujer en Altea, San Juan y Campello.',
+    h1: 'Colette Paris – Moda femenina francesa en La Loggia',
+    origin: 'París, Francia',
+    style: 'Colette Paris es una firma francesa de moda femenina que refleja el espíritu parisino: elegancia natural, líneas depuradas y un estilo atemporal con un toque contemporáneo. Sus colecciones destacan por tejidos cuidados, siluetas favorecedoras y una paleta sobria que facilita combinar cada prenda en el día a día. En La Loggia seleccionamos moda Colette Paris para mujer pensando en clientas que buscan prendas versátiles, femeninas y con un acabado refinado, perfectas tanto para looks diarios como para ocasiones especiales. La marca combina la tradición del prêt-à-porter francés con una lectura actual de la elegancia, ofreciendo vestidos, blusas, punto y prendas exteriores con identidad propia.'
+  },
   'RiveGauche': {
     title: 'Rive Gauche | Bolsos para Mujer en La Loggia Alicante',
     description: 'Bolsos Rive Gauche en La Loggia. Diseño francés con espíritu parisino para mujer. Bolsos en Altea, San Juan y Campello.',
