@@ -231,6 +231,58 @@ export const useRestoreProducts = () => {
   });
 };
 
+export const useSaleProducts = () => {
+  return useQuery({
+    queryKey: ['products', 'sale'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .eq('on_sale', true)
+        .is('deleted_at', null)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
+export const useSetProductsSale = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ ids, onSale }: { ids: string[]; onSale: boolean }) => {
+      const { error } = await supabase.rpc('set_products_sale' as never, { _ids: ids, _on_sale: onSale } as never);
+      if (error) throw error;
+      return ids.length;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+};
+
+export const useReorderProducts = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (items: { id: string; displayOrder: number }[]) => {
+      const { error } = await supabase.rpc('reorder_products' as never, {
+        _ids: items.map((i) => i.id),
+        _orders: items.map((i) => i.displayOrder),
+      } as never);
+      if (error) throw error;
+      return items.length;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+};
+
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   
