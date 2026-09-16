@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { brands, Brand } from '@/data/products';
 import { brandDisplayNames } from '@/lib/brandUtils';
-import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft, History, Trash2 } from 'lucide-react';
+import { Camera, Check, Loader2, X, Plus, Image as ImageIcon, Link2, Shirt, ArrowLeft, History, Trash2, Tag, Move } from 'lucide-react';
 import SubmissionsHistory from '@/components/SubmissionsHistory';
 import { toast } from 'sonner';
 import {
@@ -505,6 +505,36 @@ const UploadOutfit = () => {
               <div>
                 <p className="font-medium text-sm">Eliminar productos antiguos</p>
                 <p className="text-xs text-muted-foreground">Quita prendas de la web; se guardan 30 días por si acaso</p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="/subirprenda/rebajas"
+            className="block w-full rounded-xl border-2 border-sale bg-sale/5 p-4 text-left transition-colors hover:bg-sale/10"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sale text-sale-foreground">
+                <Tag className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm text-sale">Marcar productos de rebajas</p>
+                <p className="text-xs text-muted-foreground">Ponles la banda roja de rebajas y pásalos a la sección</p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="/subirprenda/mover"
+            className="block w-full rounded-xl border border-border bg-background p-4 text-left transition-colors hover:bg-secondary/40"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground">
+                <Move className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Mover productos de posición</p>
+                <p className="text-xs text-muted-foreground">Cambia el orden dentro de cada sección o marca</p>
               </div>
             </div>
           </a>

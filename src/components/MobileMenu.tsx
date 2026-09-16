@@ -50,6 +50,18 @@ const MobileMenu = () => {
             Moda italiana Alicante
           </Link>
 
+          {/* Rebajas */}
+          <Link
+            to="/rebajas"
+            onClick={handleLinkClick}
+            className="flex items-center justify-between px-6 py-3 text-sm tracking-[0.15em] uppercase text-sale hover:bg-muted/50 transition-colors border-t border-border/30 font-medium"
+          >
+            <span>Rebajas</span>
+            <span className="text-[9px] tracking-[0.1em] uppercase bg-sale text-sale-foreground px-2 py-0.5 rounded-full font-semibold">
+              Sale
+            </span>
+          </Link>
+
           {/* Novedades */}
           <Link 
             to="/novedades" 

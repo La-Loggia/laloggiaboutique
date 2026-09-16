@@ -6,6 +6,7 @@ import { getBrandDisplayName } from '@/lib/brandUtils';
 import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 import { useViewedProducts, seededShuffle } from '@/contexts/ViewedProductsContext';
 import WhatsAppButton from './WhatsAppButton';
+import SaleBadge from './SaleBadge';
 
 interface ImageViewerProps {
   product: Product;
