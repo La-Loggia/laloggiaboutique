@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { toast } from 'sonner';
 import { LogOut, Upload, Trash2, Plus, Images, Pencil, GripVertical, ChevronDown, ChevronRight, X, Eye, Inbox, Undo2 } from 'lucide-react';
 import ProductImageManager from '@/components/ProductImageManager';
+import TrashDialog from '@/components/TrashDialog';
 import UploadProductDialog from '@/components/UploadProductDialog';
 import {
   DndContext,
@@ -242,6 +243,7 @@ const Admin = () => {
   const [managingProduct, setManagingProduct] = useState<Product | null>(null);
   const [replacingProduct, setReplacingProduct] = useState<Product | null>(null);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [showTrash, setShowTrash] = useState(false);
   
   const { data: products, isLoading: productsLoading } = useAllProducts();
   const updateProduct = useUpdateProduct();
@@ -454,6 +456,15 @@ const Admin = () => {
               Subidas
             </Button>
             <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowTrash(true)}
+              title="Prendas eliminadas (se guardan 30 días)"
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Papelera
+            </Button>
+            <Button
               onClick={() => setShowUploadDialog(true)}
               className="bg-foreground text-background hover:bg-foreground/90"
               size="sm"
@@ -549,6 +560,8 @@ const Admin = () => {
       </main>
 
       <UploadProductDialog open={showUploadDialog} onClose={() => setShowUploadDialog(false)} />
+
+      <TrashDialog open={showTrash} onClose={() => setShowTrash(false)} />
 
       {managingProduct && (
         <ProductImageManager
