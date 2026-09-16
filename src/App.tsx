@@ -19,6 +19,9 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminSubmissions from "./pages/AdminSubmissions";
 import UploadOutfit from "./pages/UploadOutfit";
 import DeleteProducts from "./pages/DeleteProducts";
+import MarkSaleProducts from "./pages/MarkSaleProducts";
+import MoveProducts from "./pages/MoveProducts";
+import SaleProducts from "./pages/SaleProducts";
 import NotFound from "./pages/NotFound";
 import ModaItalianaAlicante from "./pages/ModaItalianaAlicante";
 
@@ -47,7 +50,10 @@ const App = () => (
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/subidas" element={<AdminSubmissions />} />
               <Route path="/subirprenda" element={<UploadOutfit />} />
+              <Route path="/rebajas" element={<SaleProducts />} />
               <Route path="/subirprenda/eliminar" element={<DeleteProducts />} />
+              <Route path="/subirprenda/rebajas" element={<MarkSaleProducts />} />
+              <Route path="/subirprenda/mover" element={<MoveProducts />} />
               <Route path="/subirprendas" element={<Navigate to="/subirprenda" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

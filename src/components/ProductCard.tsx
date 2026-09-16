@@ -1,6 +1,7 @@
 import { Product } from '@/hooks/useProducts';
 import { getBrandDisplayName } from '@/lib/brandUtils';
 import OptimizedImage from './OptimizedImage';
+import SaleBadge from './SaleBadge';
 
 interface ProductCardProps {
   product: Product;
@@ -50,6 +51,7 @@ const ProductCard = ({ product, onClick, index, featured = false, hideBrandName 
       onClick={onClick}
     >
       <div className={`relative overflow-hidden bg-secondary ${featured ? 'aspect-[9/16]' : 'aspect-[9/16]'}`}>
+        {product.onSale && <SaleBadge />}
         <OptimizedImage
           src={product.imageUrl}
           alt={altText}
