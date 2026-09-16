@@ -561,6 +561,8 @@ const Admin = () => {
 
       <UploadProductDialog open={showUploadDialog} onClose={() => setShowUploadDialog(false)} />
 
+      <TrashDialog open={showTrash} onClose={() => setShowTrash(false)} />
+
       {managingProduct && (
         <ProductImageManager
           product={managingProduct}
