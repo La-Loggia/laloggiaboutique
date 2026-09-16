@@ -6,6 +6,7 @@ import { getBrandDisplayName } from '@/lib/brandUtils';
 import { getOptimizedImageUrl, getThumbnailUrl } from '@/lib/imageOptimization';
 import { useViewedProducts, seededShuffle } from '@/contexts/ViewedProductsContext';
 import WhatsAppButton from './WhatsAppButton';
+import SaleBadge from './SaleBadge';
 
 interface ImageViewerProps {
   product: Product;
@@ -279,10 +280,11 @@ const ImageViewer = ({ product, onClose, onProductClick }: ImageViewerProps) => 
 
             {/* Main image - fixed height container to prevent layout shift */}
             <div 
-              className="flex-1 flex justify-center items-start h-[60vh] md:h-[70vh]"
+              className="relative flex-1 flex justify-center items-start h-[60vh] md:h-[70vh]"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
+              {product.onSale && <SaleBadge />}
               <img
                 src={getOptimizedImageUrl(allImages[currentIndex], { width: 800, quality: 85 })}
                 alt={`Prenda de ${product.brand ? getBrandDisplayName(product.brand) : 'Espacio Jeans'}`}

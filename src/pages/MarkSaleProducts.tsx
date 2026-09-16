@@ -1,46 +1,42 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckSquare, Loader2, Trash2, X } from 'lucide-react';
+import { ArrowLeft, CheckSquare, Loader2, Tag, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import ProductScopePicker from '@/components/ProductScopePicker';
 import SaleBadge from '@/components/SaleBadge';
-import { useActiveProducts, useSoftDeleteProducts, Product } from '@/hooks/useProducts';
+import { useActiveProducts, useSetProductsSale } from '@/hooks/useProducts';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { ProductScope, filterByScope, scopeLabel } from '@/lib/productScopes';
 
-const DeleteProducts = () => {
+const MarkSaleProducts = () => {
   const navigate = useNavigate();
   const { data: products = [], isLoading } = useActiveProducts();
-  const softDelete = useSoftDeleteProducts();
+  const setSale = useSetProductsSale();
 
   const [scope, setScope] = useState<ProductScope | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
-  const [confirming, setConfirming] = useState<Product | null>(null);
 
   const list = useMemo(() => (scope ? filterByScope(products, scope) : []), [products, scope]);
-  const selectedCount = selected.length;
-
-  const toggle = (id: string) =>
-    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
   const exitSelectMode = () => {
     setSelectMode(false);
     setSelected([]);
   };
 
-  const deleteIds = async (ids: string[]) => {
+  const apply = async (ids: string[], onSale: boolean) => {
     try {
-      await softDelete.mutateAsync(ids);
+      await setSale.mutateAsync({ ids, onSale });
       toast.success(
-        ids.length === 1 ? 'Prenda eliminada (se guarda 30 días)' : `${ids.length} prendas eliminadas (se guardan 30 días)`
+        onSale
+          ? ids.length === 1 ? 'Prenda marcada en rebajas' : `${ids.length} prendas marcadas en rebajas`
+          : ids.length === 1 ? 'Prenda fuera de rebajas' : `${ids.length} prendas fuera de rebajas`
       );
-      setConfirming(null);
       exitSelectMode();
     } catch (err) {
       console.error(err);
-      toast.error('No se pudo eliminar. Inténtalo de nuevo.');
+      toast.error('No se pudo guardar. Inténtalo de nuevo.');
     }
   };
 
@@ -53,8 +49,10 @@ const DeleteProducts = () => {
     }
   };
 
+  const selectedCount = selected.length;
+
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background pb-32">
       <header className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b">
         <div className="flex items-center gap-2 px-4 py-3">
           <Button variant="ghost" size="icon" onClick={goBack} aria-label="Volver">
@@ -63,7 +61,7 @@ const DeleteProducts = () => {
           <div className="min-w-0">
             <h1 className="font-serif text-xl tracking-wide">LA LOGGIA</h1>
             <p className="truncate text-xs text-muted-foreground uppercase tracking-wider">
-              {scope ? `Eliminar · ${scopeLabel(scope)}` : 'Eliminar productos antiguos'}
+              {scope ? `Rebajas · ${scopeLabel(scope)}` : 'Marcar productos de rebajas'}
             </p>
           </div>
           {scope && (
@@ -90,15 +88,15 @@ const DeleteProducts = () => {
           <ProductScopePicker
             products={products}
             onSelect={setScope}
-            accent="destructive"
-            hint="Elige la sección o la marca desde donde quieres eliminar prendas."
+            accent="sale"
+            hint="Elige la sección o la marca y marca las prendas que entran en rebajas."
           />
         ) : list.length === 0 ? (
           <p className="text-center text-muted-foreground py-10">No hay prendas en {scopeLabel(scope)}.</p>
         ) : (
           <>
             <p className="text-center text-sm text-muted-foreground">
-              Pulsa una prenda para eliminarla. Se guarda 30 días por si hay que recuperarla.
+              Pulsa una prenda para ponerla o quitarla de rebajas. Aparecerá con la banda roja en la web.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {list.map((product) => {
@@ -107,9 +105,16 @@ const DeleteProducts = () => {
                   <button
                     key={product.id}
                     type="button"
-                    onClick={() => (selectMode ? toggle(product.id) : setConfirming(product))}
+                    disabled={setSale.isPending}
+                    onClick={() =>
+                      selectMode
+                        ? setSelected((prev) =>
+                            prev.includes(product.id) ? prev.filter((x) => x !== product.id) : [...prev, product.id]
+                          )
+                        : apply([product.id], !product.onSale)
+                    }
                     className={`relative block w-full overflow-hidden rounded-lg border text-left transition-all ${
-                      isSelected ? 'border-destructive ring-2 ring-destructive' : 'border-border'
+                      isSelected ? 'border-sale ring-2 ring-sale' : product.onSale ? 'border-sale/60' : 'border-border'
                     }`}
                   >
                     {product.onSale && <SaleBadge />}
@@ -118,12 +123,12 @@ const DeleteProducts = () => {
                       alt={product.brand ? brandDisplayNames[product.brand] || product.brand : 'Prenda'}
                       loading="lazy"
                       decoding="async"
-                      className="aspect-[9/16] w-full object-cover"
+                      className={`aspect-[9/16] w-full object-cover transition-opacity ${product.onSale ? '' : 'opacity-90'}`}
                     />
                     {selectMode && (
                       <span
                         className={`absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] ${
-                          isSelected ? 'bg-destructive text-destructive-foreground border-destructive' : 'bg-background/90 border-border'
+                          isSelected ? 'bg-sale text-sale-foreground border-sale' : 'bg-background/90 border-border'
                         }`}
                       >
                         {isSelected ? '✓' : ''}
@@ -142,49 +147,22 @@ const DeleteProducts = () => {
 
       {selectMode && selectedCount > 0 && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur p-4">
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md mx-auto flex gap-2">
             <Button
-              variant="destructive"
-              className="w-full h-12"
-              disabled={softDelete.isPending}
-              onClick={() => {
-                if (confirm(`¿Eliminar ${selectedCount} prenda(s)? Se guardarán 30 días.`)) deleteIds(selected);
-              }}
+              className="flex-1 h-12 bg-sale text-sale-foreground hover:bg-sale/90"
+              disabled={setSale.isPending}
+              onClick={() => apply(selected, true)}
             >
-              {softDelete.isPending ? (
-                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Eliminando…</>
-              ) : (
-                <><Trash2 className="h-4 w-4 mr-2" /> Eliminar {selectedCount} seleccionada(s)</>
-              )}
+              {setSale.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Tag className="h-4 w-4 mr-2" /> Poner en rebajas ({selectedCount})</>}
             </Button>
-          </div>
-        </div>
-      )}
-
-      {confirming && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-foreground/60 p-4">
-          <div className="w-full max-w-sm rounded-xl bg-background p-5 space-y-4">
-            <img
-              src={confirming.imageUrl}
-              alt=""
-              className="mx-auto aspect-[9/16] w-32 object-cover rounded-lg"
-            />
-            <p className="text-center text-sm">
-              ¿Eliminar esta prenda de la web? Se guardará 30 días por si hay que recuperarla.
-            </p>
-            <div className="flex gap-2">
-              <Button variant="outline" className="flex-1" onClick={() => setConfirming(null)}>
-                Cancelar
-              </Button>
-              <Button
-                variant="destructive"
-                className="flex-1"
-                disabled={softDelete.isPending}
-                onClick={() => deleteIds([confirming.id])}
-              >
-                {softDelete.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Eliminar'}
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              className="h-12"
+              disabled={setSale.isPending}
+              onClick={() => apply(selected, false)}
+            >
+              Quitar
+            </Button>
           </div>
         </div>
       )}
@@ -192,4 +170,4 @@ const DeleteProducts = () => {
   );
 };
 
-export default DeleteProducts;
+export default MarkSaleProducts;
