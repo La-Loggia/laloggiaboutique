@@ -493,6 +493,21 @@ const UploadOutfit = () => {
               </div>
             </div>
           </button>
+
+          <a
+            href="/subirprenda/eliminar"
+            className="block w-full rounded-xl border border-border bg-background p-4 text-left transition-colors hover:bg-secondary/40"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground">
+                <Trash2 className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Eliminar productos antiguos</p>
+                <p className="text-xs text-muted-foreground">Quita prendas de la web; se guardan 30 días por si acaso</p>
+              </div>
+            </div>
+          </a>
         </main>
         <SubmissionsHistory open={historyOpen} onClose={() => setHistoryOpen(false)} />
       </div>

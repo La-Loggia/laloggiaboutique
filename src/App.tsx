@@ -18,6 +18,7 @@ import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import AdminSubmissions from "./pages/AdminSubmissions";
 import UploadOutfit from "./pages/UploadOutfit";
+import DeleteProducts from "./pages/DeleteProducts";
 import NotFound from "./pages/NotFound";
 import ModaItalianaAlicante from "./pages/ModaItalianaAlicante";
 
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/subidas" element={<AdminSubmissions />} />
               <Route path="/subirprenda" element={<UploadOutfit />} />
+              <Route path="/subirprenda/eliminar" element={<DeleteProducts />} />
               <Route path="/subirprendas" element={<Navigate to="/subirprenda" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
