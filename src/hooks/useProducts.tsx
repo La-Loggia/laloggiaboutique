@@ -146,11 +146,67 @@ export const useAllProducts = () => {
       const { data, error } = await supabase
         .from('products')
         .select('*')
+        .is('deleted_at', null)
         .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
       
       if (error) throw error;
       return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
+export interface DeletedProduct extends Product {
+  deletedAt: Date;
+}
+
+export const useDeletedProducts = () => {
+  return useQuery({
+    queryKey: ['products', 'deleted'],
+    queryFn: async () => {
+      await supabase.rpc('purge_expired_deleted_products' as never);
+
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .not('deleted_at', 'is', null)
+        .order('deleted_at', { ascending: false });
+
+      if (error) throw error;
+      return (data as (RawProduct & { deleted_at: string })[]).map((raw) => ({
+        ...mapProduct(raw),
+        deletedAt: new Date(raw.deleted_at),
+      })) as DeletedProduct[];
+    },
+  });
+};
+
+export const useSoftDeleteProducts = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.rpc('soft_delete_products' as never, { _ids: ids } as never);
+      if (error) throw error;
+      return ids.length;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+};
+
+export const useRestoreProducts = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.rpc('restore_products' as never, { _ids: ids } as never);
+      if (error) throw error;
+      return ids.length;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
 };
