@@ -78,6 +78,23 @@ export const useProductImages = (productId: string) => {
   });
 };
 
+export const useActiveProducts = () => {
+  return useQuery({
+    queryKey: ['products', 'active-public'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return (data as RawProduct[]).map(mapProduct);
+    },
+  });
+};
+
 export const useLatestProducts = (limit?: number) => {
   return useQuery({
     queryKey: ['products', 'latest', limit],
