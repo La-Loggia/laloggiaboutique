@@ -15,6 +15,7 @@ interface RawProduct {
   show_in_section: boolean;
   show_in_brand: boolean;
   category: 'ropa' | 'bolsos';
+  on_sale?: boolean;
 }
 
 const mapProduct = (raw: RawProduct): Product => ({
@@ -29,6 +30,7 @@ const mapProduct = (raw: RawProduct): Product => ({
   showInSection: raw.show_in_section,
   showInBrand: raw.show_in_brand,
   category: raw.category,
+  onSale: raw.on_sale ?? false,
 });
 
 export type BolsoBrand = 'Replay' | 'RueMadam' | 'LolaCasademunt' | 'RiveGauche';
