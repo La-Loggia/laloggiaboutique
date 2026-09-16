@@ -45,7 +45,7 @@ const MoveProducts = () => {
   const nudge = (id: string, delta: number) => {
     const from = order.findIndex((p) => p.id === id);
     if (from === -1) return;
-    moveToIndex(id, from + delta > from ? from + delta : from + delta);
+    moveToIndex(id, from + delta);
   };
 
   const save = async () => {
