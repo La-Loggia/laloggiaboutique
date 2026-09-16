@@ -126,6 +126,7 @@ export type Database = {
           id: string
           image_url: string
           is_active: boolean
+          on_sale: boolean
           show_in_brand: boolean
           show_in_latest: boolean
           show_in_section: boolean
@@ -141,6 +142,7 @@ export type Database = {
           id?: string
           image_url: string
           is_active?: boolean
+          on_sale?: boolean
           show_in_brand?: boolean
           show_in_latest?: boolean
           show_in_section?: boolean
@@ -156,6 +158,7 @@ export type Database = {
           id?: string
           image_url?: string
           is_active?: boolean
+          on_sale?: boolean
           show_in_brand?: boolean
           show_in_latest?: boolean
           show_in_section?: boolean
@@ -203,7 +206,15 @@ export type Database = {
       }
       increment_all_product_orders: { Args: never; Returns: undefined }
       purge_expired_deleted_products: { Args: never; Returns: number }
+      reorder_products: {
+        Args: { _ids: string[]; _orders: number[] }
+        Returns: number
+      }
       restore_products: { Args: { _ids: string[] }; Returns: number }
+      set_products_sale: {
+        Args: { _ids: string[]; _on_sale: boolean }
+        Returns: number
+      }
       soft_delete_products: { Args: { _ids: string[] }; Returns: number }
     }
     Enums: {
