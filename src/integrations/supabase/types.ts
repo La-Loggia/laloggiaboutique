@@ -121,6 +121,7 @@ export type Database = {
           campaign_id: string | null
           category: Database["public"]["Enums"]["product_category"]
           created_at: string
+          deleted_at: string | null
           display_order: number
           id: string
           image_url: string
@@ -135,6 +136,7 @@ export type Database = {
           campaign_id?: string | null
           category?: Database["public"]["Enums"]["product_category"]
           created_at?: string
+          deleted_at?: string | null
           display_order?: number
           id?: string
           image_url: string
@@ -149,6 +151,7 @@ export type Database = {
           campaign_id?: string | null
           category?: Database["public"]["Enums"]["product_category"]
           created_at?: string
+          deleted_at?: string | null
           display_order?: number
           id?: string
           image_url?: string
@@ -199,6 +202,9 @@ export type Database = {
         Returns: boolean
       }
       increment_all_product_orders: { Args: never; Returns: undefined }
+      purge_expired_deleted_products: { Args: never; Returns: number }
+      restore_products: { Args: { _ids: string[] }; Returns: number }
+      soft_delete_products: { Args: { _ids: string[] }; Returns: number }
     }
     Enums: {
       app_role: "admin"
