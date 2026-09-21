@@ -13,7 +13,7 @@ const HomeColetteBlock = () => {
     <section
       id="colette-nueva-marca"
       aria-labelledby="colette-heading"
-      className="relative bg-foreground text-background"
+      className="relative bg-foreground text-background md:bg-background md:text-foreground"
     >
       <h2 id="colette-heading" className="sr-only">
         Colette Paris, nueva marca en La Loggia
@@ -23,7 +23,7 @@ const HomeColetteBlock = () => {
       <Link
         to="/marca/colette"
         aria-label="Colette Paris, nueva firma — descubrir colección"
-        className="group hidden md:block"
+        className="group relative hidden md:block"
       >
         <img
           src={coletteBannerDesktop.url}
@@ -31,6 +31,15 @@ const HomeColetteBlock = () => {
           className="w-full h-auto object-cover transition-opacity duration-300 group-hover:opacity-95"
           loading="lazy"
           decoding="async"
+        />
+        {/* Difuminado hacia el fondo blanco de la web (arriba y abajo) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-background to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent"
         />
       </Link>
 
