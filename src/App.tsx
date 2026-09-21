@@ -58,6 +58,7 @@ const App = () => (
               <Route path="/subirprendas" element={<Navigate to="/subirprenda" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <RebajasIsland />
           </BrowserRouter>
         </TooltipProvider>
         </ViewedProductsProvider>
