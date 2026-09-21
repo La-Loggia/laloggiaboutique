@@ -12,6 +12,9 @@ const DELAY_MS = 6000;
 const AUTO_HIDE_MS = 30000;
 const CLIENT_PATH = "/clientas";
 
+/** Interruptor del aviso general de rebajas. Cámbialo a true para reactivarlo. */
+const GENERAL_ISLAND_ENABLED = false;
+
 /** Rutas internas donde el aviso no debe aparecer */
 const HIDDEN_PREFIXES = ["/admin", "/subirprenda"];
 
