@@ -97,16 +97,26 @@ const RebajasIsland = () => {
           size="icon"
           onClick={dismiss}
           aria-label="Cerrar aviso"
-          className="absolute right-3 top-3 z-10 text-sale-foreground hover:bg-sale-foreground/15 hover:text-sale-foreground"
+          className={
+            isClientPromotion
+              ? "absolute right-3 top-3 z-10 text-foreground hover:bg-foreground/10 hover:text-foreground"
+              : "absolute right-3 top-3 z-10 text-sale-foreground hover:bg-sale-foreground/15 hover:text-sale-foreground"
+          }
         >
           <X className="h-5 w-5" />
         </Button>
 
-        <div className="bg-sale px-6 pb-8 pt-9 text-center text-sale-foreground sm:px-10">
+        <div
+          className={
+            isClientPromotion
+              ? "bg-beige-warm px-6 pb-8 pt-9 text-center text-foreground sm:px-10"
+              : "bg-sale px-6 pb-8 pt-9 text-center text-sale-foreground sm:px-10"
+          }
+        >
           <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.3em]">
             {isClientPromotion ? "Una invitación de La Loggia" : "Selección especial"}
           </p>
-          <h2 className="font-serif text-5xl leading-none sm:text-6xl">
+          <h2 className={isClientPromotion ? "font-serif text-5xl leading-none text-accent sm:text-6xl" : "font-serif text-5xl leading-none sm:text-6xl"}>
             {isClientPromotion ? "Solo por ser clienta" : "Rebajas"}
           </h2>
         </div>
@@ -114,7 +124,7 @@ const RebajasIsland = () => {
         <div className="px-7 py-8 text-center sm:px-10 sm:py-9">
           {isClientPromotion ? (
             <>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sale">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
                 Tu promoción se ha activado
               </p>
               <div className="my-6 grid grid-cols-2 divide-x divide-border border-y border-border py-5">
