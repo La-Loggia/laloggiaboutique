@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import coletteBannerDesktop from '@/assets/colette-banner-desktop.webp.asset.json';
-import coletteBannerMobile from '@/assets/colette-banner-mobile.png.asset.json';
+import coletteBannerDesktop from '@/assets/colette-banner-desktop.webp';
+import coletteBannerMobile from '@/assets/colette-banner-mobile.webp';
 
 /**
  * Bloque de presentación de la nueva firma Colette Paris.
@@ -25,7 +25,7 @@ const HomeColetteBlock = () => {
         className="group relative hidden md:block"
       >
         <img
-          src={coletteBannerDesktop.url}
+          src={coletteBannerDesktop}
           alt="Colette Paris, nueva firma en La Loggia — el chic parisino, con alma italiana. Descubrir colección, solo en La Loggia"
           className="w-full h-auto object-cover transition-opacity duration-300 group-hover:opacity-95"
           loading="lazy"
@@ -49,7 +49,7 @@ const HomeColetteBlock = () => {
         className="group relative block md:hidden"
       >
         <img
-          src={coletteBannerMobile.url}
+          src={coletteBannerMobile}
           alt="Colette Paris, nueva firma en La Loggia — el chic parisino, con alma italiana. Descubrir colección, solo en La Loggia"
           className="w-full h-auto object-cover transition-opacity duration-300 group-active:opacity-95"
           loading="lazy"
