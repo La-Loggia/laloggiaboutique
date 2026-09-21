@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import coletteAsset from '@/assets/logo-colette.jpg.asset.json';
 import coletteBannerDesktop from '@/assets/colette-banner-desktop.webp.asset.json';
+import coletteBannerMobile from '@/assets/colette-banner-mobile.png.asset.json';
 
 /**
  * Bloque de presentación de la nueva firma Colette Paris.
- * - Escritorio: banner completo diseñado (imagen 1920x640) enlazado a la marca.
- * - Móvil: composición en banda oscura a ancho completo.
+ * - Escritorio: banner horizontal (1920x640) enlazado a la marca.
+ * - Móvil: banner cuadrado (1312x1199) enlazado a la marca.
  */
 const HomeColetteBlock = () => {
   return (
