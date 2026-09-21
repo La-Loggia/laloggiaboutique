@@ -116,7 +116,7 @@ const RebajasIsland = () => {
           <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.3em]">
             {isClientPromotion ? "Una invitación de La Loggia" : "Selección especial"}
           </p>
-          <h2 className={isClientPromotion ? "font-serif text-5xl leading-none text-accent sm:text-6xl" : "font-serif text-5xl leading-none sm:text-6xl"}>
+          <h2 className={isClientPromotion ? "font-serif text-4xl leading-none text-accent sm:text-5xl" : "font-serif text-4xl leading-none sm:text-5xl"}>
             {isClientPromotion ? "Solo por ser clienta" : "Rebajas"}
           </h2>
         </div>
