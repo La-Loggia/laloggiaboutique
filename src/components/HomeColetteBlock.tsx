@@ -12,7 +12,7 @@ const HomeColetteBlock = () => {
     <section
       id="colette-nueva-marca"
       aria-labelledby="colette-heading"
-      className="relative bg-foreground text-background md:bg-background md:text-foreground"
+      className="relative"
     >
       <h2 id="colette-heading" className="sr-only">
         Colette Paris, nueva marca en La Loggia
