@@ -29,6 +29,10 @@ const RebajasIsland = () => {
       setVisible(true);
       return;
     }
+    if (!GENERAL_ISLAND_ENABLED) {
+      setVisible(false);
+      return;
+    }
     if (pathname === "/rebajas") {
       setVisible(false);
       return;
