@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import coletteBannerDesktop from '@/assets/colette-banner-desktop.webp.asset.json';
-import coletteBannerMobile from '@/assets/colette-banner-mobile.png.asset.json';
+import coletteBannerDesktop from '@/assets/colette-banner-desktop.webp';
+import coletteBannerMobile from '@/assets/colette-banner-mobile.webp';
 
 /**
  * Bloque de presentación de la nueva firma Colette Paris.
