@@ -137,11 +137,11 @@ const RebajasIsland = () => {
             type="button"
             onClick={() => {
               dismiss();
-              navigate("/rebajas");
+              navigate(isClientPromotion ? "/novedades" : "/rebajas");
             }}
             className="h-12 w-full rounded-none bg-accent text-xs uppercase tracking-[0.18em] text-accent-foreground hover:bg-accent/90"
           >
-            Ver la sección de rebajas
+            {isClientPromotion ? "Ver novedades" : "Ver la sección de rebajas"}
             <ArrowRight className="h-4 w-4" />
           </Button>
 
