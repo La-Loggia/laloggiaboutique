@@ -24,6 +24,7 @@ import MoveProducts from "./pages/MoveProducts";
 import SaleProducts from "./pages/SaleProducts";
 import NotFound from "./pages/NotFound";
 import ModaItalianaAlicante from "./pages/ModaItalianaAlicante";
+import RebajasIsland from "@/components/RebajasIsland";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/subirprendas" element={<Navigate to="/subirprenda" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <RebajasIsland />
           </BrowserRouter>
         </TooltipProvider>
         </ViewedProductsProvider>
