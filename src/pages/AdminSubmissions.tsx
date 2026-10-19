@@ -210,11 +210,14 @@ const AdminSubmissions = () => {
   const visible = items.filter((i) => (filter === 'pending' ? !i.reviewed : true));
 
 
-  const allGroups = (item: Submission) => [
-    { label: 'Arriba', urls: collectUrls(item.top_image_urls, item.top_image_url) },
-    { label: 'Abajo', urls: collectUrls(item.bottom_image_urls, item.bottom_image_url) },
-    { label: 'Outfit', urls: collectUrls(item.full_outfit_image_urls, null) },
-  ].filter((g) => g.urls.length > 0);
+  const allGroups = (item: Submission) => {
+    const s = getSections(item);
+    return [
+      { label: 'Arriba', urls: s.top },
+      { label: 'Abajo', urls: s.bottom },
+      { label: 'Outfit', urls: s.full },
+    ].filter((g) => g.urls.length > 0);
+  };
 
   return (
     <div className="min-h-screen bg-background">
