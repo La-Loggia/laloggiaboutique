@@ -367,7 +367,7 @@ const UploadOutfit = () => {
         bottom_image_urls: bottomUrls,
         full_outfit_image_urls: fullUrls,
         top_image_url: topUrls[0] ?? null,
-        bottom_image_url: bottomUrls[0] ?? fullUrls[0] ?? topUrls[0] ?? '',
+        bottom_image_url: bottomUrls[0] ?? null,
         brand,
         notes: notes.trim() || null,
       });
@@ -399,7 +399,8 @@ const UploadOutfit = () => {
         full_outfit_image_urls: fullUrls,
         top_image_urls: [],
         bottom_image_urls: [],
-        bottom_image_url: fullUrls[0] ?? '',
+        top_image_url: null,
+        bottom_image_url: null,
         brand,
         notes: notes.trim() || null,
       });
