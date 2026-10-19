@@ -31,17 +31,26 @@ interface Submission {
   created_at: string;
 }
 
-const collectUrls = (arr: string[] | null, legacy: string | null): string[] => {
-  const list = Array.isArray(arr) ? [...arr] : [];
-  if (legacy && !list.includes(legacy)) list.unshift(legacy);
-  return list;
+// Returns each section's photos exactly as uploaded. The old single-photo
+// fields are only used for very old submissions that have no photo lists,
+// and a photo is never shown in more than one section.
+const getSections = (item: Submission) => {
+  const top = Array.isArray(item.top_image_urls) ? [...item.top_image_urls] : [];
+  const bottom = Array.isArray(item.bottom_image_urls) ? [...item.bottom_image_urls] : [];
+  const full = Array.isArray(item.full_outfit_image_urls) ? [...item.full_outfit_image_urls] : [];
+  if (top.length + bottom.length + full.length === 0) {
+    if (item.top_image_url) top.push(item.top_image_url);
+    if (item.bottom_image_url && item.bottom_image_url !== item.top_image_url) bottom.push(item.bottom_image_url);
+  }
+  const seen = new Set<string>();
+  const uniq = (l: string[]) => l.filter((u) => u && !seen.has(u) && (seen.add(u), true));
+  return { top: uniq(top), bottom: uniq(bottom), full: uniq(full) };
 };
 
-const collectAllSubmissionUrls = (item: Submission): string[] => [
-  ...collectUrls(item.top_image_urls, item.top_image_url),
-  ...collectUrls(item.bottom_image_urls, item.bottom_image_url),
-  ...collectUrls(item.full_outfit_image_urls, null),
-];
+const collectAllSubmissionUrls = (item: Submission): string[] => {
+  const s = getSections(item);
+  return [...s.top, ...s.bottom, ...s.full];
+};
 
 const extractSubmissionStoragePath = (url: string): string | null => {
   const marker = '/outfit-submissions/';
