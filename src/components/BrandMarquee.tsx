@@ -7,7 +7,6 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
-import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 import vicoloLogo from '@/assets/logo-vicolo.png';
 import riveGaucheLogo from '@/assets/logo-rivegauche.png';
 import coletteLogo from '@/assets/logo-colette.png';
@@ -23,7 +22,6 @@ const brandLogos = [
   { src: replayLogo, alt: 'Replay', height: 'h-[49px]' },
   { src: dixieLogo, alt: 'Dixie', height: 'h-[42px]' },
   { src: jottLogo, alt: 'JOTT', height: 'h-[50px]' },
-  { src: lolaCasademuntLogo, alt: 'Lola Casademunt', height: 'h-[50px]' },
   { src: vicoloLogo, alt: 'Vicolo', height: 'h-[50px]' },
   { src: riveGaucheLogo, alt: 'Rive Gauche', height: 'h-[50px]' },
   { src: coletteLogo, alt: 'Colette Paris', height: 'h-[54px]' },

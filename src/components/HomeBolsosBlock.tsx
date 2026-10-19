@@ -3,7 +3,6 @@ import { BolsoBrand } from '@/hooks/useBolsos';
 
 import bannerReplay from '@/assets/banner-replay.png';
 import bannerRueMadam from '@/assets/banner-ruemadam.png';
-import bannerLolaCasademunt from '@/assets/banner-lolacasademunt.png';
 import bannerRiveGauche from '@/assets/banner-rivegauche.png';
 
 interface BolsosBrandInfo {
@@ -25,12 +24,6 @@ const bolsosBrands: BolsosBrandInfo[] = [
     slug: 'rue-madam',
     banner: bannerRueMadam,
     displayName: 'Rue Madam Paris',
-  },
-  {
-    brand: 'LolaCasademunt',
-    slug: 'lola-casademunt',
-    banner: bannerLolaCasademunt,
-    displayName: 'Lola Casademunt',
   },
   {
     brand: 'RiveGauche',

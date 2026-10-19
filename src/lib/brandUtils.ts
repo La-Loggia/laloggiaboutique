@@ -14,7 +14,6 @@ export const brandDisplayNames: Record<Brand, string> = {
   'Replay': 'Replay',
   'RueMadam': 'Rue Madam',
   'JOTT': 'JOTT',
-  'LolaCasademunt': 'Lola Casademunt',
   'Vicolo': 'Vicolo',
   'RiveGauche': 'Rive Gauche',
   'Colette': 'Colette',

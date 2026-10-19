@@ -10,26 +10,23 @@ import {
 
 import replayLogo from '@/assets/logo-replay.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
-import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 import riveGaucheLogo from '@/assets/logo-rivegauche.png';
 
 interface BolsosBrandNavProps {
   activeBrand?: BolsoBrand | null;
 }
 
-const bolsoBrands: BolsoBrand[] = ['Replay', 'RueMadam', 'LolaCasademunt', 'RiveGauche'];
+const bolsoBrands: BolsoBrand[] = ['Replay', 'RueMadam', 'RiveGauche'];
 
 const brandLogos: Record<BolsoBrand, string> = {
   'Replay': replayLogo,
   'RueMadam': rueMadamLogo,
-  'LolaCasademunt': lolaCasademuntLogo,
   'RiveGauche': riveGaucheLogo,
 };
 
 const brandDisplayNames: Record<BolsoBrand, string> = {
   'Replay': 'Replay',
   'RueMadam': 'Rue Madam Paris',
-  'LolaCasademunt': 'Lola Casademunt',
   'RiveGauche': 'Rive Gauche',
 };
 
@@ -37,7 +34,6 @@ const getBrandSlug = (brand: BolsoBrand): string => {
   const slugMap: Record<BolsoBrand, string> = {
     'Replay': 'replay',
     'RueMadam': 'rue-madam',
-    'LolaCasademunt': 'lola-casademunt',
     'RiveGauche': 'rive-gauche',
   };
   return slugMap[brand];
