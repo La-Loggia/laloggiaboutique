@@ -19,7 +19,6 @@ import melaLogo from '@/assets/logo-mela.png';
 import pecattoLogo from '@/assets/logo-pecatto.png';
 import rueMadamLogo from '@/assets/logo-ruemadam.png';
 import jottLogo from '@/assets/logo-jott.png';
-import lolaCasademuntLogo from '@/assets/logo-lolacasademunt.png';
 import vicoloLogo from '@/assets/logo-vicolo.png';
 import riveGaucheLogo from '@/assets/logo-rivegauche.png';
 import coletteLogo from '@/assets/logo-colette.png';
@@ -38,7 +37,6 @@ const brandLogos: Record<Brand, string> = {
   'Replay': replayLogo,
   'RueMadam': rueMadamLogo,
   'JOTT': jottLogo,
-  'LolaCasademunt': lolaCasademuntLogo,
   'Vicolo': vicoloLogo,
   'RiveGauche': riveGaucheLogo,
   'Colette': coletteLogo,

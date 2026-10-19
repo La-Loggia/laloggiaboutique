@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     q: '¿Qué marcas italianas trabaja La Loggia?',
-    a: 'Trabajamos con firmas italianas como MOOR, Saint Tropez, DiLei, Mela, Pecatto, Dixie y Rue Madam, además de marcas europeas como Replay, JOTT y Lola Casademunt.',
+    a: 'Trabajamos con firmas italianas como MOOR, Saint Tropez, DiLei, Mela, Pecatto, Dixie y Rue Madam, además de marcas europeas como Replay y JOTT.',
   },
   {
     q: '¿Cuál es el estilo de la moda italiana que vendéis?',
@@ -111,7 +111,7 @@ const ModaItalianaAlicante = () => {
             Nuestra selección reúne firmas italianas como <strong>MOOR</strong>,{' '}
             <strong>Saint Tropez</strong>, <strong>DiLei</strong>, <strong>Mela</strong>,{' '}
             <strong>Pecatto</strong>, <strong>Dixie</strong> y <strong>Rue Madam</strong>, junto a
-            marcas europeas como Replay, JOTT y Lola Casademunt. Una mezcla equilibrada de artesanía
+            marcas europeas como Replay y JOTT. Una mezcla equilibrada de artesanía
             italiana y diseño mediterráneo, presente en cada una de nuestras tres boutiques.
           </p>
         </section>

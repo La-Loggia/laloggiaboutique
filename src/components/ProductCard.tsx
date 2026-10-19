@@ -22,7 +22,6 @@ const brandCategories: Record<string, string> = {
   'Replay': 'denim premium',
   'RueMadam': 'elegancia parisina',
   'JOTT': 'técnico de alta gama',
-  'LolaCasademunt': 'diseño español',
   'Vicolo': 'moda italiana',
 };
 

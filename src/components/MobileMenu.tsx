@@ -6,7 +6,7 @@ import { brands, Brand } from '@/data/products';
 import { getBrandDisplayName } from '@/lib/brandUtils';
 
 // Brands to exclude from "Marcas" section (they have their own categories)
-const excludedFromMarcas: Brand[] = ['LolaCasademunt', 'JOTT', 'RueMadam', 'Replay'];
+const excludedFromMarcas: Brand[] = ['JOTT', 'RueMadam', 'Replay'];
 
 // Filter brands for Marcas section
 const marcasBrands = brands.filter(brand => !excludedFromMarcas.includes(brand));
@@ -92,13 +92,6 @@ const MobileMenu = () => {
                   className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                 >
                   Rue Madam
-                </Link>
-                <Link 
-                  to="/bolsos/lola-casademunt" 
-                  onClick={handleLinkClick}
-                  className="block px-8 py-2.5 text-xs tracking-[0.1em] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Lola Casademunt
                 </Link>
                 <Link 
                   to="/bolsos/replay" 

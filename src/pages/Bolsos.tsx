@@ -14,12 +14,10 @@ import {
 
 import bannerReplay from '@/assets/banner-replay.png';
 import bannerRueMadam from '@/assets/banner-ruemadam.png';
-import bannerLolaCasademunt from '@/assets/banner-lolacasademunt.png';
 import bannerRiveGauche from '@/assets/banner-rivegauche.png';
 
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
-import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 import logoRiveGauche from '@/assets/logo-rivegauche.png';
 import coletteLogo from '@/assets/logo-colette.png';
 
@@ -53,12 +51,6 @@ const bolsosBrands: BolsosBrandInfo[] = [
     displayName: 'Rue Madam Paris',
   },
   {
-    brand: 'LolaCasademunt',
-    slug: 'lola-casademunt',
-    banner: bannerLolaCasademunt,
-    displayName: 'Lola Casademunt',
-  },
-  {
     brand: 'RiveGauche',
     slug: 'rive-gauche',
     banner: bannerRiveGauche,
@@ -67,7 +59,7 @@ const bolsosBrands: BolsosBrandInfo[] = [
 ];
 
 // Brands to show in "Ver más novedades" dropdown (exclude bolsos brands)
-const bolsoBrandNames: Brand[] = ['Replay', 'RueMadam', 'LolaCasademunt', 'RiveGauche'];
+const bolsoBrandNames: Brand[] = ['Replay', 'RueMadam', 'RiveGauche'];
 const novedadesBrands = brands.filter(brand => !bolsoBrandNames.includes(brand));
 
 const brandLogos: Record<Brand, string> = {
@@ -80,7 +72,6 @@ const brandLogos: Record<Brand, string> = {
   'Replay': logoReplay,
   'RueMadam': logoRueMadam,
   'JOTT': jottLogo,
-  'LolaCasademunt': logoLolaCasademunt,
   'Vicolo': vicoloLogo,
   'RiveGauche': logoRiveGauche,
   'Colette': coletteLogo,
@@ -102,7 +93,7 @@ const Bolsos = () => {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Bolsos para Mujer | La Loggia Alicante"
-        description="Bolsos de las mejores marcas en La Loggia. Replay, Rue Madam Paris y Lola Casademunt. Bolsos para mujer en Altea, San Juan y Campello."
+        description="Bolsos de las mejores marcas en La Loggia. Replay, Rue Madam Paris y Rive Gauche. Bolsos para mujer en Altea, San Juan y Campello."
         canonicalPath="/bolsos"
         breadcrumbs={breadcrumbs}
       />

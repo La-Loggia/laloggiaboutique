@@ -11,7 +11,6 @@ import logoDixie from '@/assets/logo-dixie.png';
 import logoReplay from '@/assets/logo-replay.png';
 import logoRueMadam from '@/assets/logo-ruemadam.png';
 import logoJott from '@/assets/logo-jott.png';
-import logoLolaCasademunt from '@/assets/logo-lolacasademunt.png';
 import logoVicolo from '@/assets/logo-vicolo.png';
 import logoRiveGauche from '@/assets/logo-rivegauche.png';
 import logoColette from '@/assets/logo-colette.png';
@@ -27,7 +26,6 @@ const brandLogos: Record<Brand, { src: string; heightMobile: string; heightDeskt
   Replay: { src: logoReplay, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   RueMadam: { src: logoRueMadam, heightMobile: 'h-[72px]', heightDesktop: 'md:h-[105px]' },
   JOTT: { src: logoJott, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
-  LolaCasademunt: { src: logoLolaCasademunt, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   Vicolo: { src: logoVicolo, heightMobile: 'h-[70px]', heightDesktop: 'md:h-[100px]' },
   RiveGauche: { src: logoRiveGauche, heightMobile: 'h-[55px]', heightDesktop: 'md:h-[80px]' },
   Colette: { src: logoColette, heightMobile: 'h-[72px]', heightDesktop: 'md:h-[105px]' },
@@ -49,7 +47,7 @@ const HomeBrandsBlock = () => {
       </div>
 
       <div className="grid grid-cols-3 md:grid-cols-5 gap-2 md:gap-3 px-4 max-w-4xl mx-auto">
-        {brands.filter((brand) => brand !== 'Replay' && brand !== 'RueMadam' && brand !== 'LolaCasademunt' && brand !== 'RiveGauche').map((brand) => (
+        {brands.filter((brand) => brand !== 'Replay' && brand !== 'RueMadam' && brand !== 'RiveGauche').map((brand) => (
           <Link
             key={brand}
             to={`/marca/${getBrandSlug(brand)}`}
