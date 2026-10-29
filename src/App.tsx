@@ -25,6 +25,7 @@ import SaleProducts from "./pages/SaleProducts";
 import NotFound from "./pages/NotFound";
 import ModaItalianaAlicante from "./pages/ModaItalianaAlicante";
 import RebajasIsland from "@/components/RebajasIsland";
+import OwnerAccess from "@/components/OwnerAccess";
 
 const queryClient = new QueryClient();
 
@@ -51,11 +52,11 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/subidas" element={<AdminSubmissions />} />
-              <Route path="/subirprenda" element={<UploadOutfit />} />
+              <Route path="/subirprenda" element={<OwnerAccess><UploadOutfit /></OwnerAccess>} />
               <Route path="/rebajas" element={<SaleProducts />} />
-              <Route path="/subirprenda/eliminar" element={<DeleteProducts />} />
-              <Route path="/subirprenda/rebajas" element={<MarkSaleProducts />} />
-              <Route path="/subirprenda/mover" element={<MoveProducts />} />
+              <Route path="/subirprenda/eliminar" element={<OwnerAccess><DeleteProducts /></OwnerAccess>} />
+              <Route path="/subirprenda/rebajas" element={<OwnerAccess><MarkSaleProducts /></OwnerAccess>} />
+              <Route path="/subirprenda/mover" element={<OwnerAccess><MoveProducts /></OwnerAccess>} />
               <Route path="/subirprendas" element={<Navigate to="/subirprenda" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
