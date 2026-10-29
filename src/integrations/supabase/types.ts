@@ -218,7 +218,7 @@ export type Database = {
       soft_delete_products: { Args: { _ids: string[] }; Returns: number }
     }
     Enums: {
-      app_role: "admin"
+      app_role: "admin" | "submissions_reader"
       brand_type:
         | "MOOR"
         | "SaintTropez"
@@ -362,7 +362,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin"],
+      app_role: ["admin", "submissions_reader"],
       brand_type: [
         "MOOR",
         "SaintTropez",
