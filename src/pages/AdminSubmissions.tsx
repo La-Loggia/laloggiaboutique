@@ -373,7 +373,7 @@ const AdminSubmissions = () => {
                         const idx = runningIdx++;
                         return (
                           <div key={idx} className="relative aspect-[3/4] overflow-hidden rounded-md bg-muted group">
-                            {isAdmin && <Button
+                            <Button
                               type="button"
                               variant="ghost"
                               size="icon"
@@ -387,9 +387,11 @@ const AdminSubmissions = () => {
                                 decoding="async"
                                 className="h-full w-full object-cover group-hover:scale-105 transition-transform"
                               />
-                            </button>
-                            <button
+                            </Button>
+                            {isAdmin && <Button
                               type="button"
+                              variant="ghost"
+                              size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 deletePhotoFromSubmission(detail, url);
