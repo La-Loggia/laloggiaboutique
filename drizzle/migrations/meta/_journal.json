@@ -15,6 +15,13 @@
       "when": 1793294528096,
       "tag": "0001_protect_readonly_staff",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793294663254,
+      "tag": "0002_deny_reader_product_rpcs",
+      "breakpoints": true
     }
   ]
 }
