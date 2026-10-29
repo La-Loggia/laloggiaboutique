@@ -174,6 +174,24 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          display_name: string
+          id: string
+          username: string
+        }
+        Insert: {
+          display_name: string
+          id: string
+          username: string
+        }
+        Update: {
+          display_name?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -218,7 +236,7 @@ export type Database = {
       soft_delete_products: { Args: { _ids: string[] }; Returns: number }
     }
     Enums: {
-      app_role: "admin"
+      app_role: "admin" | "submissions_reader"
       brand_type:
         | "MOOR"
         | "SaintTropez"
@@ -362,7 +380,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin"],
+      app_role: ["admin", "submissions_reader"],
       brand_type: [
         "MOOR",
         "SaintTropez",

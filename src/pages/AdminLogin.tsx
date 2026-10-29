@@ -43,8 +43,10 @@ const AdminLogin = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Input
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="Email o nombre de usuario"
+              aria-label="Email o nombre de usuario"
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -54,6 +56,8 @@ const AdminLogin = () => {
           <div>
             <Input
               type="password"
+              autoComplete="current-password"
+              aria-label="Contraseña"
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
