@@ -228,7 +228,7 @@ const SortableProduct = ({ product, onToggleActive, onDelete, onManageImages, on
 
 // --- Main Admin Page ---
 const Admin = () => {
-  const { user, isAdmin, loading, signOut } = useAuth();
+  const { user, isAdmin, isSubmissionsReader, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   
@@ -278,6 +278,8 @@ const Admin = () => {
   if (!user) {
     return <Navigate to="/admin/login" replace />;
   }
+
+  if (isSubmissionsReader) return <Navigate to="/admin/subidas" replace />;
 
   if (!isAdmin) {
     return (

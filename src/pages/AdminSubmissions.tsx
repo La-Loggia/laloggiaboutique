@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon, X } from 'lucide-react';
+import { ArrowLeft, Check, Trash2, Send, Image as ImageIcon, X, LogOut } from 'lucide-react';
 import { brandDisplayNames } from '@/lib/brandUtils';
 import { Brand } from '@/data/products';
 import UploadProductDialog from '@/components/UploadProductDialog';
@@ -60,7 +60,7 @@ const extractSubmissionStoragePath = (url: string): string | null => {
 };
 
 const AdminSubmissions = () => {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, canViewSubmissions, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState<Submission[]>([]);
   const [filter, setFilter] = useState<'pending' | 'all'>('pending');
@@ -85,13 +85,14 @@ const AdminSubmissions = () => {
   };
 
   useEffect(() => {
-    if (isAdmin) load();
-  }, [isAdmin]);
+    if (canViewSubmissions) load();
+  }, [canViewSubmissions]);
 
   if (loading) return <div className="p-8 text-center text-muted-foreground">Cargando…</div>;
-  if (!user || !isAdmin) return <Navigate to="/admin/login" replace />;
+  if (!user || !canViewSubmissions) return <Navigate to="/admin/login" replace />;
 
   const toggleReviewed = async (item: Submission) => {
+    if (!isAdmin) return;
     const { error } = await supabase
       .from('outfit_submissions')
       .update({ reviewed: !item.reviewed })
@@ -101,6 +102,7 @@ const AdminSubmissions = () => {
   };
 
   const cleanupSubmission = async (item: Submission) => {
+    if (!isAdmin) return;
     const urls = collectAllSubmissionUrls(item);
     const paths = urls
       .map(extractSubmissionStoragePath)
@@ -112,6 +114,7 @@ const AdminSubmissions = () => {
   };
 
   const remove = async (item: Submission) => {
+    if (!isAdmin) return;
     if (!confirm('¿Eliminar esta subida y sus fotos?')) return;
     try {
       await cleanupSubmission(item);
@@ -124,7 +127,7 @@ const AdminSubmissions = () => {
   };
 
   const handlePublished = async (newProduct: Product) => {
-    if (!publishing) return;
+    if (!isAdmin || !publishing) return;
     try {
       // Keep the original owner photos: archive the submission instead of deleting it,
       // so the product can be sent back to "Subidas" later with its original images.
@@ -152,6 +155,7 @@ const AdminSubmissions = () => {
 
 
   const deletePhotoFromSubmission = async (item: Submission, url: string) => {
+    if (!isAdmin) return;
     if (!confirm('¿Eliminar esta foto?')) return;
     // Build updated arrays excluding this url; also clear legacy single fields if they match.
     const updates: Record<string, unknown> = {};
@@ -194,6 +198,7 @@ const AdminSubmissions = () => {
   };
 
   const updateBrand = async (item: Submission, brand: Brand | null) => {
+    if (!isAdmin) return;
     const { error } = await supabase
       .from('outfit_submissions')
       .update({ brand })
@@ -224,8 +229,8 @@ const AdminSubmissions = () => {
       <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
-              <ArrowLeft className="w-5 h-5" />
+            <Button variant="ghost" size="icon" title={isAdmin ? 'Administración' : 'Cerrar sesión'} aria-label={isAdmin ? 'Administración' : 'Cerrar sesión'} onClick={() => isAdmin ? navigate('/admin') : void signOut()}>
+              {isAdmin ? <ArrowLeft className="w-5 h-5" /> : <LogOut className="w-5 h-5" />}
             </Button>
             <div>
               <h1 className="font-serif text-xl tracking-wide">Outfits subidos</h1>
@@ -338,7 +343,7 @@ const AdminSubmissions = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-xs uppercase tracking-wider text-muted-foreground">Marca</label>
-                  <Select
+                  {isAdmin ? <Select
                     value={detail.brand ?? 'none'}
                     onValueChange={(v) => updateBrand(detail, v === 'none' ? null : (v as Brand))}
                   >
@@ -353,7 +358,7 @@ const AdminSubmissions = () => {
                         </SelectItem>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </Select> : <p className="text-sm">{detail.brand ? brandDisplayNames[detail.brand] || detail.brand : 'Sin marca'}</p>}
                 </div>
 
 
@@ -368,8 +373,10 @@ const AdminSubmissions = () => {
                         const idx = runningIdx++;
                         return (
                           <div key={idx} className="relative aspect-[3/4] overflow-hidden rounded-md bg-muted group">
-                            <button
+                            {isAdmin && <Button
                               type="button"
+                              variant="ghost"
+                              size="icon"
                               onClick={() => setViewer({ urls: allUrls, startIndex: idx })}
                               className="block w-full h-full"
                             >
@@ -387,11 +394,11 @@ const AdminSubmissions = () => {
                                 e.stopPropagation();
                                 deletePhotoFromSubmission(detail, url);
                               }}
-                              className="absolute top-1.5 right-1.5 p-1 rounded-full bg-black/70 text-white opacity-90 hover:bg-destructive transition-colors"
+                              className="absolute top-1.5 right-1.5 h-7 w-7 bg-foreground text-background hover:bg-destructive hover:text-destructive-foreground"
                               title="Eliminar esta foto"
                             >
                               <X className="w-3.5 h-3.5" />
-                            </button>
+                            </Button>}
                           </div>
                         );
                       })}
@@ -415,7 +422,7 @@ const AdminSubmissions = () => {
                   <p className="text-xs bg-muted/50 rounded p-2 whitespace-pre-wrap">{detail.notes}</p>
                 )}
 
-                <div className="flex flex-wrap gap-2 pt-2 border-t">
+                {isAdmin && <div className="flex flex-wrap gap-2 pt-2 border-t">
                   <Button size="sm" onClick={() => setPublishing(detail)} className="flex-1 min-w-[120px]">
                     <Send className="w-3.5 h-3.5 mr-1" /> Publicar
                   </Button>
@@ -431,19 +438,19 @@ const AdminSubmissions = () => {
                   <Button size="sm" variant="ghost" onClick={() => remove(detail)} className="shrink-0">
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
-                </div>
+                </div>}
               </div>
             );
           })()}
         </DialogContent>
       </Dialog>
 
-      <UploadProductDialog
+      {isAdmin && <UploadProductDialog
         open={!!publishing}
         onClose={() => setPublishing(null)}
         initialBrand={publishing?.brand ?? null}
         onPublished={handlePublished}
-      />
+      />}
 
       <SubmissionImageViewer
         open={!!viewer}
@@ -452,7 +459,7 @@ const AdminSubmissions = () => {
         onClose={() => setViewer(null)}
       />
 
-      {managingNewProduct && (
+      {isAdmin && managingNewProduct && (
         <ProductImageManager
           product={managingNewProduct}
           onClose={() => setManagingNewProduct(null)}
