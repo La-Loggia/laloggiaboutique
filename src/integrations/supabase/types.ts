@@ -174,6 +174,24 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          display_name: string
+          id: string
+          username: string
+        }
+        Insert: {
+          display_name: string
+          id: string
+          username: string
+        }
+        Update: {
+          display_name?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
